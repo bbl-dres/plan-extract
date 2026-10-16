@@ -29,7 +29,7 @@ async function deleteSheet(id) {
   forgetSheet(id);
 }
 
-let goneListener = null;                // set by the app: what to say when the server no longer has a sheet
+let goneListener = null;                // set by the app: where to go when the server no longer has a sheet
 function onSheetGone(fn) { goneListener = fn; }
 onNotFound((id) => { if (P.sheets.includes(id)) { forgetSheet(id); if (goneListener) goneListener(id); } });   // whichever request learns it
 

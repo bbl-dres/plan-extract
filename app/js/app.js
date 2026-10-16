@@ -8,7 +8,7 @@ import { renderScale } from './screens/scale.js';
 import { renderUpload } from './screens/upload.js';
 import { drawingRows, getHealth, J, noAppServer, onJobs, onSheetGone, P, refreshAll, resetProject, saveProject, startPolling } from './state.js';
 import { dialog, langSelect } from './chrome.js';
-import { abortProject, go, initChrome, notify, onJobsChanged, register } from './ui.js';
+import { abortProject, go, initChrome, onJobsChanged, register } from './ui.js';
 
 for (const [name, fn] of Object.entries({ upload: renderUpload, area: renderArea, scale: renderScale, results: renderResults })) register(name, fn);
 // the storeys and run steps of projects saved before October 2026: they open the results (the redirect can go in 2027)
@@ -34,7 +34,7 @@ async function boot() {
     pub = hl;
     $('#help-storage').textContent = t('help.storagePublic', { minutes: hl.keep_minutes });
   }).catch((e) => { if (noAppServer(e)) showOffline(); });
-  onSheetGone(() => { notify(pub ? t('error.sheetExpired', { minutes: pub.keep_minutes }) : t('error.sheetGone'), 'info'); go(drawingRows().length ? 'results' : 'upload'); });
+  onSheetGone(() => go(drawingRows().length ? 'results' : 'upload'));
   $('#btn-start-over').onclick = () => {
     if (pub) { if (confirm(t('app.startOverPublic'))) abortProject(); return; }
     if (!confirm(t('app.startOverLocal'))) return;
