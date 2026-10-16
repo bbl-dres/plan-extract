@@ -105,12 +105,12 @@ def test_a_changed_area_reads_the_scale_again(served, monkeypatch, browser_page)
 
 
 def test_an_expired_sheet_leaves_the_project(served, browser_page):
-    """A sheet the server no longer has (deleted after KEEP_MINUTES on the public server) leaves the project with a
-    notice, instead of staying as a broken entry."""
+    """A sheet the server no longer has (deleted after KEEP_MINUTES on the public server) leaves the project quietly,
+    instead of staying as a broken entry."""
     base, _, _ = served
     browser_page.goto(f"{base}/?lang=en&sheets=20260101-000000-gone&screen=results")
-    browser_page.wait_for_selector("text=A sheet is no longer on the server", timeout=15000)
-    browser_page.wait_for_selector("text=From a scanned plan to rooms, areas and walls", timeout=5000)   # the landing page
+    browser_page.wait_for_selector("text=From a scanned plan to rooms, areas and walls", timeout=15000)   # the landing page
+    assert browser_page.locator("text=no longer on the server").count() == 0
     assert browser_page.evaluate("JSON.parse(localStorage.getItem('fpx-workflow-project')).sheets") == []
 
 
