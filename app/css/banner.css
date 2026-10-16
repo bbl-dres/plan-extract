@@ -1,0 +1,4 @@
+/* The red prototype banner at the top of every page (the app and the API documentation), as in the other bbl-dres
+   apps. Uses the design tokens of tokens.css. */
+.prototype-banner { background: var(--swiss-red); color: var(--on-accent); text-align: center; font: var(--fs-sm)/1.35 var(--font); padding: var(--sp-2) var(--sp-4); }
+.prototype-banner-label { font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: .04em; margin-right: var(--sp-2); }

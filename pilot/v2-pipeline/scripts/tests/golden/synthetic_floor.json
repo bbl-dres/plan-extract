@@ -1,0 +1,5724 @@
+{
+ "json": {
+  "schema_version": "1.0",
+  "generator": {
+   "name": "fpx (pilot v2)",
+   "note": "extracted automatically: unverified, check against the sheet",
+   "units": {
+    "length": "m",
+    "area": "m2",
+    "frame": "plan metres of the drawing, y up"
+   }
+  },
+  "sheet": {
+   "id": "golden",
+   "title": "synthetic floor",
+   "source": "test",
+   "input_class": "synthetic",
+   "scale": {
+    "value": "1:50",
+    "method": "test",
+    "stamp_area_cue": {
+     "length_factor": 1.001,
+     "rooms": 4,
+     "agrees": true
+    }
+   },
+   "triage": null,
+   "deskew": null,
+   "extent": [
+    0.0,
+    0.0,
+    17.3,
+    11.0
+   ]
+  },
+  "text": [
+   {
+    "text": "Büro",
+    "role": "room stamp",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        4.2,
+        7.96
+       ],
+       [
+        3.0,
+        7.96
+       ],
+       [
+        3.0,
+        8.2
+       ],
+       [
+        4.2,
+        8.2
+       ],
+       [
+        4.2,
+        7.96
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "text": "15.0 m²",
+    "role": "room stamp",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        4.2,
+        7.64
+       ],
+       [
+        3.0,
+        7.64
+       ],
+       [
+        3.0,
+        7.9
+       ],
+       [
+        4.2,
+        7.9
+       ],
+       [
+        4.2,
+        7.64
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "text": "Sitzungs-",
+    "role": "room stamp",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        8.8,
+        8.16
+       ],
+       [
+        7.6,
+        8.16
+       ],
+       [
+        7.6,
+        8.4
+       ],
+       [
+        8.8,
+        8.4
+       ],
+       [
+        8.8,
+        8.16
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "text": "zimmer",
+    "role": "room stamp",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        8.8,
+        7.84
+       ],
+       [
+        7.6,
+        7.84
+       ],
+       [
+        7.6,
+        8.1
+       ],
+       [
+        8.8,
+        8.1
+       ],
+       [
+        8.8,
+        7.84
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "text": "14.5 m²",
+    "role": "room stamp",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        8.8,
+        7.56
+       ],
+       [
+        7.6,
+        7.56
+       ],
+       [
+        7.6,
+        7.8
+       ],
+       [
+        8.8,
+        7.8
+       ],
+       [
+        8.8,
+        7.56
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "text": "2051.ZZ.01.012",
+    "role": "room stamp",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        9.2,
+        7.24
+       ],
+       [
+        7.6,
+        7.24
+       ],
+       [
+        7.6,
+        7.5
+       ],
+       [
+        9.2,
+        7.5
+       ],
+       [
+        9.2,
+        7.24
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "text": "Treppe",
+    "role": "room stamp",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        13.6,
+        8.96
+       ],
+       [
+        12.6,
+        8.96
+       ],
+       [
+        12.6,
+        9.2
+       ],
+       [
+        13.6,
+        9.2
+       ],
+       [
+        13.6,
+        8.96
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "text": "LUFTRAUM",
+    "role": "void label",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        13.6,
+        7.76
+       ],
+       [
+        12.6,
+        7.76
+       ],
+       [
+        12.6,
+        8.0
+       ],
+       [
+        13.6,
+        8.0
+       ],
+       [
+        13.6,
+        7.76
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "text": "Halle",
+    "role": "room stamp",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        16.4,
+        8.24
+       ],
+       [
+        15.2,
+        8.24
+       ],
+       [
+        15.2,
+        8.5
+       ],
+       [
+        16.4,
+        8.5
+       ],
+       [
+        16.4,
+        8.24
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "text": "Korridor",
+    "role": "room stamp",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        9.7,
+        5.24
+       ],
+       [
+        8.5,
+        5.24
+       ],
+       [
+        8.5,
+        5.5
+       ],
+       [
+        9.7,
+        5.5
+       ],
+       [
+        9.7,
+        5.24
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "text": "Archiv",
+    "role": "room stamp",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        3.2,
+        2.76
+       ],
+       [
+        2.0,
+        2.76
+       ],
+       [
+        2.0,
+        3.0
+       ],
+       [
+        3.2,
+        3.0
+       ],
+       [
+        3.2,
+        2.76
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "text": "19.4 m²",
+    "role": "room stamp",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        3.2,
+        2.44
+       ],
+       [
+        2.0,
+        2.44
+       ],
+       [
+        2.0,
+        2.7
+       ],
+       [
+        3.2,
+        2.7
+       ],
+       [
+        3.2,
+        2.44
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "text": "Lager",
+    "role": "room stamp",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        11.2,
+        3.24
+       ],
+       [
+        10.0,
+        3.24
+       ],
+       [
+        10.0,
+        3.5
+       ],
+       [
+        11.2,
+        3.5
+       ],
+       [
+        11.2,
+        3.24
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "text": "23.5 m²",
+    "role": "room stamp",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        11.2,
+        2.94
+       ],
+       [
+        10.0,
+        2.94
+       ],
+       [
+        10.0,
+        3.2
+       ],
+       [
+        11.2,
+        3.2
+       ],
+       [
+        11.2,
+        2.94
+       ]
+      ]
+     ]
+    }
+   }
+  ],
+  "walls": [
+   {
+    "id": "w000",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       5.85,
+       9.85
+      ],
+      [
+       1.15,
+       9.85
+      ]
+     ]
+    },
+    "thickness": 0.3,
+    "thickness_measured": null,
+    "length": 4.7,
+    "kind": "exterior",
+    "rooms": [
+     "outside",
+     "r000"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.30 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": [
+     {
+      "kind": "window",
+      "from": 2.16,
+      "to": 3.36
+     }
+    ]
+   },
+   {
+    "id": "w001",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       1.15,
+       9.85
+      ],
+      [
+       1.15,
+       6.15
+      ]
+     ]
+    },
+    "thickness": 0.32,
+    "thickness_measured": null,
+    "length": 3.7,
+    "kind": "exterior",
+    "rooms": [
+     "outside",
+     "r000"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.32 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   },
+   {
+    "id": "w002",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       5.85,
+       9.85
+      ],
+      [
+       5.85,
+       6.15
+      ]
+     ]
+    },
+    "thickness": 0.3,
+    "thickness_measured": null,
+    "length": 3.7,
+    "kind": "interior",
+    "rooms": [
+     "r000",
+     "r001"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.30 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": [
+     {
+      "kind": "window",
+      "from": 1.32,
+      "to": 2.35
+     }
+    ]
+   },
+   {
+    "id": "w003",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       5.85,
+       9.85
+      ],
+      [
+       10.55,
+       9.85
+      ]
+     ]
+    },
+    "thickness": 0.3,
+    "thickness_measured": null,
+    "length": 4.7,
+    "kind": "exterior",
+    "rooms": [
+     "r001",
+     "outside"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.30 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": [
+     {
+      "kind": "window",
+      "from": 1.62,
+      "to": 2.84
+     }
+    ]
+   },
+   {
+    "id": "w004",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       10.55,
+       9.85
+      ],
+      [
+       10.55,
+       6.15
+      ]
+     ]
+    },
+    "thickness": 0.3,
+    "thickness_measured": null,
+    "length": 3.7,
+    "kind": "exterior",
+    "rooms": [
+     "r001",
+     null
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.30 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   },
+   {
+    "id": "w005",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       10.55,
+       9.85
+      ],
+      [
+       17.3,
+       9.85
+      ]
+     ]
+    },
+    "thickness": 0.3,
+    "thickness_measured": 0.32,
+    "length": 6.75,
+    "kind": "interior",
+    "rooms": [
+     null,
+     "outside"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.30 m thick (massive from 0.17 m)",
+    "fill_share": 0.99,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   },
+   {
+    "id": "w006",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       1.15,
+       6.15
+      ],
+      [
+       5.85,
+       6.15
+      ]
+     ]
+    },
+    "thickness": 0.3,
+    "thickness_measured": null,
+    "length": 4.7,
+    "kind": "interior",
+    "rooms": [
+     "r002",
+     "r000"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.30 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": [
+     {
+      "kind": "door",
+      "from": 1.83,
+      "to": 2.75
+     }
+    ]
+   },
+   {
+    "id": "w007",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       1.15,
+       6.15
+      ],
+      [
+       1.15,
+       4.35
+      ]
+     ]
+    },
+    "thickness": 0.32,
+    "thickness_measured": 0.3,
+    "length": 1.8,
+    "kind": "exterior",
+    "rooms": [
+     "outside",
+     "r002"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.32 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   },
+   {
+    "id": "w008",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       5.85,
+       6.15
+      ],
+      [
+       10.55,
+       6.15
+      ]
+     ]
+    },
+    "thickness": 0.3,
+    "thickness_measured": null,
+    "length": 4.7,
+    "kind": "interior",
+    "rooms": [
+     "r002",
+     "r001"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.30 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": [
+     {
+      "kind": "door",
+      "from": 2.14,
+      "to": 3.04
+     }
+    ]
+   },
+   {
+    "id": "w009",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       10.55,
+       6.15
+      ],
+      [
+       17.15,
+       6.15
+      ]
+     ]
+    },
+    "thickness": 0.3,
+    "thickness_measured": null,
+    "length": 6.6,
+    "kind": "exterior",
+    "rooms": [
+     "r002",
+     null
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.30 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": [
+     {
+      "kind": "door",
+      "from": 4.93,
+      "to": 5.85
+     }
+    ]
+   },
+   {
+    "id": "w010",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       17.15,
+       6.15
+      ],
+      [
+       17.3,
+       8.67
+      ]
+     ]
+    },
+    "thickness": 0.32,
+    "thickness_measured": null,
+    "length": 2.52,
+    "kind": "exterior",
+    "rooms": [
+     "outside",
+     "r007"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.32 m thick (massive from 0.17 m)",
+    "fill_share": 0.85,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   },
+   {
+    "id": "w011",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       17.15,
+       6.15
+      ],
+      [
+       17.15,
+       4.35
+      ]
+     ]
+    },
+    "thickness": 0.32,
+    "thickness_measured": 0.3,
+    "length": 1.8,
+    "kind": "interior",
+    "rooms": [
+     "r002",
+     "outside"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.32 m thick (massive from 0.17 m)",
+    "fill_share": 0.85,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   },
+   {
+    "id": "w012",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       1.15,
+       4.35
+      ],
+      [
+       8.15,
+       4.35
+      ]
+     ]
+    },
+    "thickness": 0.3,
+    "thickness_measured": null,
+    "length": 7.0,
+    "kind": "interior",
+    "rooms": [
+     "r003",
+     "r002"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.30 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": [
+     {
+      "kind": "door",
+      "from": 3.83,
+      "to": 4.75
+     }
+    ]
+   },
+   {
+    "id": "w013",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       1.15,
+       4.35
+      ],
+      [
+       1.15,
+       1.15
+      ]
+     ]
+    },
+    "thickness": 0.32,
+    "thickness_measured": null,
+    "length": 3.2,
+    "kind": "exterior",
+    "rooms": [
+     "outside",
+     "r003"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.32 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   },
+   {
+    "id": "w014",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       1.15,
+       1.15
+      ],
+      [
+       8.15,
+       1.15
+      ]
+     ]
+    },
+    "thickness": 0.3,
+    "thickness_measured": null,
+    "length": 7.0,
+    "kind": "exterior",
+    "rooms": [
+     "outside",
+     "r003"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.30 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": [
+     {
+      "kind": "door",
+      "from": 1.3,
+      "to": 2.24
+     }
+    ]
+   },
+   {
+    "id": "w015",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       17.15,
+       4.35
+      ],
+      [
+       8.15,
+       4.35
+      ]
+     ]
+    },
+    "thickness": 0.3,
+    "thickness_measured": null,
+    "length": 9.0,
+    "kind": "interior",
+    "rooms": [
+     "r002",
+     "r004"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.30 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": [
+     {
+      "kind": "door",
+      "from": 5.25,
+      "to": 6.17
+     }
+    ]
+   },
+   {
+    "id": "w016",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       17.15,
+       4.35
+      ],
+      [
+       17.15,
+       1.15
+      ]
+     ]
+    },
+    "thickness": 0.32,
+    "thickness_measured": null,
+    "length": 3.2,
+    "kind": "interior",
+    "rooms": [
+     "r004",
+     "outside"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.32 m thick (massive from 0.17 m)",
+    "fill_share": 0.85,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   },
+   {
+    "id": "w017",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       17.15,
+       1.15
+      ],
+      [
+       8.15,
+       1.15
+      ]
+     ]
+    },
+    "thickness": 0.3,
+    "thickness_measured": null,
+    "length": 9.0,
+    "kind": "exterior",
+    "rooms": [
+     "r004",
+     "outside"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.30 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   },
+   {
+    "id": "w018",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       8.15,
+       4.35
+      ],
+      [
+       8.113,
+       3.58
+      ]
+     ]
+    },
+    "thickness": 0.32,
+    "thickness_measured": null,
+    "length": 0.77,
+    "kind": "interior",
+    "rooms": [
+     "r003",
+     "r004"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.32 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   },
+   {
+    "id": "w019",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       8.15,
+       1.15
+      ],
+      [
+       8.073,
+       2.581
+      ]
+     ]
+    },
+    "thickness": 0.32,
+    "thickness_measured": null,
+    "length": 1.43,
+    "kind": "interior",
+    "rooms": [
+     "r004",
+     "r003"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.32 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   },
+   {
+    "id": "w020",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       14.11,
+       3.89
+      ],
+      [
+       15.17,
+       3.89
+      ]
+     ]
+    },
+    "thickness": 0.24,
+    "thickness_measured": null,
+    "length": 1.06,
+    "kind": "exterior",
+    "rooms": [
+     "r005",
+     "r004"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.24 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   },
+   {
+    "id": "w021",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       15.17,
+       3.89
+      ],
+      [
+       15.17,
+       2.81
+      ]
+     ]
+    },
+    "thickness": 0.28,
+    "thickness_measured": null,
+    "length": 1.08,
+    "kind": "interior",
+    "rooms": [
+     "r005",
+     "r004"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.28 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   },
+   {
+    "id": "w022",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       15.17,
+       2.81
+      ],
+      [
+       14.11,
+       2.81
+      ]
+     ]
+    },
+    "thickness": 0.24,
+    "thickness_measured": null,
+    "length": 1.06,
+    "kind": "interior",
+    "rooms": [
+     "r005",
+     "r004"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.24 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   },
+   {
+    "id": "w023",
+    "centre_line": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       14.11,
+       2.81
+      ],
+      [
+       14.11,
+       3.89
+      ]
+     ]
+    },
+    "thickness": 0.24,
+    "thickness_measured": null,
+    "length": 1.08,
+    "kind": "interior",
+    "rooms": [
+     "r005",
+     "r004"
+    ],
+    "load_bearing": "unknown",
+    "construction": "massive",
+    "construction_basis": "heuristic: 0.24 m thick (massive from 0.17 m)",
+    "fill_share": 1.0,
+    "notes": [
+     "snapped",
+     "snapped"
+    ],
+    "openings": []
+   }
+  ],
+  "wall_polygons": [
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       1.17,
+       10.0
+      ],
+      [
+       2.49,
+       10.0
+      ],
+      [
+       2.49,
+       9.7
+      ],
+      [
+       1.31,
+       9.7
+      ],
+      [
+       1.31,
+       6.3
+      ],
+      [
+       2.981,
+       6.3
+      ],
+      [
+       2.981,
+       6.0
+      ],
+      [
+       1.31,
+       6.0
+      ],
+      [
+       1.31,
+       4.5
+      ],
+      [
+       4.983,
+       4.5
+      ],
+      [
+       4.983,
+       4.2
+      ],
+      [
+       1.31,
+       4.2
+      ],
+      [
+       1.31,
+       1.3
+      ],
+      [
+       2.47,
+       1.3
+      ],
+      [
+       2.47,
+       1.0
+      ],
+      [
+       1.17,
+       1.0
+      ],
+      [
+       1.17,
+       1.15
+      ],
+      [
+       0.99,
+       1.15
+      ],
+      [
+       0.99,
+       9.85
+      ],
+      [
+       1.17,
+       9.85
+      ],
+      [
+       1.17,
+       10.0
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       7.47,
+       9.7
+      ],
+      [
+       6.0,
+       9.7
+      ],
+      [
+       6.0,
+       8.521
+      ],
+      [
+       5.7,
+       8.521
+      ],
+      [
+       5.7,
+       9.7
+      ],
+      [
+       3.69,
+       9.7
+      ],
+      [
+       3.69,
+       10.0
+      ],
+      [
+       7.47,
+       10.0
+      ],
+      [
+       7.47,
+       9.7
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       5.7,
+       7.499
+      ],
+      [
+       6.0,
+       7.499
+      ],
+      [
+       6.0,
+       6.3
+      ],
+      [
+       7.99,
+       6.3
+      ],
+      [
+       7.99,
+       6.0
+      ],
+      [
+       3.904,
+       6.0
+      ],
+      [
+       3.904,
+       6.3
+      ],
+      [
+       5.7,
+       6.3
+      ],
+      [
+       5.7,
+       7.499
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       7.99,
+       4.2
+      ],
+      [
+       5.905,
+       4.2
+      ],
+      [
+       5.905,
+       4.5
+      ],
+      [
+       10.975,
+       4.5
+      ],
+      [
+       10.975,
+       4.2
+      ],
+      [
+       8.31,
+       4.2
+      ],
+      [
+       8.31,
+       3.75
+      ],
+      [
+       7.99,
+       3.75
+      ],
+      [
+       7.99,
+       4.2
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       8.31,
+       2.47
+      ],
+      [
+       8.31,
+       1.3
+      ],
+      [
+       16.99,
+       1.3
+      ],
+      [
+       16.99,
+       4.2
+      ],
+      [
+       11.896,
+       4.2
+      ],
+      [
+       11.896,
+       4.5
+      ],
+      [
+       16.99,
+       4.5
+      ],
+      [
+       16.99,
+       6.0
+      ],
+      [
+       16.403,
+       6.0
+      ],
+      [
+       16.403,
+       6.3
+      ],
+      [
+       16.99,
+       6.3
+      ],
+      [
+       16.99,
+       8.67
+      ],
+      [
+       17.31,
+       8.67
+      ],
+      [
+       17.31,
+       1.15
+      ],
+      [
+       17.13,
+       1.15
+      ],
+      [
+       17.13,
+       1.0
+      ],
+      [
+       3.41,
+       1.0
+      ],
+      [
+       3.41,
+       1.3
+      ],
+      [
+       7.99,
+       1.3
+      ],
+      [
+       7.99,
+       2.47
+      ],
+      [
+       8.31,
+       2.47
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       8.69,
+       9.7
+      ],
+      [
+       8.69,
+       10.0
+      ],
+      [
+       17.17,
+       10.0
+      ],
+      [
+       17.17,
+       9.7
+      ],
+      [
+       10.7,
+       9.7
+      ],
+      [
+       10.7,
+       6.3
+      ],
+      [
+       15.481,
+       6.3
+      ],
+      [
+       15.481,
+       6.0
+      ],
+      [
+       8.89,
+       6.0
+      ],
+      [
+       8.89,
+       6.3
+      ],
+      [
+       10.4,
+       6.3
+      ],
+      [
+       10.4,
+       9.7
+      ],
+      [
+       8.69,
+       9.7
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       13.99,
+       2.85
+      ],
+      [
+       13.99,
+       4.03
+      ],
+      [
+       14.23,
+       4.03
+      ],
+      [
+       14.23,
+       4.01
+      ],
+      [
+       15.17,
+       4.01
+      ],
+      [
+       15.17,
+       3.87
+      ],
+      [
+       15.31,
+       3.87
+      ],
+      [
+       15.31,
+       2.83
+      ],
+      [
+       15.15,
+       2.83
+      ],
+      [
+       15.15,
+       2.69
+      ],
+      [
+       14.11,
+       2.69
+      ],
+      [
+       14.11,
+       2.85
+      ],
+      [
+       13.99,
+       2.85
+      ]
+     ],
+     [
+      [
+       15.03,
+       2.93
+      ],
+      [
+       15.03,
+       3.77
+      ],
+      [
+       14.23,
+       3.77
+      ],
+      [
+       14.23,
+       2.93
+      ],
+      [
+       15.03,
+       2.93
+      ]
+     ]
+    ]
+   }
+  ],
+  "wall_polygons_raw": [
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       15.3,
+       4.0
+      ],
+      [
+       15.3,
+       2.7
+      ],
+      [
+       14.0,
+       2.7
+      ],
+      [
+       14.0,
+       4.0
+      ],
+      [
+       15.3,
+       4.0
+      ]
+     ],
+     [
+      [
+       14.24,
+       2.954
+      ],
+      [
+       14.254,
+       2.94
+      ],
+      [
+       15.026,
+       2.94
+      ],
+      [
+       15.04,
+       2.954
+      ],
+      [
+       15.04,
+       3.746
+      ],
+      [
+       15.026,
+       3.76
+      ],
+      [
+       14.254,
+       3.76
+      ],
+      [
+       14.24,
+       3.746
+      ],
+      [
+       14.24,
+       2.954
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       11.0,
+       4.5
+      ],
+      [
+       11.0,
+       4.2
+      ],
+      [
+       8.314,
+       4.2
+      ],
+      [
+       8.3,
+       4.186
+      ],
+      [
+       8.3,
+       3.6
+      ],
+      [
+       8.0,
+       3.6
+      ],
+      [
+       8.0,
+       4.186
+      ],
+      [
+       7.986,
+       4.2
+      ],
+      [
+       5.9,
+       4.2
+      ],
+      [
+       5.9,
+       4.5
+      ],
+      [
+       11.0,
+       4.5
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       6.0,
+       7.5
+      ],
+      [
+       6.0,
+       6.314
+      ],
+      [
+       6.014,
+       6.3
+      ],
+      [
+       8.0,
+       6.3
+      ],
+      [
+       8.0,
+       6.0
+      ],
+      [
+       3.9,
+       6.0
+      ],
+      [
+       3.9,
+       6.3
+      ],
+      [
+       5.686,
+       6.3
+      ],
+      [
+       5.7,
+       6.314
+      ],
+      [
+       5.7,
+       7.5
+      ],
+      [
+       6.0,
+       7.5
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       17.3,
+       8.8
+      ],
+      [
+       17.3,
+       1.0
+      ],
+      [
+       3.4,
+       1.0
+      ],
+      [
+       3.4,
+       1.3
+      ],
+      [
+       7.986,
+       1.3
+      ],
+      [
+       8.0,
+       1.314
+      ],
+      [
+       8.0,
+       2.6
+      ],
+      [
+       8.3,
+       2.6
+      ],
+      [
+       8.3,
+       1.314
+      ],
+      [
+       8.314,
+       1.3
+      ],
+      [
+       16.986,
+       1.3
+      ],
+      [
+       17.0,
+       1.314
+      ],
+      [
+       17.0,
+       4.186
+      ],
+      [
+       16.986,
+       4.2
+      ],
+      [
+       11.9,
+       4.2
+      ],
+      [
+       11.9,
+       4.5
+      ],
+      [
+       16.986,
+       4.5
+      ],
+      [
+       17.0,
+       4.514
+      ],
+      [
+       17.0,
+       5.986
+      ],
+      [
+       16.986,
+       6.0
+      ],
+      [
+       16.4,
+       6.0
+      ],
+      [
+       16.4,
+       6.3
+      ],
+      [
+       16.986,
+       6.3
+      ],
+      [
+       17.0,
+       6.314
+      ],
+      [
+       17.0,
+       8.8
+      ],
+      [
+       17.3,
+       8.8
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       17.3,
+       10.0
+      ],
+      [
+       17.3,
+       9.7
+      ],
+      [
+       10.714,
+       9.7
+      ],
+      [
+       10.7,
+       9.686
+      ],
+      [
+       10.7,
+       6.314
+      ],
+      [
+       10.714,
+       6.3
+      ],
+      [
+       15.5,
+       6.3
+      ],
+      [
+       15.5,
+       6.0
+      ],
+      [
+       8.9,
+       6.0
+      ],
+      [
+       8.9,
+       6.3
+      ],
+      [
+       10.386,
+       6.3
+      ],
+      [
+       10.4,
+       6.314
+      ],
+      [
+       10.4,
+       9.686
+      ],
+      [
+       10.386,
+       9.7
+      ],
+      [
+       8.7,
+       9.7
+      ],
+      [
+       8.7,
+       10.0
+      ],
+      [
+       17.3,
+       10.0
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       7.5,
+       10.0
+      ],
+      [
+       7.5,
+       9.7
+      ],
+      [
+       6.014,
+       9.7
+      ],
+      [
+       6.0,
+       9.686
+      ],
+      [
+       6.0,
+       8.5
+      ],
+      [
+       5.7,
+       8.5
+      ],
+      [
+       5.7,
+       9.686
+      ],
+      [
+       5.686,
+       9.7
+      ],
+      [
+       3.7,
+       9.7
+      ],
+      [
+       3.7,
+       10.0
+      ],
+      [
+       7.5,
+       10.0
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       2.5,
+       10.0
+      ],
+      [
+       2.5,
+       9.7
+      ],
+      [
+       1.314,
+       9.7
+      ],
+      [
+       1.3,
+       9.686
+      ],
+      [
+       1.3,
+       6.314
+      ],
+      [
+       1.314,
+       6.3
+      ],
+      [
+       3.0,
+       6.3
+      ],
+      [
+       3.0,
+       6.0
+      ],
+      [
+       1.314,
+       6.0
+      ],
+      [
+       1.3,
+       5.986
+      ],
+      [
+       1.3,
+       4.514
+      ],
+      [
+       1.314,
+       4.5
+      ],
+      [
+       5.0,
+       4.5
+      ],
+      [
+       5.0,
+       4.2
+      ],
+      [
+       1.314,
+       4.2
+      ],
+      [
+       1.3,
+       4.186
+      ],
+      [
+       1.3,
+       1.314
+      ],
+      [
+       1.314,
+       1.3
+      ],
+      [
+       2.5,
+       1.3
+      ],
+      [
+       2.5,
+       1.0
+      ],
+      [
+       1.0,
+       1.0
+      ],
+      [
+       1.0,
+       10.0
+      ],
+      [
+       2.5,
+       10.0
+      ]
+     ]
+    ]
+   }
+  ],
+  "wall_rejects": [],
+  "wall_bridges": [],
+  "separations": [],
+  "wall_construction": {
+   "method": "heuristic",
+   "rule": "massive if at least 0.17 m thick, or drawn solid (>= 60% ink in the wall core) and at least 0.1 m thick; otherwise lightweight",
+   "massive_segments": 24,
+   "lightweight_segments": 0,
+   "massive_pieces_without_centre_line": 0,
+   "massive_area": 24.97,
+   "wall_area": 24.97,
+   "note": "thickness and fill are measured on the sheet; the wall material is not known. Check before use."
+  },
+  "massive_wall_polygons": [
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       15.3,
+       4.0
+      ],
+      [
+       15.3,
+       2.7
+      ],
+      [
+       14.0,
+       2.7
+      ],
+      [
+       14.0,
+       4.0
+      ],
+      [
+       15.3,
+       4.0
+      ]
+     ],
+     [
+      [
+       14.24,
+       2.954
+      ],
+      [
+       14.254,
+       2.94
+      ],
+      [
+       15.026,
+       2.94
+      ],
+      [
+       15.04,
+       2.954
+      ],
+      [
+       15.04,
+       3.746
+      ],
+      [
+       15.026,
+       3.76
+      ],
+      [
+       14.254,
+       3.76
+      ],
+      [
+       14.24,
+       3.746
+      ],
+      [
+       14.24,
+       2.954
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       11.0,
+       4.5
+      ],
+      [
+       11.0,
+       4.2
+      ],
+      [
+       8.314,
+       4.2
+      ],
+      [
+       8.3,
+       4.186
+      ],
+      [
+       8.3,
+       3.6
+      ],
+      [
+       8.0,
+       3.6
+      ],
+      [
+       8.0,
+       4.186
+      ],
+      [
+       7.986,
+       4.2
+      ],
+      [
+       5.9,
+       4.2
+      ],
+      [
+       5.9,
+       4.5
+      ],
+      [
+       11.0,
+       4.5
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       6.0,
+       7.5
+      ],
+      [
+       6.0,
+       6.314
+      ],
+      [
+       6.014,
+       6.3
+      ],
+      [
+       8.0,
+       6.3
+      ],
+      [
+       8.0,
+       6.0
+      ],
+      [
+       3.9,
+       6.0
+      ],
+      [
+       3.9,
+       6.3
+      ],
+      [
+       5.686,
+       6.3
+      ],
+      [
+       5.7,
+       6.314
+      ],
+      [
+       5.7,
+       7.5
+      ],
+      [
+       6.0,
+       7.5
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       17.3,
+       8.8
+      ],
+      [
+       17.3,
+       1.0
+      ],
+      [
+       3.4,
+       1.0
+      ],
+      [
+       3.4,
+       1.3
+      ],
+      [
+       7.986,
+       1.3
+      ],
+      [
+       8.0,
+       1.314
+      ],
+      [
+       8.0,
+       2.6
+      ],
+      [
+       8.3,
+       2.6
+      ],
+      [
+       8.3,
+       1.314
+      ],
+      [
+       8.314,
+       1.3
+      ],
+      [
+       16.986,
+       1.3
+      ],
+      [
+       17.0,
+       1.314
+      ],
+      [
+       17.0,
+       4.186
+      ],
+      [
+       16.986,
+       4.2
+      ],
+      [
+       11.9,
+       4.2
+      ],
+      [
+       11.9,
+       4.5
+      ],
+      [
+       16.986,
+       4.5
+      ],
+      [
+       17.0,
+       4.514
+      ],
+      [
+       17.0,
+       5.986
+      ],
+      [
+       16.986,
+       6.0
+      ],
+      [
+       16.4,
+       6.0
+      ],
+      [
+       16.4,
+       6.3
+      ],
+      [
+       16.986,
+       6.3
+      ],
+      [
+       17.0,
+       6.314
+      ],
+      [
+       17.0,
+       8.8
+      ],
+      [
+       17.3,
+       8.8
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       17.3,
+       10.0
+      ],
+      [
+       17.3,
+       9.7
+      ],
+      [
+       10.714,
+       9.7
+      ],
+      [
+       10.7,
+       9.686
+      ],
+      [
+       10.7,
+       6.314
+      ],
+      [
+       10.714,
+       6.3
+      ],
+      [
+       15.5,
+       6.3
+      ],
+      [
+       15.5,
+       6.0
+      ],
+      [
+       8.9,
+       6.0
+      ],
+      [
+       8.9,
+       6.3
+      ],
+      [
+       10.386,
+       6.3
+      ],
+      [
+       10.4,
+       6.314
+      ],
+      [
+       10.4,
+       9.686
+      ],
+      [
+       10.386,
+       9.7
+      ],
+      [
+       8.7,
+       9.7
+      ],
+      [
+       8.7,
+       10.0
+      ],
+      [
+       17.3,
+       10.0
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       7.5,
+       10.0
+      ],
+      [
+       7.5,
+       9.7
+      ],
+      [
+       6.014,
+       9.7
+      ],
+      [
+       6.0,
+       9.686
+      ],
+      [
+       6.0,
+       8.5
+      ],
+      [
+       5.7,
+       8.5
+      ],
+      [
+       5.7,
+       9.686
+      ],
+      [
+       5.686,
+       9.7
+      ],
+      [
+       3.7,
+       9.7
+      ],
+      [
+       3.7,
+       10.0
+      ],
+      [
+       7.5,
+       10.0
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       2.5,
+       10.0
+      ],
+      [
+       2.5,
+       9.7
+      ],
+      [
+       1.314,
+       9.7
+      ],
+      [
+       1.3,
+       9.686
+      ],
+      [
+       1.3,
+       6.314
+      ],
+      [
+       1.314,
+       6.3
+      ],
+      [
+       3.0,
+       6.3
+      ],
+      [
+       3.0,
+       6.0
+      ],
+      [
+       1.314,
+       6.0
+      ],
+      [
+       1.3,
+       5.986
+      ],
+      [
+       1.3,
+       4.514
+      ],
+      [
+       1.314,
+       4.5
+      ],
+      [
+       5.0,
+       4.5
+      ],
+      [
+       5.0,
+       4.2
+      ],
+      [
+       1.314,
+       4.2
+      ],
+      [
+       1.3,
+       4.186
+      ],
+      [
+       1.3,
+       1.314
+      ],
+      [
+       1.314,
+       1.3
+      ],
+      [
+       2.5,
+       1.3
+      ],
+      [
+       2.5,
+       1.0
+      ],
+      [
+       1.0,
+       1.0
+      ],
+      [
+       1.0,
+       10.0
+      ],
+      [
+       2.5,
+       10.0
+      ]
+     ]
+    ]
+   }
+  ],
+  "openings": [
+   {
+    "id": "o000",
+    "kind": "door",
+    "host": "w006",
+    "exterior": false,
+    "width": 0.88,
+    "connects": [
+     "r002",
+     "r000"
+    ],
+    "source": "segmenter",
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        3.0,
+        6.02
+       ],
+       [
+        3.0,
+        6.3
+       ],
+       [
+        3.88,
+        6.3
+       ],
+       [
+        3.88,
+        6.02
+       ],
+       [
+        3.0,
+        6.02
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "o001",
+    "kind": "door",
+    "host": "w008",
+    "exterior": false,
+    "width": 0.88,
+    "connects": [
+     "r002",
+     "r001"
+    ],
+    "source": "segmenter",
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        8.0,
+        6.02
+       ],
+       [
+        8.0,
+        6.3
+       ],
+       [
+        8.88,
+        6.3
+       ],
+       [
+        8.88,
+        6.02
+       ],
+       [
+        8.0,
+        6.02
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "o002",
+    "kind": "door",
+    "host": "w009",
+    "exterior": false,
+    "width": 0.88,
+    "connects": [
+     "r002",
+     "r007"
+    ],
+    "source": "segmenter",
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        15.5,
+        6.02
+       ],
+       [
+        15.5,
+        6.3
+       ],
+       [
+        16.38,
+        6.3
+       ],
+       [
+        16.38,
+        6.02
+       ],
+       [
+        15.5,
+        6.02
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "o003",
+    "kind": "door",
+    "host": "w012",
+    "exterior": false,
+    "width": 0.88,
+    "connects": [
+     "r003",
+     "r002"
+    ],
+    "source": "segmenter",
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        5.0,
+        4.22
+       ],
+       [
+        5.0,
+        4.5
+       ],
+       [
+        5.88,
+        4.5
+       ],
+       [
+        5.88,
+        4.22
+       ],
+       [
+        5.0,
+        4.22
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "o004",
+    "kind": "door",
+    "host": "w015",
+    "exterior": false,
+    "width": 0.88,
+    "connects": [
+     "r004",
+     "r002"
+    ],
+    "source": "segmenter",
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        11.0,
+        4.22
+       ],
+       [
+        11.0,
+        4.5
+       ],
+       [
+        11.88,
+        4.5
+       ],
+       [
+        11.88,
+        4.22
+       ],
+       [
+        11.0,
+        4.22
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "o005",
+    "kind": "exterior door",
+    "host": "w014",
+    "exterior": true,
+    "width": 0.88,
+    "connects": [
+     "outside",
+     "r003"
+    ],
+    "source": "segmenter",
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        2.5,
+        1.02
+       ],
+       [
+        2.5,
+        1.3
+       ],
+       [
+        3.38,
+        1.3
+       ],
+       [
+        3.38,
+        1.02
+       ],
+       [
+        2.5,
+        1.02
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "o006",
+    "kind": "window",
+    "host": "w000",
+    "exterior": true,
+    "width": 1.18,
+    "connects": null,
+    "source": "segmenter",
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        2.5,
+        9.72
+       ],
+       [
+        2.5,
+        10.0
+       ],
+       [
+        3.68,
+        10.0
+       ],
+       [
+        3.68,
+        9.72
+       ],
+       [
+        2.5,
+        9.72
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "o007",
+    "kind": "window",
+    "host": "w003",
+    "exterior": true,
+    "width": 1.18,
+    "connects": null,
+    "source": "segmenter",
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        7.5,
+        9.72
+       ],
+       [
+        7.5,
+        10.0
+       ],
+       [
+        8.68,
+        10.0
+       ],
+       [
+        8.68,
+        9.72
+       ],
+       [
+        7.5,
+        9.72
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "o008",
+    "kind": "interior opening",
+    "host": "w002",
+    "exterior": false,
+    "width": 0.98,
+    "connects": [
+     "r001",
+     "r000"
+    ],
+    "source": "segmenter",
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        5.7,
+        7.52
+       ],
+       [
+        5.7,
+        8.5
+       ],
+       [
+        5.98,
+        8.5
+       ],
+       [
+        5.98,
+        7.52
+       ],
+       [
+        5.7,
+        7.52
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "o009",
+    "kind": "passage",
+    "host": "w018",
+    "exterior": false,
+    "width": 1.0,
+    "connects": [
+     "r003",
+     "r004"
+    ],
+    "source": "wall gap",
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        8.083,
+        3.581
+       ],
+       [
+        8.143,
+        3.579
+       ],
+       [
+        8.103,
+        2.58
+       ],
+       [
+        8.043,
+        2.582
+       ],
+       [
+        8.083,
+        3.581
+       ]
+      ]
+     ]
+    }
+   }
+  ],
+  "stairs": [
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       14.7,
+       9.4
+      ],
+      [
+       14.7,
+       7.0
+      ],
+      [
+       13.7,
+       7.0
+      ],
+      [
+       13.7,
+       9.4
+      ],
+      [
+       14.7,
+       9.4
+      ]
+     ]
+    ]
+   },
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       12.5,
+       9.4
+      ],
+      [
+       12.5,
+       7.0
+      ],
+      [
+       11.5,
+       7.0
+      ],
+      [
+       11.5,
+       9.4
+      ],
+      [
+       12.5,
+       9.4
+      ]
+     ]
+    ]
+   }
+  ],
+  "structure": [
+   {
+    "kind": "column",
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        4.3,
+        3.5
+       ],
+       [
+        4.3,
+        3.2
+       ],
+       [
+        4.0,
+        3.2
+       ],
+       [
+        4.0,
+        3.5
+       ],
+       [
+        4.3,
+        3.5
+       ]
+      ]
+     ]
+    }
+   }
+  ],
+  "voids": [
+   {
+    "id": "v000",
+    "kind": "stair eye",
+    "label": "LUFTRAUM",
+    "area": 2.91,
+    "gf_deducted": false,
+    "source": "void label on the sheet",
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        12.5,
+        7.014
+       ],
+       [
+        12.5,
+        9.4
+       ],
+       [
+        13.7,
+        9.4
+       ],
+       [
+        13.7,
+        7.014
+       ],
+       [
+        13.734,
+        6.98
+       ],
+       [
+        12.466,
+        6.98
+       ],
+       [
+        12.5,
+        7.014
+       ]
+      ]
+     ]
+    }
+   }
+  ],
+  "stamps": [
+   {
+    "room": "r000",
+    "name": "Büro",
+    "name_raw": "Büro",
+    "area": 15.0,
+    "number": null,
+    "aoid": null,
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        4.2,
+        7.64
+       ],
+       [
+        3.0,
+        7.64
+       ],
+       [
+        3.0,
+        8.2
+       ],
+       [
+        4.2,
+        8.2
+       ],
+       [
+        4.2,
+        7.64
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "room": "r001",
+    "name": "Sitzungszimmer",
+    "name_raw": "Sitzungszimmer",
+    "area": 14.5,
+    "number": null,
+    "aoid": "2051.ZZ.01.012",
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        9.2,
+        7.24
+       ],
+       [
+        7.6,
+        7.24
+       ],
+       [
+        7.6,
+        8.4
+       ],
+       [
+        9.2,
+        8.4
+       ],
+       [
+        9.2,
+        7.24
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "room": "r006",
+    "name": "Treppe",
+    "name_raw": "Treppe",
+    "area": null,
+    "number": null,
+    "aoid": null,
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        13.6,
+        8.96
+       ],
+       [
+        12.6,
+        8.96
+       ],
+       [
+        12.6,
+        9.2
+       ],
+       [
+        13.6,
+        9.2
+       ],
+       [
+        13.6,
+        8.96
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "room": "r007",
+    "name": "Halle",
+    "name_raw": "Halle",
+    "area": null,
+    "number": null,
+    "aoid": null,
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        16.4,
+        8.24
+       ],
+       [
+        15.2,
+        8.24
+       ],
+       [
+        15.2,
+        8.5
+       ],
+       [
+        16.4,
+        8.5
+       ],
+       [
+        16.4,
+        8.24
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "room": "r002",
+    "name": "Korridor",
+    "name_raw": "Korridor",
+    "area": null,
+    "number": null,
+    "aoid": null,
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        9.7,
+        5.24
+       ],
+       [
+        8.5,
+        5.24
+       ],
+       [
+        8.5,
+        5.5
+       ],
+       [
+        9.7,
+        5.5
+       ],
+       [
+        9.7,
+        5.24
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "room": "r003",
+    "name": "Archiv",
+    "name_raw": "Archiv",
+    "area": 19.4,
+    "number": null,
+    "aoid": null,
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        3.2,
+        2.44
+       ],
+       [
+        2.0,
+        2.44
+       ],
+       [
+        2.0,
+        3.0
+       ],
+       [
+        3.2,
+        3.0
+       ],
+       [
+        3.2,
+        2.44
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "room": "r004",
+    "name": "Lager",
+    "name_raw": "Lager",
+    "area": 23.5,
+    "number": null,
+    "aoid": null,
+    "source": "pdf",
+    "conf": 1.0,
+    "box": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        11.2,
+        2.94
+       ],
+       [
+        10.0,
+        2.94
+       ],
+       [
+        10.0,
+        3.5
+       ],
+       [
+        11.2,
+        3.5
+       ],
+       [
+        11.2,
+        2.94
+       ]
+      ]
+     ]
+    }
+   }
+  ],
+  "fragments": [
+   {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       14.894,
+       3.76
+      ],
+      [
+       14.914,
+       3.74
+      ],
+      [
+       14.974,
+       3.74
+      ],
+      [
+       15.018,
+       3.696
+      ],
+      [
+       15.04,
+       3.652
+      ],
+      [
+       15.04,
+       3.047
+      ],
+      [
+       14.975,
+       2.96
+      ],
+      [
+       14.914,
+       2.96
+      ],
+      [
+       14.894,
+       2.94
+      ],
+      [
+       14.386,
+       2.94
+      ],
+      [
+       14.366,
+       2.96
+      ],
+      [
+       14.306,
+       2.96
+      ],
+      [
+       14.262,
+       3.004
+      ],
+      [
+       14.24,
+       3.048
+      ],
+      [
+       14.24,
+       3.653
+      ],
+      [
+       14.305,
+       3.74
+      ],
+      [
+       14.366,
+       3.74
+      ],
+      [
+       14.386,
+       3.76
+      ],
+      [
+       14.894,
+       3.76
+      ]
+     ]
+    ]
+   }
+  ],
+  "rooms": [
+   {
+    "id": "r000",
+    "name": "Büro",
+    "usage": "room",
+    "number": null,
+    "aoid": null,
+    "aoids_read": [],
+    "area_stamp": 15.0,
+    "area_deviation_pct": -0.4,
+    "area_basis": "net",
+    "area": 14.94,
+    "area_net": 14.94,
+    "area_gross": 17.39,
+    "gross_basis": "wall axes",
+    "area_polygon": 14.94,
+    "area_net_simple": 14.93,
+    "face_flags": [],
+    "geometry_gross": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        5.85,
+        6.15
+       ],
+       [
+        1.15,
+        6.15
+       ],
+       [
+        1.15,
+        9.85
+       ],
+       [
+        5.85,
+        9.85
+       ],
+       [
+        5.85,
+        6.15
+       ]
+      ]
+     ]
+    },
+    "geometry_simple": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        5.7,
+        9.7
+       ],
+       [
+        5.7,
+        6.3
+       ],
+       [
+        1.31,
+        6.3
+       ],
+       [
+        1.31,
+        9.7
+       ],
+       [
+        5.7,
+        9.7
+       ]
+      ]
+     ]
+    },
+    "stair_flights": [],
+    "name_raw": "Büro",
+    "confidence": "high",
+    "reasons": [
+     "stamp area matches"
+    ],
+    "small_region": false,
+    "review": null,
+    "aoid_export": {
+     "written": false,
+     "reason": "no AOID read on the sheet: left empty, to be matched from SAP, never generated"
+    },
+    "neighbours": [
+     "r002"
+    ],
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        5.554,
+        9.7
+       ],
+       [
+        5.574,
+        9.68
+       ],
+       [
+        5.635,
+        9.68
+       ],
+       [
+        5.7,
+        9.593
+       ],
+       [
+        5.7,
+        6.408
+       ],
+       [
+        5.678,
+        6.364
+       ],
+       [
+        5.634,
+        6.32
+       ],
+       [
+        5.574,
+        6.32
+       ],
+       [
+        5.554,
+        6.3
+       ],
+       [
+        1.446,
+        6.3
+       ],
+       [
+        1.426,
+        6.32
+       ],
+       [
+        1.365,
+        6.32
+       ],
+       [
+        1.3,
+        6.407
+       ],
+       [
+        1.3,
+        9.593
+       ],
+       [
+        1.365,
+        9.68
+       ],
+       [
+        1.426,
+        9.68
+       ],
+       [
+        1.446,
+        9.7
+       ],
+       [
+        5.554,
+        9.7
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "r001",
+    "name": "Sitzungszimmer",
+    "usage": "room",
+    "number": null,
+    "aoid": "2051.ZZ.01.012",
+    "aoids_read": [
+     "2051.ZZ.01.012"
+    ],
+    "area_stamp": 14.5,
+    "area_deviation_pct": 3.0,
+    "area_basis": "net",
+    "area": 14.94,
+    "area_net": 14.94,
+    "area_gross": 17.39,
+    "gross_basis": "wall axes",
+    "area_polygon": 14.94,
+    "area_net_simple": 14.96,
+    "face_flags": [],
+    "geometry_gross": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        10.55,
+        9.85
+       ],
+       [
+        10.55,
+        6.15
+       ],
+       [
+        5.85,
+        6.15
+       ],
+       [
+        5.85,
+        9.85
+       ],
+       [
+        10.55,
+        9.85
+       ]
+      ]
+     ]
+    },
+    "geometry_simple": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        10.4,
+        6.3
+       ],
+       [
+        6.0,
+        6.3
+       ],
+       [
+        6.0,
+        9.7
+       ],
+       [
+        10.4,
+        9.7
+       ],
+       [
+        10.4,
+        6.3
+       ]
+      ]
+     ]
+    },
+    "stair_flights": [],
+    "name_raw": "Sitzungszimmer",
+    "confidence": "high",
+    "reasons": [
+     "stamp area matches"
+    ],
+    "small_region": false,
+    "review": null,
+    "aoid_export": {
+     "written": true,
+     "aoid": "2051.ZZ.01.012"
+    },
+    "neighbours": [
+     "r002"
+    ],
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        10.254,
+        9.7
+       ],
+       [
+        10.274,
+        9.68
+       ],
+       [
+        10.335,
+        9.68
+       ],
+       [
+        10.4,
+        9.593
+       ],
+       [
+        10.4,
+        6.408
+       ],
+       [
+        10.378,
+        6.364
+       ],
+       [
+        10.334,
+        6.32
+       ],
+       [
+        10.274,
+        6.32
+       ],
+       [
+        10.254,
+        6.3
+       ],
+       [
+        6.146,
+        6.3
+       ],
+       [
+        6.126,
+        6.32
+       ],
+       [
+        6.065,
+        6.32
+       ],
+       [
+        6.0,
+        6.407
+       ],
+       [
+        6.0,
+        9.593
+       ],
+       [
+        6.065,
+        9.68
+       ],
+       [
+        6.126,
+        9.68
+       ],
+       [
+        6.146,
+        9.7
+       ],
+       [
+        10.254,
+        9.7
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "r002",
+    "name": "Korridor",
+    "usage": "circulation",
+    "number": null,
+    "aoid": null,
+    "aoids_read": [],
+    "area_stamp": null,
+    "area_deviation_pct": null,
+    "area_basis": null,
+    "area": 23.53,
+    "area_net": 23.53,
+    "area_gross": 28.8,
+    "gross_basis": "wall axes",
+    "area_polygon": 23.53,
+    "area_net_simple": 23.52,
+    "face_flags": [],
+    "geometry_gross": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        17.15,
+        4.35
+       ],
+       [
+        1.15,
+        4.35
+       ],
+       [
+        1.15,
+        6.15
+       ],
+       [
+        17.15,
+        6.15
+       ],
+       [
+        17.15,
+        4.35
+       ]
+      ]
+     ]
+    },
+    "geometry_simple": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        1.31,
+        4.5
+       ],
+       [
+        1.31,
+        6.0
+       ],
+       [
+        16.99,
+        6.0
+       ],
+       [
+        16.99,
+        4.5
+       ],
+       [
+        1.31,
+        4.5
+       ]
+      ]
+     ]
+    },
+    "stair_flights": [],
+    "name_raw": "Korridor",
+    "confidence": "medium",
+    "reasons": [
+     "no contradiction found"
+    ],
+    "small_region": false,
+    "review": null,
+    "aoid_export": {
+     "written": false,
+     "reason": "no AOID read on the sheet: left empty, to be matched from SAP, never generated"
+    },
+    "neighbours": [
+     "r000",
+     "r001",
+     "r003",
+     "r004",
+     "r007"
+    ],
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        16.854,
+        6.0
+       ],
+       [
+        16.874,
+        5.98
+       ],
+       [
+        16.935,
+        5.98
+       ],
+       [
+        17.0,
+        5.893
+       ],
+       [
+        17.0,
+        4.607
+       ],
+       [
+        16.935,
+        4.52
+       ],
+       [
+        16.874,
+        4.52
+       ],
+       [
+        16.854,
+        4.5
+       ],
+       [
+        1.446,
+        4.5
+       ],
+       [
+        1.426,
+        4.52
+       ],
+       [
+        1.365,
+        4.52
+       ],
+       [
+        1.3,
+        4.607
+       ],
+       [
+        1.3,
+        5.893
+       ],
+       [
+        1.365,
+        5.98
+       ],
+       [
+        1.426,
+        5.98
+       ],
+       [
+        1.446,
+        6.0
+       ],
+       [
+        16.854,
+        6.0
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "r003",
+    "name": "Archiv",
+    "usage": "storage",
+    "number": null,
+    "aoid": null,
+    "aoids_read": [],
+    "area_stamp": 19.4,
+    "area_deviation_pct": -0.2,
+    "area_basis": "net",
+    "area": 19.36,
+    "area_net": 19.36,
+    "area_gross": 22.27,
+    "gross_basis": "wall axes",
+    "area_polygon": 19.36,
+    "area_net_simple": 19.31,
+    "face_flags": [],
+    "geometry_gross": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        8.11,
+        3.58
+       ],
+       [
+        8.07,
+        2.58
+       ],
+       [
+        8.15,
+        1.15
+       ],
+       [
+        1.15,
+        1.15
+       ],
+       [
+        1.15,
+        4.35
+       ],
+       [
+        8.15,
+        4.35
+       ],
+       [
+        8.11,
+        3.58
+       ]
+      ]
+     ]
+    },
+    "geometry_simple": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        8.07,
+        2.581
+       ],
+       [
+        7.913,
+        2.572
+       ],
+       [
+        7.982,
+        1.3
+       ],
+       [
+        1.31,
+        1.3
+       ],
+       [
+        1.31,
+        4.2
+       ],
+       [
+        7.983,
+        4.2
+       ],
+       [
+        7.953,
+        3.588
+       ],
+       [
+        8.11,
+        3.58
+       ],
+       [
+        8.07,
+        2.581
+       ]
+      ],
+      [
+       [
+        4.3,
+        3.5
+       ],
+       [
+        4.0,
+        3.5
+       ],
+       [
+        4.0,
+        3.2
+       ],
+       [
+        4.3,
+        3.2
+       ],
+       [
+        4.3,
+        3.5
+       ]
+      ]
+     ]
+    },
+    "stair_flights": [],
+    "name_raw": "Archiv",
+    "confidence": "high",
+    "reasons": [
+     "stamp area matches"
+    ],
+    "small_region": false,
+    "review": null,
+    "aoid_export": {
+     "written": false,
+     "reason": "no AOID read on the sheet: left empty, to be matched from SAP, never generated"
+    },
+    "neighbours": [
+     "outside",
+     "r002",
+     "r004"
+    ],
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        7.854,
+        4.2
+       ],
+       [
+        7.874,
+        4.18
+       ],
+       [
+        7.935,
+        4.18
+       ],
+       [
+        8.0,
+        4.093
+       ],
+       [
+        8.0,
+        3.613
+       ],
+       [
+        8.06,
+        3.533
+       ],
+       [
+        8.06,
+        3.346
+       ],
+       [
+        8.04,
+        3.326
+       ],
+       [
+        8.04,
+        2.846
+       ],
+       [
+        8.02,
+        2.826
+       ],
+       [
+        8.02,
+        2.606
+       ],
+       [
+        8.0,
+        2.586
+       ],
+       [
+        8.0,
+        1.407
+       ],
+       [
+        7.935,
+        1.32
+       ],
+       [
+        7.874,
+        1.32
+       ],
+       [
+        7.854,
+        1.3
+       ],
+       [
+        1.446,
+        1.3
+       ],
+       [
+        1.426,
+        1.32
+       ],
+       [
+        1.365,
+        1.32
+       ],
+       [
+        1.3,
+        1.407
+       ],
+       [
+        1.3,
+        4.093
+       ],
+       [
+        1.365,
+        4.18
+       ],
+       [
+        1.426,
+        4.18
+       ],
+       [
+        1.446,
+        4.2
+       ],
+       [
+        7.854,
+        4.2
+       ]
+      ],
+      [
+       [
+        4.0,
+        3.214
+       ],
+       [
+        4.014,
+        3.2
+       ],
+       [
+        4.286,
+        3.2
+       ],
+       [
+        4.3,
+        3.214
+       ],
+       [
+        4.3,
+        3.486
+       ],
+       [
+        4.286,
+        3.5
+       ],
+       [
+        4.014,
+        3.5
+       ],
+       [
+        4.0,
+        3.486
+       ],
+       [
+        4.0,
+        3.214
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "r004",
+    "name": "Lager",
+    "usage": "storage",
+    "number": null,
+    "aoid": null,
+    "aoids_read": [],
+    "area_stamp": 23.5,
+    "area_deviation_pct": -0.4,
+    "area_basis": "net",
+    "area": 23.41,
+    "area_net": 23.41,
+    "area_gross": 27.79,
+    "gross_basis": "wall axes",
+    "area_polygon": 23.41,
+    "area_net_simple": 23.78,
+    "face_flags": [],
+    "geometry_gross": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        17.15,
+        1.15
+       ],
+       [
+        8.15,
+        1.15
+       ],
+       [
+        8.07,
+        2.58
+       ],
+       [
+        8.11,
+        3.58
+       ],
+       [
+        8.15,
+        4.35
+       ],
+       [
+        17.15,
+        4.35
+       ],
+       [
+        17.15,
+        1.15
+       ]
+      ],
+      [
+       [
+        14.11,
+        2.81
+       ],
+       [
+        15.17,
+        2.81
+       ],
+       [
+        15.17,
+        3.89
+       ],
+       [
+        14.11,
+        3.89
+       ],
+       [
+        14.11,
+        2.81
+       ]
+      ]
+     ]
+    },
+    "geometry_simple": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        8.11,
+        3.58
+       ],
+       [
+        8.273,
+        3.572
+       ],
+       [
+        8.303,
+        4.2
+       ],
+       [
+        16.99,
+        4.2
+       ],
+       [
+        16.99,
+        1.3
+       ],
+       [
+        8.302,
+        1.3
+       ],
+       [
+        8.233,
+        2.59
+       ],
+       [
+        8.07,
+        2.581
+       ],
+       [
+        8.11,
+        3.58
+       ]
+      ],
+      [
+       [
+        13.99,
+        2.81
+       ],
+       [
+        14.11,
+        2.81
+       ],
+       [
+        14.11,
+        2.69
+       ],
+       [
+        15.17,
+        2.69
+       ],
+       [
+        15.17,
+        2.81
+       ],
+       [
+        15.31,
+        2.81
+       ],
+       [
+        15.31,
+        3.89
+       ],
+       [
+        15.17,
+        3.89
+       ],
+       [
+        15.17,
+        4.01
+       ],
+       [
+        14.11,
+        4.01
+       ],
+       [
+        14.11,
+        3.89
+       ],
+       [
+        13.99,
+        3.89
+       ],
+       [
+        13.99,
+        2.81
+       ]
+      ]
+     ]
+    },
+    "stair_flights": [],
+    "name_raw": "Lager",
+    "confidence": "high",
+    "reasons": [
+     "stamp area matches"
+    ],
+    "small_region": false,
+    "review": null,
+    "aoid_export": {
+     "written": false,
+     "reason": "no AOID read on the sheet: left empty, to be matched from SAP, never generated"
+    },
+    "neighbours": [
+     "r002",
+     "r003"
+    ],
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        13.874,
+        4.2
+       ],
+       [
+        13.894,
+        4.18
+       ],
+       [
+        13.955,
+        4.18
+       ],
+       [
+        14.02,
+        4.093
+       ],
+       [
+        14.02,
+        4.006
+       ],
+       [
+        14.0,
+        3.986
+       ],
+       [
+        14.0,
+        2.714
+       ],
+       [
+        14.014,
+        2.7
+       ],
+       [
+        15.286,
+        2.7
+       ],
+       [
+        15.3,
+        2.714
+       ],
+       [
+        15.3,
+        3.986
+       ],
+       [
+        15.28,
+        4.006
+       ],
+       [
+        15.28,
+        4.093
+       ],
+       [
+        15.345,
+        4.18
+       ],
+       [
+        15.406,
+        4.18
+       ],
+       [
+        15.426,
+        4.2
+       ],
+       [
+        16.854,
+        4.2
+       ],
+       [
+        16.874,
+        4.18
+       ],
+       [
+        16.935,
+        4.18
+       ],
+       [
+        17.0,
+        4.093
+       ],
+       [
+        17.0,
+        1.407
+       ],
+       [
+        16.935,
+        1.32
+       ],
+       [
+        16.874,
+        1.32
+       ],
+       [
+        16.854,
+        1.3
+       ],
+       [
+        8.446,
+        1.3
+       ],
+       [
+        8.426,
+        1.32
+       ],
+       [
+        8.365,
+        1.32
+       ],
+       [
+        8.3,
+        1.407
+       ],
+       [
+        8.3,
+        2.586
+       ],
+       [
+        8.285,
+        2.601
+       ],
+       [
+        8.185,
+        2.621
+       ],
+       [
+        8.142,
+        2.664
+       ],
+       [
+        8.12,
+        2.708
+       ],
+       [
+        8.12,
+        2.834
+       ],
+       [
+        8.14,
+        2.854
+       ],
+       [
+        8.14,
+        3.334
+       ],
+       [
+        8.16,
+        3.354
+       ],
+       [
+        8.16,
+        3.513
+       ],
+       [
+        8.225,
+        3.6
+       ],
+       [
+        8.286,
+        3.6
+       ],
+       [
+        8.3,
+        3.614
+       ],
+       [
+        8.3,
+        4.093
+       ],
+       [
+        8.365,
+        4.18
+       ],
+       [
+        8.426,
+        4.18
+       ],
+       [
+        8.446,
+        4.2
+       ],
+       [
+        13.874,
+        4.2
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "r005",
+    "name": null,
+    "usage": "unknown",
+    "number": null,
+    "aoid": null,
+    "aoids_read": [],
+    "area_stamp": null,
+    "area_deviation_pct": null,
+    "area_basis": null,
+    "area": 0.63,
+    "area_net": 0.63,
+    "area_gross": 1.14,
+    "gross_basis": "wall axes",
+    "area_polygon": 0.63,
+    "area_net_simple": 0.67,
+    "face_flags": [],
+    "geometry_gross": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        15.17,
+        2.81
+       ],
+       [
+        14.11,
+        2.81
+       ],
+       [
+        14.11,
+        3.89
+       ],
+       [
+        15.17,
+        3.89
+       ],
+       [
+        15.17,
+        2.81
+       ]
+      ]
+     ]
+    },
+    "geometry_simple": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        15.03,
+        3.77
+       ],
+       [
+        15.03,
+        2.93
+       ],
+       [
+        14.23,
+        2.93
+       ],
+       [
+        14.23,
+        3.77
+       ],
+       [
+        15.03,
+        3.77
+       ]
+      ]
+     ]
+    },
+    "stair_flights": [],
+    "name_raw": null,
+    "confidence": "low",
+    "reasons": [
+     "no stamp",
+     "very small",
+     "small unlabelled region kept for review (a shaft?)"
+    ],
+    "small_region": true,
+    "review": {
+     "flag": "small unlabelled region",
+     "guess": "shaft",
+     "width": 0.8,
+     "openings": [],
+     "reason": "0.63 m² without a stamp, no door, window or passage on its outline: a shaft, chimney, closed cavity, or a niche closed off where walls nearly meet. Kept as a room because every room of 0.25 m² or more needs a polygon (CAD-Richtlinie 5.8); not part of the circulation graph; check it on the sheet"
+    },
+    "aoid_export": {
+     "written": false,
+     "reason": "no AOID read on the sheet: left empty, to be matched from SAP, never generated"
+    },
+    "neighbours": [],
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        14.894,
+        3.76
+       ],
+       [
+        14.914,
+        3.74
+       ],
+       [
+        14.974,
+        3.74
+       ],
+       [
+        15.018,
+        3.696
+       ],
+       [
+        15.04,
+        3.652
+       ],
+       [
+        15.04,
+        3.047
+       ],
+       [
+        14.975,
+        2.96
+       ],
+       [
+        14.914,
+        2.96
+       ],
+       [
+        14.894,
+        2.94
+       ],
+       [
+        14.386,
+        2.94
+       ],
+       [
+        14.366,
+        2.96
+       ],
+       [
+        14.306,
+        2.96
+       ],
+       [
+        14.262,
+        3.004
+       ],
+       [
+        14.24,
+        3.048
+       ],
+       [
+        14.24,
+        3.653
+       ],
+       [
+        14.305,
+        3.74
+       ],
+       [
+        14.366,
+        3.74
+       ],
+       [
+        14.386,
+        3.76
+       ],
+       [
+        14.894,
+        3.76
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "r006",
+    "name": "Treppe",
+    "usage": "stair",
+    "number": null,
+    "aoid": null,
+    "aoids_read": [],
+    "area_stamp": null,
+    "area_deviation_pct": null,
+    "area_basis": null,
+    "area": 4.89,
+    "area_net": 4.89,
+    "area_gross": 4.89,
+    "gross_basis": "wall axes",
+    "area_polygon": 7.79,
+    "area_net_simple": 2.47,
+    "face_flags": [
+     "face shared: divided along the drawing"
+    ],
+    "geometry_gross": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        11.5,
+        9.4
+       ],
+       [
+        14.72,
+        9.4
+       ],
+       [
+        14.72,
+        6.98
+       ],
+       [
+        11.5,
+        6.98
+       ],
+       [
+        11.5,
+        9.4
+       ]
+      ]
+     ]
+    },
+    "geometry_simple": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        14.72,
+        6.98
+       ],
+       [
+        13.734,
+        6.98
+       ],
+       [
+        13.7,
+        7.014
+       ],
+       [
+        13.7,
+        9.4
+       ],
+       [
+        14.72,
+        9.4
+       ],
+       [
+        14.72,
+        6.98
+       ]
+      ]
+     ]
+    },
+    "stair_flights": [
+     0,
+     1
+    ],
+    "name_raw": "Treppe",
+    "confidence": "medium",
+    "reasons": [
+     "void 2.9 m² (LUFTRAUM) excluded"
+    ],
+    "small_region": false,
+    "review": null,
+    "aoid_export": {
+     "written": false,
+     "reason": "no AOID read on the sheet: left empty, to be matched from SAP, never generated"
+    },
+    "neighbours": [],
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        14.72,
+        9.4
+       ],
+       [
+        14.72,
+        6.98
+       ],
+       [
+        11.5,
+        6.98
+       ],
+       [
+        11.5,
+        9.4
+       ],
+       [
+        14.72,
+        9.4
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "id": "r007",
+    "name": "Halle",
+    "usage": "circulation",
+    "number": null,
+    "aoid": null,
+    "aoids_read": [],
+    "area_stamp": null,
+    "area_deviation_pct": null,
+    "area_basis": null,
+    "area": 5.95,
+    "area_net": 5.95,
+    "area_gross": 5.95,
+    "gross_basis": "wall axes",
+    "area_polygon": 5.95,
+    "area_net_simple": 5.95,
+    "face_flags": [
+     "face shared: divided along the drawing"
+    ],
+    "geometry_gross": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        15.22,
+        9.68
+       ],
+       [
+        16.814,
+        9.68
+       ],
+       [
+        16.834,
+        9.66
+       ],
+       [
+        17.006,
+        9.66
+       ],
+       [
+        17.026,
+        9.68
+       ],
+       [
+        17.24,
+        9.68
+       ],
+       [
+        17.24,
+        8.82
+       ],
+       [
+        16.714,
+        8.84
+       ],
+       [
+        16.68,
+        8.806
+       ],
+       [
+        16.68,
+        8.774
+       ],
+       [
+        16.714,
+        8.74
+       ],
+       [
+        16.98,
+        8.74
+       ],
+       [
+        16.98,
+        6.986
+       ],
+       [
+        16.614,
+        6.64
+       ],
+       [
+        16.374,
+        6.64
+       ],
+       [
+        16.354,
+        6.62
+       ],
+       [
+        15.493,
+        6.62
+       ],
+       [
+        15.393,
+        6.56
+       ],
+       [
+        15.04,
+        6.56
+       ],
+       [
+        15.04,
+        6.974
+       ],
+       [
+        15.06,
+        6.994
+       ],
+       [
+        15.06,
+        9.073
+       ],
+       [
+        15.22,
+        9.373
+       ],
+       [
+        15.22,
+        9.68
+       ]
+      ]
+     ]
+    },
+    "geometry_simple": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        15.06,
+        9.073
+       ],
+       [
+        15.22,
+        9.373
+       ],
+       [
+        15.22,
+        9.68
+       ],
+       [
+        16.814,
+        9.68
+       ],
+       [
+        16.834,
+        9.66
+       ],
+       [
+        17.006,
+        9.66
+       ],
+       [
+        17.026,
+        9.68
+       ],
+       [
+        17.24,
+        9.68
+       ],
+       [
+        17.24,
+        8.82
+       ],
+       [
+        16.714,
+        8.84
+       ],
+       [
+        16.68,
+        8.806
+       ],
+       [
+        16.68,
+        8.774
+       ],
+       [
+        16.714,
+        8.74
+       ],
+       [
+        16.98,
+        8.74
+       ],
+       [
+        16.98,
+        6.986
+       ],
+       [
+        16.614,
+        6.64
+       ],
+       [
+        16.374,
+        6.64
+       ],
+       [
+        16.354,
+        6.62
+       ],
+       [
+        15.493,
+        6.62
+       ],
+       [
+        15.393,
+        6.56
+       ],
+       [
+        15.04,
+        6.56
+       ],
+       [
+        15.04,
+        6.974
+       ],
+       [
+        15.06,
+        6.994
+       ],
+       [
+        15.06,
+        9.073
+       ]
+      ]
+     ]
+    },
+    "stair_flights": [],
+    "name_raw": "Halle",
+    "confidence": "medium",
+    "reasons": [
+     "no contradiction found"
+    ],
+    "small_region": false,
+    "review": null,
+    "aoid_export": {
+     "written": false,
+     "reason": "no AOID read on the sheet: left empty, to be matched from SAP, never generated"
+    },
+    "neighbours": [
+     "r002"
+    ],
+    "geometry": {
+     "type": "Polygon",
+     "coordinates": [
+      [
+       [
+        16.814,
+        9.68
+       ],
+       [
+        16.834,
+        9.66
+       ],
+       [
+        17.006,
+        9.66
+       ],
+       [
+        17.026,
+        9.68
+       ],
+       [
+        17.24,
+        9.68
+       ],
+       [
+        17.24,
+        8.82
+       ],
+       [
+        16.714,
+        8.84
+       ],
+       [
+        16.68,
+        8.806
+       ],
+       [
+        16.68,
+        8.774
+       ],
+       [
+        16.714,
+        8.74
+       ],
+       [
+        16.98,
+        8.74
+       ],
+       [
+        16.98,
+        6.986
+       ],
+       [
+        16.614,
+        6.64
+       ],
+       [
+        16.374,
+        6.64
+       ],
+       [
+        16.354,
+        6.62
+       ],
+       [
+        15.493,
+        6.62
+       ],
+       [
+        15.393,
+        6.56
+       ],
+       [
+        15.04,
+        6.56
+       ],
+       [
+        15.04,
+        6.974
+       ],
+       [
+        15.06,
+        6.994
+       ],
+       [
+        15.06,
+        9.073
+       ],
+       [
+        15.22,
+        9.373
+       ],
+       [
+        15.22,
+        9.68
+       ],
+       [
+        16.814,
+        9.68
+       ]
+      ]
+     ]
+    }
+   }
+  ],
+  "floor": {
+   "gf": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       17.3,
+       10.0
+      ],
+      [
+       17.3,
+       1.0
+      ],
+      [
+       1.0,
+       1.0
+      ],
+      [
+       1.0,
+       10.0
+      ],
+      [
+       17.3,
+       10.0
+      ]
+     ]
+    ]
+   },
+   "gf_area": 146.7,
+   "agf_area": 0,
+   "sum_net": 107.65,
+   "sum_gross": 125.62,
+   "sum_net_simple": 105.59,
+   "faces_unowned": [],
+   "facade_half_wall": 7.13,
+   "ebf_proposal": {
+    "area": 146.7,
+    "excluded": [],
+    "status": "proposal, to be confirmed"
+   },
+   "zones": []
+  },
+  "connectivity": [
+   {
+    "a": "r000",
+    "b": "r002",
+    "opening": "o000",
+    "type": "door",
+    "confidence": "medium"
+   },
+   {
+    "a": "r001",
+    "b": "r002",
+    "opening": "o001",
+    "type": "door",
+    "confidence": "medium"
+   },
+   {
+    "a": "r002",
+    "b": "r007",
+    "opening": "o002",
+    "type": "door",
+    "confidence": "medium"
+   },
+   {
+    "a": "r002",
+    "b": "r003",
+    "opening": "o003",
+    "type": "door",
+    "confidence": "medium"
+   },
+   {
+    "a": "r002",
+    "b": "r004",
+    "opening": "o004",
+    "type": "door",
+    "confidence": "medium"
+   },
+   {
+    "a": "r003",
+    "b": "outside",
+    "opening": "o005",
+    "type": "exterior door",
+    "confidence": "medium"
+   },
+   {
+    "a": "r003",
+    "b": "r004",
+    "opening": "o009",
+    "type": "passage",
+    "confidence": "medium"
+   }
+  ],
+  "qa": [
+   {
+    "check": "room",
+    "severity": "info",
+    "element": "r005",
+    "message": "no stamp"
+   },
+   {
+    "check": "room",
+    "severity": "info",
+    "element": "r005",
+    "message": "very small"
+   },
+   {
+    "check": "room",
+    "severity": "info",
+    "element": "r005",
+    "message": "small unlabelled region kept for review (a shaft?)"
+   },
+   {
+    "check": "room",
+    "severity": "info",
+    "element": "r006",
+    "message": "void 2.9 m² (LUFTRAUM) excluded"
+   },
+   {
+    "check": "opening type",
+    "severity": "info",
+    "element": "o008",
+    "message": "drawn like a window in an interior wall: treated as an opening"
+   },
+   {
+    "check": "reachable",
+    "severity": "warning",
+    "element": "r006",
+    "message": "not connected to the main circulation"
+   },
+   {
+    "check": "AOID",
+    "severity": "info",
+    "element": "r000",
+    "message": "no AOID read on the sheet: left empty, to be matched from SAP, never generated"
+   },
+   {
+    "check": "AOID",
+    "severity": "info",
+    "element": "r002",
+    "message": "no AOID read on the sheet: left empty, to be matched from SAP, never generated"
+   },
+   {
+    "check": "AOID",
+    "severity": "info",
+    "element": "r003",
+    "message": "no AOID read on the sheet: left empty, to be matched from SAP, never generated"
+   },
+   {
+    "check": "AOID",
+    "severity": "info",
+    "element": "r004",
+    "message": "no AOID read on the sheet: left empty, to be matched from SAP, never generated"
+   },
+   {
+    "check": "AOID",
+    "severity": "info",
+    "element": "r005",
+    "message": "no AOID read on the sheet: left empty, to be matched from SAP, never generated"
+   },
+   {
+    "check": "AOID",
+    "severity": "info",
+    "element": "r006",
+    "message": "no AOID read on the sheet: left empty, to be matched from SAP, never generated"
+   },
+   {
+    "check": "AOID",
+    "severity": "info",
+    "element": "r007",
+    "message": "no AOID read on the sheet: left empty, to be matched from SAP, never generated"
+   }
+  ],
+  "export": {
+   "dxf": {
+    "units": "mm ($INSUNITS 4); JSON coordinates stay in plan metres",
+    "R_RAUMPOLYGON": "one closed LWPOLYLINE per room of 0.25 m² or more, islands cut out through zero-width bridges; made disjoint where rooms split along a stair outline overlap by a pixel; XDATA 'FPX' = room id",
+    "R_AOID": "only AOIDs read on the sheet, unique and one per room, base point inside the room; never generated",
+    "V_TEXT": "room names",
+    "R_GESCHOSSPOLYGON": "one closed LWPOLYLINE per floor, voids over 5 m² cut out through a zero-width bridge",
+    "R_RAUMPOLYGON-ABZUG": "voids over 5 m² (deducted from the GF and from the room containing them)",
+    "A_ARCHITEKTUR": "wall outlines (all rings), openings, stairs",
+    "A_SCHRAFFUR": "SOLID hatches of walls classed massive by a heuristic (see wall_construction)",
+    "V_BEMASSUNG": "overall dimensions of the floor polygon, measured on the extracted outline",
+    "V_PLANLAYOUT": "plan frame around everything drawn, title block",
+    "text style": "ARIAL (arial.ttf) for every text"
+   },
+   "guideline": "CAD-Richtlinie BBL V1.0 as checked by plan-check; local check: fpx.conformance"
+  },
+  "regions": [],
+  "drawings": [],
+  "exports": {
+   "json": "golden.json",
+   "dxf": "golden.dxf",
+   "xlsx": "golden.xlsx",
+   "xlsx_summary": {
+    "Räume": 8,
+    "Geschoss": 11,
+    "Öffnungen": 10,
+    "QA": 13,
+    "Meta": 9
+   },
+   "ifc": "golden.ifc",
+   "ifc_summary": {
+    "file": "<out>/golden.ifc",
+    "schema": "IFC4X3",
+    "storey_height": 3.0,
+    "counts": {
+     "spaces": 8,
+     "walls": 24,
+     "doors": 7,
+     "wall openings": 10,
+     "windows": 3,
+     "stair flights": 2,
+     "columns": 1,
+     "slabs": 1,
+     "space boundaries": 13
+    }
+   }
+  }
+ },
+ "dxf": {
+  "V_BEMASSUNG DIMENSION": 2,
+  "A_SCHRAFFUR HATCH": 7,
+  "A_ARCHITEKTUR LWPOLYLINE": 20,
+  "R_GESCHOSSPOLYGON LWPOLYLINE": 1,
+  "R_RAUMPOLYGON LWPOLYLINE": 8,
+  "R_RAUMPOLYGON-ABZUG LWPOLYLINE": 1,
+  "V_PLANLAYOUT LWPOLYLINE": 1,
+  "R_AOID TEXT": 1,
+  "V_PLANLAYOUT TEXT": 4,
+  "V_TEXT TEXT": 7
+ }
+}

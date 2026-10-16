@@ -1,0 +1,3 @@
+/* The API documentation page (api-docs.html): Swagger UI inside the app's frame (styles.css: banner, top bar, footer). */
+.docs-main { overflow: auto; min-height: 0; background: var(--surface); }
+.docs-main .swagger-ui { max-width: 1200px; margin: 0 auto; }

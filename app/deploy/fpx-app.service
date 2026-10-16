@@ -1,0 +1,57 @@
+# systemd unit of the floor plan workflow app, installed by app/deploy/setup.sh as /etc/systemd/system/fpx-app.service.
+# app/server.py --public listens on 127.0.0.1:8765 only; nginx publishes it with HTTPS (app/deploy/nginx.conf).
+# --public: no sheet list, every sheet deleted 60 min after its last request (also across restarts).
+#   systemctl status fpx-app · journalctl -u fpx-app -f · settings: /etc/fpx-app.env
+
+[Unit]
+Description=Floor plan workflow app (plan-extract)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=fpx
+Group=fpx
+WorkingDirectory=/opt/plan-extract
+EnvironmentFile=-/etc/fpx-app.env
+EnvironmentFile=-/etc/fpx-app.env.local
+Environment=PYTHONUNBUFFERED=1
+# glibc keeps a memory arena per thread that once allocated: two are enough for the lanes and the request threads
+Environment=MALLOC_ARENA_MAX=2
+Environment=OMP_WAIT_POLICY=PASSIVE
+ExecStart=/var/lib/fpx/venv/bin/python app/server.py --port 8765 --warm --public
+Restart=on-failure
+OOMPolicy=continue
+RestartSec=5
+
+# Resources (a VPS without swap; the shares follow its memory): a sheet that needs more stops the app, which restarts,
+# not the server; SSH and nginx keep their share of CPU and disk while a sheet is processed
+MemoryHigh=65%
+MemoryMax=75%
+TasksMax=1024
+CPUWeight=50
+IOWeight=50
+
+# The app writes only its sheet jobs (app/data) and caches; the code, the venv and the system stay read-only
+ProtectSystem=strict
+ReadWritePaths=/opt/plan-extract/app/data -/var/lib/fpx/.cache
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+NoNewPrivileges=true
+CapabilityBoundingSet=
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallArchitectures=native
+LockPersonality=true
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target

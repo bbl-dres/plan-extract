@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How it works · the explainer film</title>
+<!-- The 30-second explainer of the landing page, as one self-contained page: one timeline (seconds) drives every
+     element from a pure function of time, so the film can be scrubbed, paused and restarted; no voice, no music.
+     render.py turns it into media/how-it-works-<lang>.webm, which the landing page plays. The look is the app's
+     (css/tokens.css, the values copied below: the page must open from disk). Open the file to review it: ?lang=de|fr|it|en,
+     ?autoplay to start at once, ?paused to wait, ?nocontrols to hide the review bar (rendering), ?loop to repeat,
+     ?speed=1.3 to try a faster pace. The stage is 1280 x 720 and scales to the window. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent: #2f6ea6; --accent-text: #22557f; --accent-light: #eef3f8; --accent-border: #a9c1d8; --on-accent: #fff;
+  --text: #1a1d21; --muted: #646b74; --border: #dfe2e6; --border-light: #f0f1f3; --bg: #f5f6f7; --bg-track: #eef0f2; --surface: #fff;
+  --success: #2e9e5b; --success-bg: #e6f4ec; --success-text: #1f7a45; --warning: #d99a1e; --danger: #d0433b;
+  --walls: #2b3a55; --doors: #d0433b; --windows: #2f8fd8; --gf: #111827; --region: #e67800; --ink: #2c2f36;
+  --pal-1: #4e79a7; --pal-2: #f28e2b; --pal-3: #59a14f; --pal-4: #e15759; --pal-5: #76b7b2;
+  --font: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --r-ctl: 8px; --r-lg: 10px; --r-xl: 12px; --r-pill: 999px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, .06); --shadow-md: 0 6px 20px rgba(0, 0, 0, .1);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #e9ebee; font-family: var(--font); color: var(--text); }
+body { display: grid; grid-template-rows: 1fr auto; place-items: center; gap: 12px; padding: 16px; }
+.frame { position: relative; width: 1280px; height: 720px; transform-origin: top left; }
+.stage { position: absolute; inset: 0; overflow: hidden; background: var(--bg); border-radius: var(--r-xl); box-shadow: var(--shadow-md); font-size: 14px; line-height: 1.45; }
+.stage > * { position: absolute; }
+.hidden { visibility: hidden; }
+/* the app frame */
+.topbar { left: 0; right: 0; top: 0; height: 56px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; font-size: 15px; }
+.brand { font-weight: 600; }
+.crumb { color: var(--muted); margin-left: 10px; }
+.crumb::before { content: '/'; color: var(--border); margin-right: 10px; }
+.btn { height: 32px; padding: 0 14px; border: 1px solid var(--border); border-radius: var(--r-ctl); background: var(--surface); font: inherit; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.btn-primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+.btn-xl { height: 44px; padding: 0 20px; font-size: 15px; justify-content: center; }
+.btn.pressed { transform: translateY(1px); filter: brightness(.92); }
+.topbar .right { display: flex; gap: 10px; }
+.screen { left: 0; right: 0; top: 56px; bottom: 92px; }
+.screen > * { position: absolute; }
+/* the caption strip: large, one idea, readable on a phone */
+.caption { left: 0; right: 0; bottom: 0; height: 92px; background: var(--surface); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: center; padding: 0 40px; text-align: center; }
+.caption .text { font-size: 30px; font-weight: 600; line-height: 1.25; letter-spacing: -.01em; }
+/* the title and end cards */
+.card-full { inset: 0; display: grid; place-items: center; text-align: center; background: var(--surface); }
+.card-full h1 { font-size: 48px; margin: 0 0 12px; font-weight: 600; letter-spacing: -.01em; }
+.card-full p { font-size: 24px; color: var(--muted); margin: 0; }
+.card-full .mark { font-size: 15px; color: var(--accent-text); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 18px; }
+/* upload */
+.dropzone { left: 320px; top: 110px; width: 640px; height: 280px; border: 2px dashed var(--accent-border); border-radius: var(--r-xl); background: var(--surface); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; font-size: 18px; }
+.dropzone small { font-size: 13px; color: var(--muted); }
+.dropzone.over { background: var(--accent-light); }
+.progress { left: 320px; top: 410px; width: 640px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 14px 18px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+.progress .row { display: flex; justify-content: space-between; }
+.progress .row span:last-child { color: var(--muted); }
+.progress .line { height: 6px; border-radius: 3px; background: var(--bg-track); overflow: hidden; }
+.progress .line i { display: block; height: 100%; background: var(--accent); width: 0; }
+/* the sheet (the drawing) */
+.sheet { left: 0; top: 0; width: 760px; height: 520px; background: var(--surface); box-shadow: 0 2px 12px rgba(0, 0, 0, .12); transform-origin: top left; }
+.sheet svg { display: block; width: 100%; height: 100%; }
+/* the side panel of the steps */
+.panel { right: 0; top: 0; bottom: 0; width: 400px; background: var(--surface); border-left: 1px solid var(--border); padding: 28px; display: flex; flex-direction: column; gap: 16px; }
+.panel .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--accent-text); }
+.panel h2 { margin: 0; font-size: 20px; font-weight: 600; }
+.panel p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+.panel .kv { display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+.panel .kv span:first-child { color: var(--muted); }
+.panel .kv .big { font-size: 20px; font-weight: 600; }
+.panel .foot { margin-top: auto; display: flex; gap: 10px; }
+.panel .foot .btn-primary { flex: 1; }
+.pill { left: 50%; top: 20px; transform: translateX(-50%); height: 36px; padding: 0 16px; border-radius: var(--r-pill); background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 8px; font-size: 13px; white-space: nowrap; }
+.pill b { font-weight: 600; }
+.steps { display: flex; gap: 6px; }
+.steps span { height: 4px; flex: 1; border-radius: 2px; background: var(--border); }
+.steps span.on { background: var(--accent); }
+/* results */
+.side { top: 0; bottom: 0; background: var(--surface); padding: 16px; font-size: 13px; display: flex; flex-direction: column; gap: 10px; }
+.side.left { left: 0; width: 260px; border-right: 1px solid var(--border); }
+.side.right { right: 0; width: 400px; border-left: 1px solid var(--border); padding: 24px; gap: 14px; }
+.side h2 { margin: 0; font-size: 17px; font-weight: 600; }
+.group { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; margin-top: 6px; }
+.group::before { content: ''; width: 10px; height: 10px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg) translate(-2px, -2px); margin-right: 2px; }
+.layer { display: flex; align-items: center; gap: 8px; padding: 3px 4px 3px 22px; font-size: 13px; }
+.layer .sw, .table .sw { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+.layer .n { flex: 1; }
+.eye { width: 16px; height: 16px; color: var(--muted); display: inline-flex; }
+.kv-grid { display: grid; grid-template-columns: 1fr auto; row-gap: 6px; font-size: 14px; }
+.kv-grid span:nth-child(odd) { color: var(--muted); }
+.kv-grid span:nth-child(even) { text-align: right; }
+.kv-grid .strong { font-weight: 600; }
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: var(--r-pill); font-size: 12px; font-weight: 600; background: var(--success-bg); color: var(--success-text); }
+.badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+.table { border: 1px solid var(--border); border-radius: var(--r-ctl); font-size: 12px; overflow: hidden; }
+.table .tr { display: grid; grid-template-columns: 12px 1fr 56px 52px; gap: 8px; padding: 6px 10px; border-top: 1px solid var(--border-light); align-items: center; }
+.table .tr:first-child { border-top: 0; background: var(--bg); color: var(--muted); font-weight: 600; }
+.table .tr.on { background: var(--accent-light); }
+.table .ar { text-align: right; color: var(--muted); }
+.table .cf { text-align: right; font-weight: 600; color: var(--success-text); }
+.popup { width: 250px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow-md); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
+.popup b { font-size: 15px; }
+.popup .kv-grid { font-size: 12px; }
+.leader { inset: 0; pointer-events: none; }
+.leader svg { width: 100%; height: 100%; display: block; }
+.menu { right: 150px; top: 46px; min-width: 280px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow-md); padding: 6px; display: flex; flex-direction: column; font-size: 13px; z-index: 5; }
+.menu div { padding: 8px 10px; border-radius: 6px; display: flex; flex-direction: column; gap: 1px; }
+.menu div small { color: var(--muted); }
+.menu div.on { background: var(--bg); }
+.stage-bottom { left: 50%; bottom: 18px; transform: translateX(-50%); background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 8px 14px; box-shadow: var(--shadow-md); font-size: 12px; display: flex; gap: 14px; align-items: center; }
+.seg { display: inline-grid; grid-auto-flow: column; border: 1px solid var(--border); border-radius: var(--r-ctl); overflow: hidden; }
+.seg span { padding: 6px 10px; font-size: 12px; }
+.seg span.on { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+/* the cursor and its click ripple */
+.cursor { left: 0; top: 0; width: 22px; height: 28px; z-index: 20; pointer-events: none; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .35)); }
+.ripple { left: 0; top: 0; width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--accent); z-index: 19; pointer-events: none; transform: translate(-50%, -50%) scale(0); opacity: 0; }
+/* the review bar */
+.bar { width: 1280px; max-width: 100%; display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+.bar button { height: 32px; padding: 0 12px; border: 1px solid var(--border); border-radius: var(--r-ctl); background: var(--surface); font: inherit; font-size: 13px; cursor: pointer; }
+.bar button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.bar input[type=range] { flex: 1; min-width: 160px; accent-color: var(--accent); }
+.bar .scenes, .bar .langs { display: flex; gap: 4px; }
+.bar .scenes span { font-size: 11px; padding: 2px 6px; border-radius: 4px; background: var(--surface); border: 1px solid var(--border); cursor: pointer; }
+.bar .scenes span.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.bar .time { font-variant-numeric: tabular-nums; min-width: 72px; text-align: right; }
+.bar.nocontrols { display: none; }
+</style>
+</head>
+<body>
+<div class="frame" id="frame"><div class="stage" id="stage"></div></div>
+<div class="bar" id="bar">
+  <button id="play">Pause</button><button id="restart">Restart</button>
+  <input id="scrub" type="range" min="0" max="30" step="0.05" value="0" aria-label="time">
+  <span class="time" id="time">0.0 / 30.0 s</span>
+  <span class="scenes" id="scenes"></span>
+  <span class="langs" id="langs"></span>
+</div>
+<script>
+// ------------------------------------------------------------------------------------------------- texts
+const Q = new URLSearchParams(location.search);
+const LANGS = ['de', 'fr', 'it', 'en'];
+const LANG = LANGS.includes(Q.get('lang')) ? Q.get('lang') : 'de';
+const SPEED = Math.max(.25, Math.min(4, parseFloat(Q.get('speed')) || 1));   // ?speed=1.3 plays the 30 s in 23 s: to judge the pace
+const TX = {
+  de: {
+    brand: 'Grundriss-Extraktion', sub: 'Vom gescannten Plan zu Räumen, Flächen und Wänden.',
+    c1: 'Plan hochladen – Zeichnung, Plankopf und Massstab werden erkannt.',
+    c2: 'Schritt 1: Gebäudebereich bestätigen.',
+    c3: 'Schritt 2: Massstab prüfen – oder eine Strecke messen.',
+    c4: 'Wände, Öffnungen und Räume werden automatisch gefunden.',
+    c5: 'Räume prüfen, Flächen nach SIA 416, Export als Excel, DXF, IFC.',
+    c6: 'Jetzt mit dem Demo-Blatt probieren.',
+    t1: 'Hochladen', t2: 'Gebäudebereich', t3: 'Massstab', t4: 'Extraktion', t5: 'Ergebnisse',
+    drop: 'Grundrisse hierher ziehen oder klicken', choose: 'Dateien auswählen', formats: 'PDF, JPG, PNG, TIFF, DXF · bis 300 MB',
+    reading: 'Blatt wird gelesen…', layout: 'Zeichnungen und Plankopf erkennen', eta: 'noch etwa 10 s',
+    step1: 'Schritt 1 von 2 · Gebäudebereich', area: 'Gebäudebereich bestätigen', areaText: 'Der Umriss wurde aus der Zeichnung erkannt. Die Griffe so ziehen, dass das ganze Gebäude innerhalb liegt und Plankopf, Legende und Masslinien ausserhalb bleiben.',
+    step2: 'Schritt 2 von 2 · Massstab', scale: 'Erkannten Massstab prüfen', scaleText: 'Der Massstab wurde aus den Masslinien der Zeichnung gemessen: die Masszahlen im Verhältnis zum Abstand ihrer Begrenzungsstriche.',
+    scaleK: 'Massstab', dpiK: 'Auflösung', measure: 'Bekannte Strecke messen', confirm: 'Bestätigen', back: 'Zurück',
+    extracting: 'Extraktion läuft…', stWalls: 'Wände', stOpen: 'Öffnungen', stRooms: 'Räume', done: 'Fertig',
+    layers: 'Ebenen', gFloor: 'Geschoss', gRooms: 'Räume', gWalls: 'Wände', gOpen: 'Öffnungen', lGF: 'Geschossfläche Brutto', lNet: 'Raumfläche Netto', lLabels: 'Raumbeschriftungen', lWalls: 'Wände', lDoors: 'Türen', lWin: 'Fenster',
+    fGF: 'Geschossfläche Brutto', fNet: 'Raumfläche Netto', fKF: 'Konstruktionsfläche', fRooms: 'Räume', fOpen: 'Öffnungen', fScale: 'Massstab',
+    room: 'Raum', areaCol: 'Fläche', conf: 'Zuv.', high: 'hoch', netExact: 'Netto genau', gross: 'Brutto (Wandachsen)', stamp: 'Stempel', confK: 'Zuverlässigkeit',
+    download: 'Herunterladen', dJSON: 'JSON', dJSONn: 'Räume, Wände, Öffnungen, Flächen', dXLSX: 'Excel', dXLSXn: 'Raumtabelle und Kennzahlen', dDXF: 'DXF', dDXFn: 'CAD-Zeichnung', dIFC: 'IFC', dIFCn: 'BIM-Modell',
+    help: 'Hilfe', login: 'Anmelden', plan: 'Plan', drawing: 'Zeichnung', planTitle: 'Grundriss EG', scaleV: 'Massstab 1 : 100', titleBlock: 'PLANKOPF', authority: 'Bauamt · 12.03.1988',
+    rooms: ['Wohnen', 'Küche', 'Schlafen', 'Büro', 'Flur'], left: (n) => `noch etwa ${n} s`,
+  },
+  fr: {
+    brand: 'Extraction de plans', sub: 'Du plan scanné aux locaux, surfaces et murs.',
+    c1: 'Téléverser le plan : dessin, cartouche et échelle sont reconnus.',
+    c2: 'Étape 1 : confirmer l’emprise du bâtiment.',
+    c3: 'Étape 2 : vérifier l’échelle, ou mesurer une distance.',
+    c4: 'Murs, ouvertures et locaux sont trouvés automatiquement.',
+    c5: 'Vérifier les locaux, surfaces SIA 416, export Excel, DXF, IFC.',
+    c6: 'Essayez avec la planche de démonstration.',
+    t1: 'Téléverser', t2: 'Emprise', t3: 'Échelle', t4: 'Extraction', t5: 'Résultats',
+    drop: 'Glisser des plans ici ou cliquer', choose: 'Sélectionner des fichiers', formats: 'PDF, JPG, PNG, TIFF, DXF · jusqu’à 300 Mo',
+    reading: 'Lecture de la planche…', layout: 'Reconnaître les dessins et le cartouche', eta: 'encore 10 s environ',
+    step1: 'Étape 1 sur 2 · Emprise du bâtiment', area: 'Confirmer l’emprise du bâtiment', areaText: 'Le contour a été détecté sur le dessin. Faire glisser les poignées pour que tout le bâtiment soit à l’intérieur et que le cartouche, la légende et les cotes restent à l’extérieur.',
+    step2: 'Étape 2 sur 2 · Échelle', scale: 'Vérifier l’échelle détectée', scaleText: 'L’échelle a été mesurée sur les cotes du dessin : les valeurs par rapport à la distance de leurs traits de délimitation.',
+    scaleK: 'Échelle', dpiK: 'Résolution', measure: 'Mesurer une distance connue', confirm: 'Confirmer', back: 'Retour',
+    extracting: 'Extraction en cours…', stWalls: 'Murs', stOpen: 'Ouvertures', stRooms: 'Locaux', done: 'Terminé',
+    layers: 'Calques', gFloor: 'Étage', gRooms: 'Locaux', gWalls: 'Murs', gOpen: 'Ouvertures', lGF: 'Surface de plancher brute', lNet: 'Surface nette', lLabels: 'Étiquettes des locaux', lWalls: 'Murs', lDoors: 'Portes', lWin: 'Fenêtres',
+    fGF: 'Surface de plancher brute', fNet: 'Surface nette', fKF: 'Surface de construction', fRooms: 'Locaux', fOpen: 'Ouvertures', fScale: 'Échelle',
+    room: 'Local', areaCol: 'Surface', conf: 'Fiab.', high: 'élevée', netExact: 'Net, exact', gross: 'Brut (axes des murs)', stamp: 'Tampon', confK: 'Fiabilité',
+    download: 'Télécharger', dJSON: 'JSON', dJSONn: 'Locaux, murs, ouvertures, surfaces', dXLSX: 'Excel', dXLSXn: 'Tableau des locaux et chiffres', dDXF: 'DXF', dDXFn: 'Dessin CAO', dIFC: 'IFC', dIFCn: 'Modèle BIM',
+    help: 'Aide', login: 'Connexion', plan: 'Plan', drawing: 'Dessin', planTitle: 'Plan du rez', scaleV: 'Échelle 1 : 100', titleBlock: 'CARTOUCHE', authority: 'Bureau technique · 12.03.1988',
+    rooms: ['Séjour', 'Cuisine', 'Chambre', 'Bureau', 'Couloir'], left: (n) => `encore ${n} s environ`,
+  },
+  it: {
+    brand: 'Estrazione di planimetrie', sub: 'Dal piano scansionato a locali, superfici e muri.',
+    c1: 'Caricare il piano: disegno, cartiglio e scala vengono riconosciuti.',
+    c2: 'Passo 1: confermare l’area dell’edificio.',
+    c3: 'Passo 2: verificare la scala, o misurare una distanza.',
+    c4: 'Muri, aperture e locali vengono trovati automaticamente.',
+    c5: 'Verificare i locali, superfici SIA 416, export Excel, DXF, IFC.',
+    c6: 'Provate con la tavola dimostrativa.',
+    t1: 'Caricamento', t2: 'Area dell’edificio', t3: 'Scala', t4: 'Estrazione', t5: 'Risultati',
+    drop: 'Trascinare qui le planimetrie o fare clic', choose: 'Selezionare i file', formats: 'PDF, JPG, PNG, TIFF, DXF · fino a 300 MB',
+    reading: 'Lettura della tavola…', layout: 'Riconoscere i disegni e il cartiglio', eta: 'ancora circa 10 s',
+    step1: 'Passo 1 di 2 · Area dell’edificio', area: 'Confermare l’area dell’edificio', areaText: 'Il contorno è stato rilevato dal disegno. Trascinare le maniglie in modo che l’intero edificio sia all’interno e cartiglio, legenda e quote restino all’esterno.',
+    step2: 'Passo 2 di 2 · Scala', scale: 'Verificare la scala rilevata', scaleText: 'La scala è stata misurata dalle quote del disegno: i valori rispetto alla distanza dei loro tratti di delimitazione.',
+    scaleK: 'Scala', dpiK: 'Risoluzione', measure: 'Misurare una distanza nota', confirm: 'Confermare', back: 'Indietro',
+    extracting: 'Estrazione in corso…', stWalls: 'Muri', stOpen: 'Aperture', stRooms: 'Locali', done: 'Completato',
+    layers: 'Livelli', gFloor: 'Piano', gRooms: 'Locali', gWalls: 'Muri', gOpen: 'Aperture', lGF: 'Superficie di piano lorda', lNet: 'Superficie netta', lLabels: 'Etichette dei locali', lWalls: 'Muri', lDoors: 'Porte', lWin: 'Finestre',
+    fGF: 'Superficie di piano lorda', fNet: 'Superficie netta', fKF: 'Superficie di costruzione', fRooms: 'Locali', fOpen: 'Aperture', fScale: 'Scala',
+    room: 'Locale', areaCol: 'Superficie', conf: 'Affid.', high: 'alta', netExact: 'Netto esatto', gross: 'Lordo (assi dei muri)', stamp: 'Timbro', confK: 'Affidabilità',
+    download: 'Scarica', dJSON: 'JSON', dJSONn: 'Locali, muri, aperture, superfici', dXLSX: 'Excel', dXLSXn: 'Tabella dei locali e indicatori', dDXF: 'DXF', dDXFn: 'Disegno CAD', dIFC: 'IFC', dIFCn: 'Modello BIM',
+    help: 'Aiuto', login: 'Accedi', plan: 'Piano', drawing: 'Disegno', planTitle: 'Pianta piano terra', scaleV: 'Scala 1 : 100', titleBlock: 'CARTIGLIO', authority: 'Ufficio tecnico · 12.03.1988',
+    rooms: ['Soggiorno', 'Cucina', 'Camera', 'Studio', 'Corridoio'], left: (n) => `ancora circa ${n} s`,
+  },
+  en: {
+    brand: 'Floor plan extraction', sub: 'From a scanned plan to rooms, areas and walls.',
+    c1: 'Upload the plan: drawing, title block and scale are detected.',
+    c2: 'Step 1: confirm the building area.',
+    c3: 'Step 2: check the scale, or measure a distance.',
+    c4: 'Walls, openings and rooms are found automatically.',
+    c5: 'Review rooms, areas to SIA 416, export as Excel, DXF, IFC.',
+    c6: 'Try it with the demo sheet.',
+    t1: 'Upload', t2: 'Building area', t3: 'Scale', t4: 'Extraction', t5: 'Results',
+    drop: 'Drop floor plans here or click', choose: 'Choose files', formats: 'PDF, JPG, PNG, TIFF, DXF · up to 300 MB',
+    reading: 'Reading the sheet…', layout: 'Finding the drawings and the title block', eta: 'about 10 s left',
+    step1: 'Step 1 of 2 · Building area', area: 'Confirm the building area', areaText: 'The outline was detected from the drawing. Drag the handles so the whole building is inside and the title block, legend and dimension lines stay out.',
+    step2: 'Step 2 of 2 · Scale', scale: 'Check the detected scale', scaleText: 'The scale was measured from the dimension strings of the drawing: the numbers against the distance of their end ticks.',
+    scaleK: 'Scale', dpiK: 'Resolution', measure: 'Measure a known distance', confirm: 'Confirm', back: 'Back',
+    extracting: 'Extracting…', stWalls: 'Walls', stOpen: 'Openings', stRooms: 'Rooms', done: 'Finished',
+    layers: 'Layers', gFloor: 'Floor', gRooms: 'Rooms', gWalls: 'Walls', gOpen: 'Openings', lGF: 'Gross floor area', lNet: 'Net room area', lLabels: 'Room labels', lWalls: 'Walls', lDoors: 'Doors', lWin: 'Windows',
+    fGF: 'Gross floor area', fNet: 'Net room area', fKF: 'Construction area', fRooms: 'Rooms', fOpen: 'Openings', fScale: 'Scale',
+    room: 'Room', areaCol: 'Area', conf: 'Conf.', high: 'high', netExact: 'Net, exact', gross: 'Gross (wall axes)', stamp: 'Stamp', confK: 'Confidence',
+    download: 'Download', dJSON: 'JSON', dJSONn: 'Rooms, walls, openings, areas', dXLSX: 'Excel', dXLSXn: 'Room table and figures', dDXF: 'DXF', dDXFn: 'CAD drawing', dIFC: 'IFC', dIFCn: 'BIM model',
+    help: 'Help', login: 'Log in', plan: 'Plan', drawing: 'Drawing', planTitle: 'Ground floor plan', scaleV: 'Scale 1 : 100', titleBlock: 'TITLE BLOCK', authority: 'Building office · 12.03.1988',
+    rooms: ['Living', 'Kitchen', 'Bedroom', 'Office', 'Hall'], left: (n) => `about ${n} s left`,
+  },
+}[LANG];
+const t = (k) => TX[k];
+document.documentElement.lang = LANG;
+
+// ------------------------------------------------------------------------------------------------- helpers
+const SVG = 'http://www.w3.org/2000/svg';
+function h(tag, attrs, ...kids) {
+  const el = tag.startsWith('svg:') ? document.createElementNS(SVG, tag.slice(4)) : document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.setAttribute('class', v); else if (k === 'style') el.style.cssText = v; else if (k === 'html') el.innerHTML = v; else el.setAttribute(k, v);
+  }
+  for (const c of kids.flat()) if (c != null) el.append(c.nodeType ? c : document.createTextNode(String(c)));
+  return el;
+}
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const ease = (p) => p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+const easeOut = (p) => 1 - Math.pow(1 - p, 3);
+const lerp = (a, b, p) => a + (b - a) * p;
+const LOCALE = { de: 'de-CH', fr: 'fr-CH', it: 'it-CH', en: 'en-GB' }[LANG];
+const fmt = (v) => v.toLocaleString(LOCALE, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+/** A span of time: p in 0..1 across it (0 before, 1 after). */
+const span = (now, t0, t1) => clamp((now - t0) / (t1 - t0), 0, 1);
+/** Fade in over `a`, hold, fade out over `b` (p of visibility 0..1). */
+const window_ = (now, t0, t1, a = .4, b = .4) => now < t0 || now > t1 ? 0 : Math.min(1, (now - t0) / a, (t1 - now) / b);
+const show = (el, on) => el.classList.toggle('hidden', !on);
+const op = (el, v) => { el.style.opacity = v; show(el, v > 0); };
+
+// ------------------------------------------------------------------------------------------------- the stage
+const stage = document.getElementById('stage');
+const dlBtn = h('span', { class: 'btn btn-primary', id: 'dl' }, t('download'), h('span', { html: '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>' }));
+const topbar = h('div', { class: 'topbar' }, h('div', null, h('span', { class: 'brand' }, t('brand')), h('span', { class: 'crumb', id: 'crumb' }, 'demo.pdf')),
+  h('div', { class: 'right' }, dlBtn, h('span', { class: 'btn' }, t('help')), h('span', { class: 'btn' }, LANG.toUpperCase()), h('span', { class: 'btn' }, t('login'))));
+const screen = h('div', { class: 'screen' });
+const caption = h('div', { class: 'caption' }, h('span', { class: 'text', id: 'ctext' }));
+const titleCard = h('div', { class: 'card-full' }, h('div', null, h('div', { class: 'mark' }, 'plan-extract.ch'), h('h1', null, t('brand')), h('p', null, t('sub'))));
+const endCard = h('div', { class: 'card-full' }, h('div', null, h('h1', null, 'plan-extract.ch'), h('p', null, t('c6'))));
+stage.append(topbar, screen, caption, titleCard, endCard);
+
+// --- the sheet: a small flat at 1:100 drawn as a plan: 760 x 520 px, the building 600 x 360 px at 40 px/m (15 x 9 m)
+const WALL = 12, O = WALL / 2, PXM = 40;
+const rooms = [
+  { id: 'r1', x: 60, y: 60, w: 300, h: 190, col: 'var(--pal-1)', lab: [0, -35] },     // lab: where the drawing's own
+  { id: 'r2', x: 60, y: 250, w: 300, h: 170, col: 'var(--pal-2)', lab: [-45, 0] },    // name sits, off the furniture
+  { id: 'r3', x: 360, y: 60, w: 300, h: 190, col: 'var(--pal-3)', lab: [0, 62] },
+  { id: 'r4', x: 360, y: 250, w: 160, h: 170, col: 'var(--pal-5)', lab: [0, 0] },
+  { id: 'r5', x: 520, y: 250, w: 140, h: 170, col: 'var(--pal-4)', lab: [0, 0] },
+].map((r, i) => ({ ...r, name: t('rooms')[i], area: (r.w - WALL) * (r.h - WALL) / (PXM * PXM), gross: r.w * r.h / (PXM * PXM) }));
+const GF = (600 + WALL) * (360 + WALL) / (PXM * PXM), NET = rooms.reduce((a, r) => a + r.area, 0), KF = GF - NET;
+const N_WALLS = 15;                                        // the axes below, split at their junctions
+// wall axes as segments [x1, y1, x2, y2]; the drawn ink is a double line, the extraction thickens it to a band
+const walls = [[60, 60, 660, 60], [660, 60, 660, 420], [660, 420, 60, 420], [60, 420, 60, 60], [60, 250, 660, 250], [360, 60, 360, 420], [520, 250, 520, 420]];
+// doors: the opening (x, y, along a horizontal wall?, width), the hinge end (0: at x/y, 1: at the far end) and the side
+// the leaf swings to (-1: up/left, 1: down/right); windows: the opening alone
+const doors = [
+  { x: 190, y: 250, hz: 1, w: 44, hinge: 1, s: -1 },      // living <-> kitchen, opens into the living room
+  { x: 360, y: 140, hz: 0, w: 44, hinge: 0, s: 1 },       // living <-> bedroom
+  { x: 520, y: 330, hz: 0, w: 44, hinge: 0, s: -1 },      // office <-> hall
+  { x: 590, y: 420, hz: 1, w: 48, hinge: 1, s: -1 },      // the entrance
+  { x: 360, y: 330, hz: 0, w: 44, hinge: 1, s: 1 },       // kitchen <-> office
+];
+const windows = [{ x: 160, y: 60, hz: 1, w: 110 }, { x: 450, y: 60, hz: 1, w: 110 }, { x: 60, y: 300, hz: 0, w: 80 }, { x: 120, y: 420, hz: 1, w: 100 }];
+const svgPlan = h('svg:svg', { viewBox: '0 0 760 520' });
+const gRooms = h('svg:g'), gInk = h('svg:g'), gWalls = h('svg:g'), gOpen = h('svg:g'), gLabels = h('svg:g'), gMarks = h('svg:g');
+svgPlan.append(gRooms, gInk, gWalls, gOpen, gLabels, gMarks);
+const inkStyle = 'stroke: var(--ink); fill: none; stroke-linecap: square;';
+const ink = (attrs) => h('svg:line', { ...attrs, style: inkStyle + (attrs.style || '') });
+// the walls as an architect draws them: the outline of the union of the bands (ink under white), so junctions and
+// corners are clean, and no line runs across a T
+for (const [x1, y1, x2, y2] of walls) gInk.append(h('svg:line', { x1, y1, x2, y2, style: `stroke: var(--ink); stroke-width: ${WALL + 2.4}; stroke-linecap: square` }));
+for (const [x1, y1, x2, y2] of walls) gInk.append(h('svg:line', { x1, y1, x2, y2, style: `stroke: var(--surface); stroke-width: ${WALL}; stroke-linecap: square` }));
+/** The band of an opening, cleared: a white rectangle over the wall's ink, the jambs across the band. */
+function opening(o, g) {
+  const band = o.hz ? { x: o.x, y: o.y - O - 1.5, width: o.w, height: WALL + 3 } : { x: o.x - O - 1.5, y: o.y, width: WALL + 3, height: o.w };
+  g.append(h('svg:rect', { ...band, fill: 'var(--surface)' }));
+  if (o.hz) g.append(ink({ x1: o.x, y1: o.y - O, x2: o.x, y2: o.y + O, style: 'stroke-width: 1.2' }), ink({ x1: o.x + o.w, y1: o.y - O, x2: o.x + o.w, y2: o.y + O, style: 'stroke-width: 1.2' }));
+  else g.append(ink({ x1: o.x - O, y1: o.y, x2: o.x + O, y2: o.y, style: 'stroke-width: 1.2' }), ink({ x1: o.x - O, y1: o.y + o.w, x2: o.x + O, y2: o.y + o.w, style: 'stroke-width: 1.2' }));
+}
+/** A door as a plan symbol: the leaf at a right angle from its hinge on the swing side's face, and the quarter circle
+    it sweeps to the other jamb. */
+function doorSymbol(d) {
+  const g = h('svg:g');
+  opening(d, g);
+  let H, L, J;
+  if (d.hz) { const hx = d.hinge ? d.x + d.w : d.x, jx = d.hinge ? d.x : d.x + d.w, fy = d.y + d.s * O; H = [hx, fy]; L = [hx, fy + d.s * d.w]; J = [jx, fy]; }
+  else { const hy = d.hinge ? d.y + d.w : d.y, jy = d.hinge ? d.y : d.y + d.w, fx = d.x + d.s * O; H = [fx, hy]; L = [fx + d.s * d.w, hy]; J = [fx, jy]; }
+  const cross = (L[0] - H[0]) * (J[1] - H[1]) - (L[1] - H[1]) * (J[0] - H[0]);   // > 0: L to J turns clockwise on screen
+  g.append(ink({ x1: H[0], y1: H[1], x2: L[0], y2: L[1], style: 'stroke-width: 2' }),
+    h('svg:path', { d: `M ${L[0]} ${L[1]} A ${d.w} ${d.w} 0 0 ${cross > 0 ? 1 : 0} ${J[0]} ${J[1]}`, style: inkStyle + 'stroke-width: .8' }));
+  return g;
+}
+/** A window as a plan symbol: the jambs and a thin double line (the frame with its glass) along the opening. */
+function windowSymbol(w) {
+  const g = h('svg:g');
+  opening(w, g);
+  if (w.hz) g.append(ink({ x1: w.x, y1: w.y - 2.5, x2: w.x + w.w, y2: w.y - 2.5, style: 'stroke-width: .9' }), ink({ x1: w.x, y1: w.y + 2.5, x2: w.x + w.w, y2: w.y + 2.5, style: 'stroke-width: .9' }));
+  else g.append(ink({ x1: w.x - 2.5, y1: w.y, x2: w.x - 2.5, y2: w.y + w.w, style: 'stroke-width: .9' }), ink({ x1: w.x + 2.5, y1: w.y, x2: w.x + 2.5, y2: w.y + w.w, style: 'stroke-width: .9' }));
+  return g;
+}
+for (const d of doors) gInk.append(doorSymbol(d));
+for (const w of windows) gInk.append(windowSymbol(w));
+// furniture in thin ink: the extraction leaves it alone
+const furn = h('svg:g', { style: 'stroke: var(--ink); fill: none; stroke-width: .9; stroke-linejoin: round', opacity: .7 });
+const Rc = (x, y, w, hh, rx = 0) => h('svg:rect', { x, y, width: w, height: hh, rx });
+const Ci = (cx, cy, r) => h('svg:circle', { cx, cy, r });
+const Ln = (x1, y1, x2, y2) => h('svg:line', { x1, y1, x2, y2 });
+furn.append(
+  // living: a TV board on the top wall, a sofa with its back and cushions, a round coffee table, an armchair
+  Rc(70, 70, 80, 14), Rc(70, 150, 120, 44, 4), Rc(70, 150, 120, 12, 4), Ln(110, 162, 110, 194), Ln(150, 162, 150, 194), Ci(130, 118, 16), Rc(240, 150, 40, 40, 6), Rc(246, 150, 28, 10, 3),
+  // kitchen: an L-shaped counter along the left and bottom walls with a sink under the window and a hob, a dining table with four chairs
+  Rc(66, 256, 24, 150), Rc(66, 390, 154, 24), Rc(71, 300, 14, 28, 2), Ci(78, 296, 2), Ci(150, 396, 4), Ci(164, 396, 4), Ci(150, 408, 4), Ci(164, 408, 4),
+  Rc(236, 300, 90, 56, 2), Rc(252, 282, 16, 14, 3), Rc(294, 282, 16, 14, 3), Rc(252, 360, 16, 14, 3), Rc(294, 360, 16, 14, 3),
+  // bedroom: a double bed with its pillows against the top wall, two nightstands, a wardrobe along the right wall
+  Rc(470, 66, 100, 120, 3), Rc(478, 72, 40, 16, 3), Rc(522, 72, 40, 16, 3), Ln(470, 110, 570, 110), Rc(446, 66, 20, 20), Rc(574, 66, 20, 20), Rc(634, 100, 20, 120), Ln(644, 100, 644, 220),
+  // office: a desk with its chair, a shelf on the bottom wall
+  Rc(400, 258, 90, 32), Rc(430, 296, 28, 22, 6), Rc(440, 400, 70, 14),
+  // hall: a wardrobe against the top wall, a cabinet on the left
+  Rc(530, 256, 60, 18), Ln(530, 265, 590, 265), Rc(530, 330, 18, 60));
+gInk.append(furn);
+// the dimension string above the top wall and the title block
+gInk.append(ink({ x1: 60, y1: 34, x2: 660, y2: 34, style: 'stroke-width: 1' }), ink({ x1: 60, y1: 26, x2: 60, y2: 42 }), ink({ x1: 660, y1: 26, x2: 660, y2: 42 }),
+  h('svg:text', { x: 360, y: 29, 'text-anchor': 'middle', style: 'font: 12px var(--font); fill: var(--ink)' }, '15.00'));
+gInk.append(h('svg:rect', { x: 560, y: 440, width: 170, height: 62, style: inkStyle + 'stroke-width: 1' }), ink({ x1: 560, y1: 462, x2: 730, y2: 462, style: 'stroke-width: 1' }), ink({ x1: 560, y1: 482, x2: 730, y2: 482, style: 'stroke-width: 1' }),
+  h('svg:text', { x: 566, y: 456, style: 'font: 600 10px var(--font); fill: var(--ink)' }, t('planTitle')), h('svg:text', { x: 566, y: 476, style: 'font: 10px var(--font); fill: var(--ink)' }, 'M 1:100 · Nr. 1047'), h('svg:text', { x: 566, y: 496, style: 'font: 10px var(--font); fill: var(--ink)' }, t('authority')));
+const inkNames = h('svg:g', { opacity: .7 });
+for (const r of rooms) inkNames.append(h('svg:text', { x: r.x + r.w / 2 + r.lab[0], y: r.y + r.h / 2 + 4 + r.lab[1], 'text-anchor': 'middle', style: 'font: 11px var(--font); fill: var(--ink); letter-spacing: .08em' }, r.name.toUpperCase()));
+gInk.append(inkNames);
+// the extraction layers: walls as bands, openings, room fills and labels (hidden until the extraction)
+for (const [x1, y1, x2, y2] of walls) gWalls.append(h('svg:line', { x1, y1, x2, y2, style: 'stroke: var(--walls); stroke-linecap: square; stroke-width: 0' }));
+const openRect = (o, col) => h('svg:rect', { x: o.hz ? o.x : o.x - O, y: o.hz ? o.y - O : o.y, width: o.hz ? o.w : WALL, height: o.hz ? WALL : o.w, fill: col, opacity: 0 });
+for (const d of doors) gOpen.append(openRect(d, 'var(--doors)'));
+for (const w of windows) gOpen.append(openRect(w, 'var(--windows)'));
+for (const r of rooms) {
+  gRooms.append(h('svg:rect', { x: r.x + O, y: r.y + O, width: r.w - WALL, height: r.h - WALL, fill: r.col, 'fill-opacity': .55, stroke: r.col, 'stroke-width': 1.5, opacity: 0 }));
+  gLabels.append(h('svg:g', { opacity: 0 }, h('svg:text', { x: r.x + r.w / 2, y: r.y + r.h / 2 - 2, 'text-anchor': 'middle', style: 'font: 600 12px var(--font); fill: var(--text); paint-order: stroke; stroke: #fff; stroke-width: 3px' }, r.name),
+    h('svg:text', { x: r.x + r.w / 2, y: r.y + r.h / 2 + 14, 'text-anchor': 'middle', style: 'font: 11px var(--font); fill: var(--muted); paint-order: stroke; stroke: #fff; stroke-width: 3px' }, fmt(r.area) + ' m²')));
+}
+// marks of the analysis: the drawing region, the title block, the scale note, the dimension string; the measure line
+const mkRegion = h('svg:rect', { x: 44, y: 18, width: 632, height: 418, fill: 'none', stroke: 'var(--accent)', 'stroke-width': 2, 'stroke-dasharray': '8 5', opacity: 0 });
+const mkTitle = h('svg:rect', { x: 554, y: 434, width: 182, height: 74, fill: 'none', stroke: 'var(--region)', 'stroke-width': 2, opacity: 0 });
+const mkTitleTag = h('svg:text', { x: 554, y: 517, style: 'font: 600 10px var(--font); fill: var(--region); letter-spacing: .06em', opacity: 0 }, t('titleBlock'));
+const mkScale = h('svg:rect', { x: 562, y: 466, width: 46, height: 14, fill: 'var(--warning)', 'fill-opacity': .25, stroke: 'var(--warning)', 'stroke-width': 1.5, opacity: 0 });
+const mkDim = h('svg:rect', { x: 52, y: 18, width: 616, height: 30, fill: 'var(--warning)', 'fill-opacity': .18, stroke: 'var(--warning)', 'stroke-width': 1.5, rx: 3, opacity: 0 });
+const handles = h('svg:g', { opacity: 0 });
+const handleRect = h('svg:rect', { fill: 'none', stroke: 'var(--accent)', 'stroke-width': 2, 'stroke-dasharray': '8 5' });
+const handleDots = [0, 1, 2, 3].map(() => h('svg:rect', { width: 10, height: 10, rx: 2, fill: 'var(--accent)' }));
+handles.append(handleRect, ...handleDots);
+const MY = 34, MX0 = 60, MX1 = 660;                        // the measured distance: the dimension string, tick to tick
+const measure = h('svg:g', { opacity: 0 }, h('svg:line', { x1: MX0, y1: MY, x2: MX0, y2: MY, stroke: 'var(--accent)', 'stroke-width': 2.5 }),
+  h('svg:circle', { cx: MX0, cy: MY, r: 5, fill: '#fff', stroke: 'var(--accent)', 'stroke-width': 2 }), h('svg:circle', { cx: MX0, cy: MY, r: 5, fill: '#fff', stroke: 'var(--accent)', 'stroke-width': 2 }),
+  h('svg:text', { x: 360, y: 15, 'text-anchor': 'middle', style: 'font: 600 13px var(--font); fill: var(--accent); paint-order: stroke; stroke: #fff; stroke-width: 4px' }, '15.00 m'));
+const selRing = h('svg:rect', { fill: 'none', stroke: 'var(--accent)', 'stroke-width': 3, opacity: 0 });
+const selHalo = h('svg:rect', { fill: 'none', stroke: '#fff', 'stroke-width': 7, opacity: 0 });
+gMarks.append(mkRegion, mkTitle, mkTitleTag, mkScale, mkDim, handles, measure, selHalo, selRing);
+const sheet = h('div', { class: 'sheet' }, svgPlan);
+
+// --- upload pieces
+const dropzone = h('div', { class: 'dropzone' }, h('div', { html: '<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#646b74" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>' }),
+  h('div', null, t('drop')), h('span', { class: 'btn btn-primary' }, t('choose')), h('small', null, t('formats')));
+const pfill = h('i'), pstage = h('span', null, t('reading'));
+const progress = h('div', { class: 'progress' }, h('div', { class: 'row' }, pstage, h('span', null, t('eta'))), h('div', { class: 'line' }, pfill));
+
+// --- the step panel (one element, re-filled per step)
+const panel = h('div', { class: 'panel' });
+function fillPanel(step) {
+  panel.replaceChildren(...[
+    h('div', { class: 'steps' }, h('span', { class: 'on' }), h('span', { class: step === 2 ? 'on' : '' })),
+    h('div', { class: 'eyebrow' }, step === 1 ? t('step1') : t('step2')),
+    h('h2', null, step === 1 ? t('area') : t('scale')),
+    h('p', null, step === 1 ? t('areaText') : t('scaleText')),
+    step === 2 ? h('div', { class: 'kv' }, h('span', null, t('scaleK')), h('span', { class: 'big' }, '1 : 100')) : null,
+    step === 2 ? h('div', { class: 'kv' }, h('span', null, t('dpiK')), h('span', null, '300 dpi')) : null,
+    step === 2 ? h('span', { class: 'btn btn-xl' }, t('measure')) : null,
+    h('div', { class: 'foot' }, h('span', { class: 'btn btn-xl' }, t('back')), h('span', { class: 'btn btn-primary btn-xl', id: 'confirm' }, t('confirm'))),
+  ].filter((x) => x));
+}
+const pillv = h('b', null, t('planTitle'));
+const pill = h('div', { class: 'pill' }, h('span', null, t('drawing')), pillv);
+
+// --- the extraction panel and the results
+const efill = h('i'), estage = h('span', null, t('stWalls')), eeta = h('span'), exth = h('h2', null, t('extracting')), counts = h('div', { class: 'kv-grid' });
+const extPanel = h('div', { class: 'panel' }, h('div', { class: 'eyebrow' }, t('t4')), exth,
+  h('div', { class: 'progress', style: 'position: static; padding: 0; border: 0' }, h('div', { class: 'row' }, estage, eeta), h('div', { class: 'line' }, efill)), counts);
+const eyeSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+const layer = (col, name, extra) => h('div', { class: 'layer' }, h('span', { class: 'sw', style: `background:${col};${extra || ''}` }), h('span', { class: 'n' }, name), h('span', { class: 'eye', html: eyeSvg }));
+const sideLeft = h('div', { class: 'side left' }, h('h2', null, t('layers')),
+  h('div', { class: 'group' }, t('gFloor')), layer('transparent', t('lGF'), 'border: 2px dashed var(--gf)'),
+  h('div', { class: 'group' }, t('gRooms')), layer('linear-gradient(135deg, var(--pal-1), var(--pal-2), var(--pal-3))', `${t('lNet')} (${rooms.length})`), layer('transparent', t('lLabels'), 'border: 1px solid var(--border)'),
+  h('div', { class: 'group' }, t('gWalls')), layer('var(--walls)', `${t('lWalls')} (${N_WALLS})`),
+  h('div', { class: 'group' }, t('gOpen')), layer('var(--doors)', `${t('lDoors')} (${doors.length})`), layer('var(--windows)', `${t('lWin')} (${windows.length})`));
+const table = h('div', { class: 'table' }, h('div', { class: 'tr' }, h('span'), h('span', null, t('room')), h('span', { class: 'ar' }, t('areaCol')), h('span', { class: 'cf', style: 'color: var(--muted)' }, t('conf'))),
+  ...rooms.map((r) => h('div', { class: 'tr', 'data-id': r.id }, h('span', { class: 'sw', style: `background:${r.col}` }), h('span', null, r.name), h('span', { class: 'ar' }, fmt(r.area)), h('span', { class: 'cf' }, t('high')))));
+const sideRight = h('div', { class: 'side right' }, h('div', { style: 'display:flex; justify-content: space-between; align-items: center' }, h('h2', null, 'demo.pdf'), h('span', { class: 'badge' }, t('done'))),
+  h('div', { class: 'kv-grid' }, h('span', null, t('fGF')), h('span', { class: 'strong' }, fmt(GF) + ' m²'), h('span', null, t('fNet')), h('span', { class: 'strong' }, fmt(NET) + ' m²'), h('span', null, t('fKF')), h('span', null, fmt(KF) + ' m²'),
+    h('span', null, t('fRooms')), h('span', null, rooms.length), h('span', null, t('fOpen')), h('span', null, doors.length + windows.length), h('span', null, t('fScale')), h('span', null, '1:100')), table);
+const popup = h('div', { class: 'popup' }, h('b', null, rooms[0].name), h('div', { class: 'kv-grid' }, h('span', null, t('netExact')), h('span', null, fmt(rooms[0].area) + ' m²'), h('span', null, t('gross')), h('span', null, fmt(rooms[0].gross) + ' m²'), h('span', null, t('stamp')), h('span', null, '—'), h('span', null, t('confK')), h('span', { style: 'color: var(--success-text); font-weight: 600' }, t('high'))));
+const leaderLine = h('svg:line', { stroke: 'var(--accent)', 'stroke-width': 1.5 }), leaderDot = h('svg:circle', { r: 3.5, fill: 'var(--accent)', stroke: '#fff', 'stroke-width': 1.5 });
+const leader = h('div', { class: 'leader' }, h('svg:svg', null, leaderLine, leaderDot));
+const menu = h('div', { class: 'menu' }, ...[['dJSON', 'dJSONn'], ['dXLSX', 'dXLSXn'], ['dDXF', 'dDXFn'], ['dIFC', 'dIFCn']].map(([a, b]) => h('div', null, h('b', null, t(a)), h('small', null, t(b)))));
+const stageBottom = h('div', { class: 'stage-bottom' }, h('span', { class: 'seg' }, h('span', { class: 'on' }, '2D'), h('span', null, '3D')), h('span', null, t('plan')), h('span', { style: 'width: 90px; height: 4px; border-radius: 2px; background: var(--accent); display: inline-block' }), h('span', null, '100 %'), h('span', { style: 'display: inline-flex', html: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>' }));
+const cursor = h('div', { class: 'cursor', html: '<svg viewBox="0 0 22 28" width="22" height="28"><path d="M3 2 L3 22 L8.5 17 L12 26 L15.5 24.5 L12 16 L19 16 Z" fill="#fff" stroke="#1a1d21" stroke-width="1.6" stroke-linejoin="round"/></svg>' });
+const ripple = h('div', { class: 'ripple' });
+screen.append(dropzone, progress, sheet, panel, extPanel, pill, sideLeft, sideRight, leader, popup, menu, stageBottom);
+stage.append(cursor, ripple);
+
+// ------------------------------------------------------------------------------------------------- the timeline
+// scenes (seconds): title, upload, step 1, step 2, extraction, results, end. The landing page's chapters are T0..T4.
+const T0 = 2.0, T1 = 6.5, T2 = 11.0, T3 = 15.5, T4 = 22.5, T5 = 28.5, TOTAL = 30;
+const SCENES = [[T0, 't1'], [T1, 't2'], [T2, 't3'], [T3, 't4'], [T4, 't5']];
+const CAPTIONS = [[T0, T1, 'c1'], [T1, T2, 'c2'], [T2, T3, 'c3'], [T3, T4, 'c4'], [T4, T5, 'c5']];
+const ctext = document.getElementById('ctext');
+// where the sheet sits (screen px: x, y, scale): landing in the drop zone, read as a thumbnail, shown whole, beside the
+// step panel, beside the extraction panel, between the result panels
+const FLY_FROM = [-420, -200, .42], THUMB = [526, 172, .3], WHOLE = [279, 39, .95], SHEET_BIG = [40, 26, 1], SHEET_CENTRE = [60, 26, 1], SHEET_RES = [273, 83, .78];
+function sheetAt(p) { sheet.style.transform = `translate(${p[0]}px, ${p[1]}px) scale(${p[2]})`; }
+function sheetMove(now, t0, t1, a, b) { if (now < t0 || now >= t1) return; const p = ease(span(now, t0, t1)); sheetAt([lerp(a[0], b[0], p), lerp(a[1], b[1], p), lerp(a[2], b[2], p)]); }
+const onSheet = (S) => (x, y) => [S[0] + x * S[2], 56 + S[1] + y * S[2]];   // sheet px -> stage px
+function cursorAt(x, y) { cursor.style.transform = `translate(${x}px, ${y}px)`; }
+function cursorMove(now, t0, t1, from, to) { if (now < t0 || now > t1 + 2) return; const p = ease(span(now, t0, t1)); cursorAt(lerp(from[0], to[0], p), lerp(from[1], to[1], p)); }
+function click(now, at, xy) {                            // a ripple at the cursor for .5 s
+  const p = span(now, at, at + .5);
+  if (now < at || p >= 1) { ripple.style.opacity = 0; return; }
+  ripple.style.transform = `translate(${xy[0] - 18}px, ${xy[1] - 18}px) scale(${.3 + p * 1.2})`; ripple.style.opacity = 1 - p;
+}
+const pressed = (el, now, at) => el && el.classList.toggle('pressed', now >= at && now < at + .25);
+/** The centre of the confirm button, and of the Download button, in stage px (from the layout, so a translation of
+    any length lands the cursor on the button). */
+function confirmXY() { const b = panel.querySelector('#confirm'); return b ? [880 + b.offsetLeft + b.offsetWidth / 2, 56 + b.offsetTop + b.offsetHeight / 2] : [1130, 578]; }
+function downloadXY() { return [dlBtn.offsetLeft + dlBtn.offsetWidth / 2, 28]; }
+
+function render(now) {
+  // the captions, the cards and the frame
+  const cap = CAPTIONS.find(([a, b]) => now >= a && now < b);
+  ctext.textContent = cap ? t(cap[2]) : '';
+  caption.style.opacity = cap ? window_(now, cap[0], cap[1], .3, .3) : 0;
+  op(titleCard, window_(now, 0, T0 + .1, .4, .5));
+  op(endCard, window_(now, T5, TOTAL + 1, .5, .1));
+  const inApp = now >= T0 - .3 && now < T5 + .3;
+  show(topbar, inApp); show(screen, inApp);
+  document.getElementById('crumb').style.opacity = now >= 5.75 ? 1 : 0;
+  dlBtn.style.opacity = now >= T4 ? 1 : .35;
+  // --- upload (T0-T1): the sheet lands in the drop zone, is read as a thumbnail, then shown whole with the layout marks
+  show(dropzone, now >= T0 - .3 && now < 5.75); show(progress, now >= 3.4 && now < 5.75);
+  dropzone.classList.toggle('over', now >= 2.85 && now < 3.4);
+  for (const c of dropzone.children) c.style.opacity = 1 - ease(span(now, 2.9, 3.3));   // the sheet lands where the words were
+  show(sheet, now >= 2.1 && now < T5 + .3);
+  sheetMove(now, 2.1, 3.3, FLY_FROM, THUMB);
+  if (now >= 3.3 && now < 5.75) sheetAt(THUMB);
+  pfill.style.width = `${Math.round(100 * span(now, 3.5, 5.6))}%`; pstage.textContent = now < 4.5 ? t('reading') : t('layout');
+  sheetMove(now, 5.75, 6.3, THUMB, WHOLE);
+  if (now >= 6.3 && now < T1) sheetAt(WHOLE);
+  mkRegion.setAttribute('opacity', window_(now, 6.0, 7.3, .25, .3)); mkTitle.setAttribute('opacity', window_(now, 6.15, T3 - .2, .25, .3)); mkTitleTag.setAttribute('opacity', window_(now, 6.15, T3 - .2, .25, .3));
+  mkScale.setAttribute('opacity', window_(now, 6.3, T3 - .2, .25, .3));
+  // --- step 1 (T1-T2): the sheet moves beside the panel, the handles are pulled out, confirm
+  sheetMove(now, T1, T1 + .5, WHOLE, SHEET_BIG);
+  if (now >= T1 + .5 && now < T3) sheetAt(SHEET_BIG);
+  const panelOn = now >= T1 + .05 && now < T3;
+  show(panel, panelOn); panel.style.transform = `translateX(${(1 - ease(span(now, T1 + .05, T1 + .55))) * 420}px)`;
+  if (panelOn && (now < T2 ? panel.dataset.step !== '1' : panel.dataset.step !== '2')) { panel.dataset.step = now < T2 ? '1' : '2'; fillPanel(+panel.dataset.step); }
+  show(pill, now >= T1 + .3 && now < T3); pillv.textContent = now < T2 ? t('planTitle') : t('scaleV');
+  // the handles: the detected box is a little too tight at the bottom right; the cursor pulls the corner out
+  handles.setAttribute('opacity', window_(now, T1 + .3, T2 + .2, .3, .3));
+  const drag = ease(span(now, 8.0, 9.1));
+  const hx0 = 46, hy0 = 44, hx1 = lerp(600, 676, drag), hy1 = lerp(392, 436, drag);
+  handleRect.setAttribute('x', hx0); handleRect.setAttribute('y', hy0); handleRect.setAttribute('width', hx1 - hx0); handleRect.setAttribute('height', hy1 - hy0);
+  [[hx0, hy0], [hx1, hy0], [hx1, hy1], [hx0, hy1]].forEach(([x, y], i) => { handleDots[i].setAttribute('x', x - 5); handleDots[i].setAttribute('y', y - 5); });
+  const toStage = onSheet(SHEET_BIG), cXY = confirmXY();
+  cursorMove(now, 7.1, 7.9, [900, 520], toStage(600, 392));
+  if (now >= 8.0 && now < 9.2) cursorAt(...toStage(hx1, hy1));
+  cursorMove(now, 9.25, 9.95, toStage(676, 436), cXY);
+  click(now, 10.15, cXY); pressed(panel.querySelector('#confirm'), now, 10.15);
+  // --- step 2 (T2-T3): the dimension string is highlighted, a known distance is measured, confirm
+  mkDim.setAttribute('opacity', window_(now, T2 + .1, T3 - .3, .3, .3) * (now >= 12.0 ? .65 : 1));
+  measure.setAttribute('opacity', window_(now, 12.0, T3 - .3, .3, .3));
+  const mp = ease(span(now, 12.1, 13.3)), mx = lerp(MX0, MX1, mp);
+  measure.children[0].setAttribute('x2', mx); measure.children[2].setAttribute('cx', mx); measure.children[3].setAttribute('opacity', now >= 13.3 ? 1 : 0);
+  cursorMove(now, 11.3, 12.0, cXY, toStage(MX0, MY));
+  if (now >= 12.1 && now < 13.4) cursorAt(...toStage(mx, MY));
+  cursorMove(now, 13.5, 14.2, toStage(MX1, MY), cXY);
+  click(now, 14.4, cXY); pressed(panel.querySelector('#confirm'), now, 14.4);
+  // --- extraction (T3-T4): walls thicken, openings pop in, rooms fill one by one
+  sheetMove(now, T3, T3 + .5, SHEET_BIG, SHEET_CENTRE);
+  if (now >= T3 + .5 && now < T4) sheetAt(SHEET_CENTRE);
+  show(extPanel, now >= T3 && now < T4); extPanel.style.transform = `translateX(${(1 - ease(span(now, T3, T3 + .5))) * 420}px)`;
+  const DONE = 21.8;
+  efill.style.width = `${Math.round(100 * span(now, 16.0, DONE))}%`;
+  estage.textContent = now < 17.6 ? t('stWalls') : now < 19.0 ? t('stOpen') : now < DONE ? t('stRooms') : t('done');
+  eeta.textContent = now < DONE ? t('left')(Math.max(5, Math.round((DONE - now) * 4 / 5) * 5)) : '';
+  exth.textContent = now < DONE ? t('extracting') : t('done');
+  const wp = now < T4 ? ease(span(now, 16.1, 17.5)) : 1; for (const l of gWalls.children) l.style.strokeWidth = `${wp * WALL}`;
+  [...gOpen.children].forEach((o, i) => o.setAttribute('opacity', now < T4 ? span(now, 17.6 + i * .14, 17.9 + i * .14) : 1));
+  rooms.forEach((r, i) => { const v = now < T4 ? ease(span(now, 19.0 + i * .42, 19.4 + i * .42)) : 1; gRooms.children[i].setAttribute('opacity', v); gLabels.children[i].setAttribute('opacity', v); });
+  inkNames.setAttribute('opacity', .7 * (1 - (now < T4 ? ease(span(now, 19.0, 19.8)) : 1)));   // the drawing's own names give way to the extracted labels
+  const nW = Math.round(N_WALLS * ease(span(now, 16.1, 17.5))), nO = Math.min(9, Math.max(0, Math.floor((now - 17.6) / .14) + 1)), nR = Math.min(5, Math.max(0, Math.floor((now - 19.0) / .42) + 1));
+  counts.replaceChildren(h('span', null, t('stWalls')), h('span', null, now >= 16.1 ? nW : '–'), h('span', null, t('stOpen')), h('span', null, now >= 17.6 ? nO : '–'), h('span', null, t('stRooms')), h('span', null, now >= 19.0 ? nR : '–'));
+  // --- results (T4-T5): the panels, a click on a room, the card, the download menu
+  const res = now >= T4 && now < T5 + .3;
+  sheetMove(now, T4, T4 + .5, SHEET_CENTRE, SHEET_RES);
+  if (now >= T4 + .5) sheetAt(SHEET_RES);
+  show(sideLeft, res); sideLeft.style.transform = `translateX(${(ease(span(now, T4, T4 + .5)) - 1) * 280}px)`;
+  show(sideRight, res); sideRight.style.transform = `translateX(${(1 - ease(span(now, T4, T4 + .5))) * 420}px)`;
+  show(stageBottom, res);
+  const toRes = onSheet(SHEET_RES), r1 = rooms[0], roomXY = toRes(r1.x + r1.w / 2, r1.y + r1.h / 2);
+  cursorMove(now, 22.8, 23.6, cXY, roomXY);
+  click(now, 23.8, roomXY);
+  const selOn = now >= 23.9 && now < T5 + .3;
+  for (const el of [selHalo, selRing]) { el.setAttribute('x', r1.x + O); el.setAttribute('y', r1.y + O); el.setAttribute('width', r1.w - WALL); el.setAttribute('height', r1.h - WALL); el.setAttribute('opacity', selOn ? 1 : 0); }
+  table.querySelector('[data-id="r1"]').classList.toggle('on', selOn);
+  const cardL = 1280 - 400 - 12 - 250, cardT = 12, menuAt = 26.6;
+  show(popup, selOn && now >= 24.1 && now < menuAt); popup.style.left = `${cardL}px`; popup.style.top = `${cardT}px`; popup.style.opacity = ease(span(now, 24.1, 24.4));
+  show(leader, selOn && now >= 24.3 && now < menuAt);
+  const lp = ease(span(now, 24.3, 24.7));
+  const [lx1, ly1] = [cardL, cardT + 60], [tx, ty] = [SHEET_RES[0] + (r1.x + r1.w - O) * SHEET_RES[2], SHEET_RES[1] + (r1.y + 40) * SHEET_RES[2]];
+  leaderLine.setAttribute('x1', lx1); leaderLine.setAttribute('y1', ly1); leaderLine.setAttribute('x2', lerp(lx1, tx, lp)); leaderLine.setAttribute('y2', lerp(ly1, ty, lp));
+  leaderDot.setAttribute('cx', tx); leaderDot.setAttribute('cy', ty); leaderDot.setAttribute('opacity', lp);
+  const dXY = downloadXY();
+  cursorMove(now, 25.6, 26.3, roomXY, dXY);
+  click(now, 26.5, dXY);
+  show(menu, now >= menuAt && now < T5 + .3); menu.style.opacity = ease(span(now, menuAt, menuAt + .3));
+  [...menu.children].forEach((d, i) => d.classList.toggle('on', now >= 27.0 + i * .3 && now < 27.0 + i * .3 + .45));
+  if (now >= 27.0 && now < T5 + .3) cursorAt(1280 - 150 - 140, 56 + 46 + lerp(14, 134, ease(span(now, 27.0, 28.2))));
+  show(cursor, (now >= 7.1 && now < T3 - .2) || (now >= 22.8 && now < T5 + .3));
+}
+
+// ------------------------------------------------------------------------------------------------- play, scrub, fit
+let tNow = 0, playing = true, last = performance.now();
+const scrub = document.getElementById('scrub'), timeEl = document.getElementById('time'), playBtn = document.getElementById('play');
+const scenesEl = document.getElementById('scenes'), langsEl = document.getElementById('langs');
+for (const [at, key] of SCENES) scenesEl.append(h('span', { 'data-at': at }, t(key)));
+scenesEl.addEventListener('click', (e) => { const s = e.target.closest('span'); if (s) seek(+s.dataset.at); });
+for (const l of LANGS) { const b = h('button', { class: l === LANG ? 'on' : '' }, l.toUpperCase()); b.onclick = () => { const u = new URL(location.href); u.searchParams.set('lang', l); location.href = u; }; langsEl.append(b); }
+function seek(sec) { tNow = clamp(sec, 0, TOTAL); render(tNow); scrub.value = tNow; timeEl.textContent = `${tNow.toFixed(1)} / ${TOTAL.toFixed(1)} s`;
+  for (const s of scenesEl.children) s.classList.toggle('on', tNow >= +s.dataset.at && tNow < (+(s.nextSibling && s.nextSibling.dataset.at) || T5)); }
+function loop(ts) {
+  const dt = Math.min(.1, (ts - last) / 1000); last = ts;
+  if (playing) { tNow += dt * SPEED; if (tNow >= TOTAL) { if (Q.has('loop')) tNow = 0; else { tNow = TOTAL; playing = false; playBtn.textContent = 'Play'; } } seek(tNow); }
+  requestAnimationFrame(loop);
+}
+playBtn.onclick = () => { playing = !playing; playBtn.textContent = playing ? 'Pause' : 'Play'; if (playing && tNow >= TOTAL) tNow = 0; };
+document.getElementById('restart').onclick = () => { tNow = 0; playing = true; playBtn.textContent = 'Pause'; seek(0); };
+scrub.oninput = () => { playing = false; playBtn.textContent = 'Play'; seek(+scrub.value); };
+document.addEventListener('keydown', (e) => { if (e.key === ' ') { e.preventDefault(); playBtn.click(); } if (e.key === 'ArrowRight') seek(tNow + 1); if (e.key === 'ArrowLeft') seek(tNow - 1); });
+function fit() { const bare = Q.has('nocontrols'); const s = Math.min((innerWidth - (bare ? 0 : 32)) / 1280, (innerHeight - (bare ? 0 : 90)) / 720, 1); const f = document.getElementById('frame'); f.style.transform = `scale(${s})`; f.style.marginBottom = `${(s - 1) * 720}px`; f.style.marginRight = `${(s - 1) * 1280}px`; }
+addEventListener('resize', fit); fit();
+if (Q.has('nocontrols')) { document.getElementById('bar').classList.add('nocontrols'); document.body.style.padding = '0'; document.body.style.gap = '0'; document.body.style.background = 'var(--bg)'; stage.style.borderRadius = '0'; stage.style.boxShadow = 'none'; fit(); }
+playing = Q.has('autoplay') || !Q.has('paused');
+playBtn.textContent = playing ? 'Pause' : 'Play';
+window.seek = seek; window.film = { total: TOTAL, scenes: SCENES, pause: () => { playing = false; playBtn.textContent = 'Play'; } };
+seek(0);
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

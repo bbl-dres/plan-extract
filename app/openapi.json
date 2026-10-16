@@ -1,0 +1,377 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Floor plan extraction API",
+    "version": "0.1.0",
+    "description": "Extracts rooms, walls, openings, stairs and the gross floor area (GF) from floor plan sheets: PDF, images (JPG, PNG, TIFF) and DXF.\n\n**Prototype: for demonstration purposes only, not for productive use.**\n\n### Two APIs\n\n- **Workflow**: the endpoints the web app uses. Upload a sheet, confirm the building area and the scale, run the extraction, fetch the results. Open, no token. Every sheet is deleted 60 minutes after its last request (also across restarts); new sheets are limited to 6 a minute per address.\n- **Batch (preview)**: many sheets in one job, without the confirmation steps. Needs an API token (`Authorization: Bearer <token>`). Tokens will come with the login of the web app; until then every batch request is answered with `401`.\n\n### Batch processing, step by step\n\n1. `POST /api/v1/batches` creates a batch and sets its rules: the areas (the detected floor plans), the scale (the proposal when its confidence is high enough, else a fixed `px_per_m`) and the exports.\n2. `POST /api/v1/batches/{batch_id}/sheets?name=…` adds one sheet, the file as the request body; once per file.\n3. `POST /api/v1/batches/{batch_id}/start` queues the batch. Each sheet is analysed, its floor plans are taken as detected, the proposed scale is taken or the sheet stops with `needs_scale`, and the extraction runs.\n4. `GET /api/v1/batches/{batch_id}` reports the state of every sheet: poll it, or give a `callback_url`.\n5. `GET /api/v1/batches/{batch_id}/results` returns the exports of all sheets as one ZIP. `DELETE /api/v1/batches/{batch_id}` removes the batch at once (it is deleted automatically after 60 minutes otherwise).\n\n```sh\nTOKEN=…   # from the login, later\nAPI=https://plan-extract.ch/api/v1\nB=$(curl -s -X POST $API/batches -H \"Authorization: Bearer $TOKEN\" \\\n     -H \"Content-Type: application/json\" -d '{\"name\": \"Building 2051\"}' | jq -r .id)\nfor f in *.pdf; do\n  curl -s -X POST \"$API/batches/$B/sheets?name=$f\" -H \"Authorization: Bearer $TOKEN\" \\\n       -H \"Content-Type: application/octet-stream\" --data-binary @\"$f\"\ndone\ncurl -s -X POST $API/batches/$B/start -H \"Authorization: Bearer $TOKEN\"\ncurl -s $API/batches/$B -H \"Authorization: Bearer $TOKEN\"            # repeat until \"done\"\ncurl -s $API/batches/$B/results -H \"Authorization: Bearer $TOKEN\" -o results.zip\n```",
+    "license": {"name": "MIT", "identifier": "MIT"}
+  },
+  "servers": [{"url": "/", "description": "This server"}],
+  "tags": [
+    {"name": "Batch (preview)", "description": "Many sheets in one job, no confirmation steps. Needs an API token; tokens are not issued yet, so every request is answered with 401."},
+    {"name": "Workflow", "description": "The steps of the web app: upload, building area, scale, extraction, results. Open, no token."},
+    {"name": "Service", "description": "The state of the server."}
+  ],
+  "paths": {
+    "/api/v1/batches": {
+      "post": {
+        "tags": ["Batch (preview)"], "summary": "Create a batch", "operationId": "createBatch",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/BatchCreate"}}}},
+        "responses": {
+          "201": {"description": "The batch, open for sheets.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Batch"}}}},
+          "401": {"$ref": "#/components/responses/Unauthorized"}
+        }
+      }
+    },
+    "/api/v1/batches/{batch_id}": {
+      "parameters": [{"$ref": "#/components/parameters/BatchId"}],
+      "get": {
+        "tags": ["Batch (preview)"], "summary": "The state of a batch and its sheets", "operationId": "getBatch",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {"description": "The batch.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Batch"}}}},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "404": {"$ref": "#/components/responses/NotFound"}
+        }
+      },
+      "delete": {
+        "tags": ["Batch (preview)"], "summary": "Delete a batch and its files", "operationId": "deleteBatch",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "204": {"description": "Deleted."},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "404": {"$ref": "#/components/responses/NotFound"}
+        }
+      }
+    },
+    "/api/v1/batches/{batch_id}/sheets": {
+      "parameters": [{"$ref": "#/components/parameters/BatchId"}],
+      "post": {
+        "tags": ["Batch (preview)"], "summary": "Add a sheet to a batch", "operationId": "addBatchSheet",
+        "description": "The file is the request body; one request per file. Only while the batch is open.",
+        "security": [{"bearerAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/FileName"}],
+        "requestBody": {"required": true, "content": {"application/octet-stream": {"schema": {"type": "string", "format": "binary"}}}},
+        "responses": {
+          "201": {"description": "The sheet, waiting for the start.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/BatchSheet"}}}},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "409": {"description": "The batch has started; sheets can no longer be added.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Error"}}}}
+        }
+      }
+    },
+    "/api/v1/batches/{batch_id}/start": {
+      "parameters": [{"$ref": "#/components/parameters/BatchId"}],
+      "post": {
+        "tags": ["Batch (preview)"], "summary": "Start processing a batch", "operationId": "startBatch",
+        "description": "Each sheet: analysis, the detected floor plans taken as they are, the proposed scale taken when its confidence reaches `min_confidence` (else the batch's `px_per_m`, else the sheet stops with `needs_scale`), extraction, exports.",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "202": {"description": "Queued.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Batch"}}}},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "409": {"description": "Already started, or no sheet added.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Error"}}}}
+        }
+      }
+    },
+    "/api/v1/batches/{batch_id}/results": {
+      "parameters": [{"$ref": "#/components/parameters/BatchId"}],
+      "get": {
+        "tags": ["Batch (preview)"], "summary": "The exports of all sheets as one ZIP", "operationId": "getBatchResults",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {"description": "One folder per sheet with the chosen exports, and `batch.json` with the state of every sheet.", "content": {"application/zip": {"schema": {"type": "string", "format": "binary"}}}},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "409": {"description": "The batch is not finished yet.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Error"}}}}
+        }
+      }
+    },
+
+    "/api/upload": {
+      "post": {
+        "tags": ["Workflow"], "summary": "Upload a sheet", "operationId": "upload",
+        "description": "The file is the request body (PDF, JPG, PNG, TIFF, BMP, GIF, WEBP, DXF, DWG with a converter; up to 300 MB). Creates a sheet job and queues its analysis: the layout of the sheet, then the scale cues of its floor plans. Poll `GET /api/sheets/{id}` until `status` is `ready`.",
+        "parameters": [{"$ref": "#/components/parameters/FileName"}],
+        "requestBody": {"required": true, "content": {"application/octet-stream": {"schema": {"type": "string", "format": "binary"}}}},
+        "responses": {
+          "200": {"description": "The new sheet job.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/JobCreated"}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "413": {"description": "Larger than 300 MB."},
+          "429": {"description": "More than 6 new sheets a minute from this address."}
+        }
+      }
+    },
+    "/api/demo": {
+      "get": {
+        "tags": ["Workflow"], "summary": "The bundled demo sheet", "operationId": "getDemo",
+        "responses": {"200": {"description": "The demo sheet, or null when the server has none.", "content": {"application/json": {"schema": {"type": "object", "properties": {"demo": {"oneOf": [{"$ref": "#/components/schemas/Demo"}, {"type": "null"}]}}}}}}}
+      },
+      "post": {
+        "tags": ["Workflow"], "summary": "Start a sheet job from the demo sheet", "operationId": "startDemo",
+        "responses": {
+          "200": {"description": "The new sheet job.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/JobCreated"}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "429": {"description": "More than 6 new sheets a minute from this address."}
+        }
+      }
+    },
+    "/api/sheets/{id}": {
+      "parameters": [{"$ref": "#/components/parameters/SheetId"}],
+      "get": {
+        "tags": ["Workflow"], "summary": "A sheet job", "operationId": "getSheet",
+        "description": "With `rev`, the revision the client holds: `{\"unchanged\": true}` while nothing changed, so polling is cheap.",
+        "parameters": [{"name": "rev", "in": "query", "schema": {"type": "integer"}}],
+        "responses": {
+          "200": {"description": "The job, or `{id, rev, unchanged: true}`.", "content": {"application/json": {"schema": {"oneOf": [{"$ref": "#/components/schemas/Job"}, {"$ref": "#/components/schemas/Unchanged"}]}}}},
+          "404": {"$ref": "#/components/responses/NotFound"}
+        }
+      },
+      "delete": {
+        "tags": ["Workflow"], "summary": "Delete a sheet job and its files", "operationId": "deleteSheet",
+        "description": "A job the worker is busy with is deleted as soon as the worker is done with it (`pending: true`).",
+        "responses": {
+          "200": {"description": "Deleted.", "content": {"application/json": {"schema": {"type": "object", "properties": {"deleted": {"type": "string"}, "pending": {"type": "boolean"}}}}}},
+          "404": {"$ref": "#/components/responses/NotFound"}
+        }
+      }
+    },
+    "/api/sheets/{id}/confirm": {
+      "parameters": [{"$ref": "#/components/parameters/SheetId"}],
+      "post": {
+        "tags": ["Workflow"], "summary": "Confirm the area, scale or selection of drawings", "operationId": "confirm",
+        "description": "Merged per drawing key (`<package>/<drawing>`) into the job's confirmations.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["confirm"], "properties": {"confirm": {"type": "object", "additionalProperties": {"$ref": "#/components/schemas/Confirmation"}}}},
+          "example": {"confirm": {"p1/d1": {"area_confirmed": true, "polygon_px": [[120, 80], [2400, 80], [2400, 1700], [120, 1700]]}}}}}},
+        "responses": {
+          "200": {"description": "All confirmations of the job.", "content": {"application/json": {"schema": {"type": "object", "properties": {"confirm": {"type": "object", "additionalProperties": {"$ref": "#/components/schemas/Confirmation"}}}}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "404": {"$ref": "#/components/responses/NotFound"}
+        }
+      }
+    },
+    "/api/sheets/{id}/scale": {
+      "parameters": [{"$ref": "#/components/parameters/SheetId"}],
+      "post": {
+        "tags": ["Workflow"], "summary": "Read the scale cues of drawings again", "operationId": "readScale",
+        "description": "The analysis reads the scale cues inside the detected areas of the floor plans. This is for a changed area or another drawing; with `doors: true` the scale is estimated from the width of the detected doors (rough).",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["keys"], "properties": {"keys": {"type": "array", "items": {"type": "string"}, "example": ["p1/d1"]}, "doors": {"type": "boolean", "default": false}}}}}},
+        "responses": {
+          "200": {"description": "Queued.", "content": {"application/json": {"schema": {"type": "object", "properties": {"status": {"const": "scaling"}, "keys": {"type": "array", "items": {"type": "string"}}}}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "404": {"$ref": "#/components/responses/NotFound"}
+        }
+      }
+    },
+    "/api/sheets/{id}/run": {
+      "parameters": [{"$ref": "#/components/parameters/SheetId"}],
+      "post": {
+        "tags": ["Workflow"], "summary": "Run the extraction", "operationId": "run",
+        "description": "Stages 2 to 10 of the pipeline for the drawings confirmed for extraction, at their confirmed area and scale. About a minute per drawing.",
+        "responses": {
+          "200": {"description": "Queued.", "content": {"application/json": {"schema": {"type": "object", "properties": {"status": {"const": "queued"}, "text_ahead": {"type": "boolean", "description": "Whether the text of every selected drawing was (or is being) read ahead: the run is shorter then."}}}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "404": {"$ref": "#/components/responses/NotFound"}
+        }
+      }
+    },
+    "/api/sheets/{id}/live": {
+      "parameters": [{"$ref": "#/components/parameters/SheetId"}, {"$ref": "#/components/parameters/Key"}],
+      "get": {
+        "tags": ["Workflow"], "summary": "The geometry found so far while a drawing is extracted", "operationId": "live",
+        "responses": {
+          "200": {"description": "Walls, openings, stairs, rooms and GF so far, in pixels of the working image; `{\"stage\": null}` before the first stage.", "content": {"application/json": {"schema": {"type": "object", "properties": {"stage": {"type": ["string", "null"]}}, "additionalProperties": true}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "404": {"$ref": "#/components/responses/NotFound"}
+        }
+      }
+    },
+    "/api/sheets/{id}/results": {
+      "parameters": [{"$ref": "#/components/parameters/SheetId"}, {"$ref": "#/components/parameters/Key"}],
+      "get": {
+        "tags": ["Workflow"], "summary": "The results of a drawing", "operationId": "results",
+        "description": "Rooms (name, number, net and gross area, stamp area, confidence, geometry), walls, openings, stairs, voids, the floor figures (GF), the room connections and the QA findings, in plan metres.",
+        "responses": {
+          "200": {"description": "The results.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Results"}}}},
+          "404": {"$ref": "#/components/responses/NotFound"}
+        }
+      }
+    },
+    "/api/sheets/{id}/rooms.csv": {
+      "parameters": [{"$ref": "#/components/parameters/SheetId"}, {"$ref": "#/components/parameters/Key"}],
+      "get": {
+        "tags": ["Workflow"], "summary": "The room list as CSV", "operationId": "roomsCsv",
+        "responses": {"200": {"description": "One row per room, with its review state.", "content": {"text/csv": {"schema": {"type": "string"}}}}, "404": {"$ref": "#/components/responses/NotFound"}}
+      }
+    },
+    "/api/sheets/{id}/file/{name}": {
+      "parameters": [
+        {"$ref": "#/components/parameters/SheetId"},
+        {"name": "name", "in": "path", "required": true, "description": "A file named in the job or its results: the preview, the working image, the overlay, the JSON, DXF, Excel or IFC export.", "schema": {"type": "string"}},
+        {"name": "download", "in": "query", "description": "Send the file as an attachment.", "schema": {"type": "string"}}
+      ],
+      "get": {
+        "tags": ["Workflow"], "summary": "A file of the sheet job", "operationId": "file",
+        "responses": {"200": {"description": "The file.", "content": {"application/octet-stream": {"schema": {"type": "string", "format": "binary"}}}}, "404": {"$ref": "#/components/responses/NotFound"}}
+      }
+    },
+    "/api/sheets/{id}/review": {
+      "parameters": [{"$ref": "#/components/parameters/SheetId"}],
+      "post": {
+        "tags": ["Workflow"], "summary": "Mark rooms as checked", "operationId": "review",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["key", "rooms"], "properties": {"key": {"type": "string", "example": "p1/d1"}, "rooms": {"type": "object", "additionalProperties": {"type": "object", "properties": {"checked": {"type": "boolean"}}}, "example": {"r01": {"checked": true}}}}}}}},
+        "responses": {"200": {"description": "The review of the drawing."}, "400": {"$ref": "#/components/responses/BadRequest"}, "404": {"$ref": "#/components/responses/NotFound"}}
+      }
+    },
+    "/api/sheets/{id}/log": {
+      "parameters": [{"$ref": "#/components/parameters/SheetId"}],
+      "get": {
+        "tags": ["Workflow"], "summary": "The log of the sheet job", "operationId": "log",
+        "responses": {"200": {"description": "The full log.", "content": {"text/plain": {"schema": {"type": "string"}}}}, "404": {"$ref": "#/components/responses/NotFound"}}
+      }
+    },
+    "/api/health": {
+      "get": {
+        "tags": ["Service"], "summary": "What the pipeline needs, and whether it is there", "operationId": "health",
+        "responses": {"200": {"description": "The pipeline check.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Health"}}}}}
+      }
+    },
+    "/api/status": {
+      "get": {
+        "tags": ["Service"], "summary": "The queue and the worker right now", "operationId": "status",
+        "description": "For monitoring: sheets waiting or running per lane, what each worker does and for how long, free disk and the server's memory.",
+        "responses": {"200": {"description": "The state of the server.", "content": {"application/json": {"schema": {"type": "object", "properties": {
+          "queue": {"type": "integer", "description": "Work items waiting in both lanes."},
+          "queued": {"type": "object", "properties": {"light": {"type": "integer"}, "heavy": {"type": "integer"}}, "description": "Waiting per lane: light (analysis, scale step), heavy (extraction, read-ahead)."},
+          "workers": {"type": "object", "properties": {"light": {"type": "integer"}, "heavy": {"type": "integer"}, "processes": {"type": "boolean", "description": "Whether the heavy lane runs in worker processes."}}},
+          "busy": {"type": "integer", "description": "Sheets analysing, scaling, queued or running."},
+          "jobs": {"type": "integer", "description": "Sheets on the server."},
+          "worker_alive": {"type": "boolean"},
+          "working": {"type": ["array", "null"], "items": {"type": "object", "properties": {"worker": {"type": "string"}, "kind": {"enum": ["analyse", "scale", "extract", "prefetch"]}, "seconds": {"type": "integer"}}}, "description": "What each busy worker does; null when all are idle."},
+          "free_disk_gb": {"type": "number"},
+          "rss_mb": {"type": ["integer", "null"], "description": "Resident memory of the server (Linux)."}}}}}}}
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "API token", "description": "An API token from your account in the web app (Log in). Not issued yet: every token is refused for now."}
+    },
+    "parameters": {
+      "BatchId": {"name": "batch_id", "in": "path", "required": true, "schema": {"type": "string"}},
+      "SheetId": {"name": "id", "in": "path", "required": true, "description": "The id from the upload.", "schema": {"type": "string", "pattern": "^[\\w-]+$"}},
+      "Key": {"name": "key", "in": "query", "required": true, "description": "A drawing of the sheet: `<package>/<drawing>`.", "schema": {"type": "string", "example": "p1/d1"}},
+      "FileName": {"name": "name", "in": "query", "required": true, "description": "The file name; its extension decides how the file is read.", "schema": {"type": "string", "example": "ground-floor.pdf"}}
+    },
+    "responses": {
+      "BadRequest": {"description": "The request cannot be carried out; the message says why.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Error"}}}},
+      "NotFound": {"description": "No such sheet job (or it was deleted), route or result.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Error"}}}},
+      "Unauthorized": {
+        "description": "No API token, or not a valid one (none are issued yet).",
+        "headers": {"WWW-Authenticate": {"description": "`Bearer realm=\"plan-extract\"`, with `error=\"invalid_token\"` when a token was sent.", "schema": {"type": "string"}}},
+        "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TokenError"}}}
+      }
+    },
+    "schemas": {
+      "Error": {"type": "object", "required": ["error"], "properties": {
+        "error": {"type": "string", "description": "What went wrong, in English."},
+        "code": {"description": "Names the error for a client that shows its own text (the web app translates it).", "enum": [
+          "bad_request", "too_large", "empty", "unsupported_type", "unreadable", "too_many_pages", "server_busy", "disk_full",
+          "sheet_busy", "not_analysed", "nothing_selected", "implausible_scale", "no_demo", "cross_site", "not_found", "internal", null]}}},
+      "TokenError": {"type": "object", "properties": {"error": {"enum": ["token_required", "invalid_token"]}, "message": {"type": "string"}, "docs": {"type": "string"}}},
+      "JobCreated": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}, "status": {"const": "analysing"}}},
+      "Unchanged": {"type": "object", "properties": {"id": {"type": "string"}, "rev": {"type": "integer"}, "unchanged": {"const": true}, "queue": {"type": "object", "properties": {"position": {"type": "integer"}, "wait": {"type": "integer"}}, "description": "Only while the job's work waits in a queue: its place and the expected wait, which move while the record does not."}}},
+      "Demo": {"type": "object", "properties": {"file": {"type": "string"}, "title": {"type": "string"}, "source": {"type": "string"}, "licence": {"type": "string"}, "size": {"type": "integer"}}},
+      "Job": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"}, "name": {"type": "string"}, "created": {"type": "string"}, "rev": {"type": "integer"},
+          "status": {"enum": ["analysing", "ready", "scaling", "queued", "running", "done", "error"]},
+          "progress": {"type": ["object", "null"], "properties": {"key": {"type": ["string", "null"]}, "stage": {"type": "string"}, "since": {"type": "number", "description": "When the stage began (Unix seconds)."}, "ahead": {"type": "boolean", "description": "An extraction whose drawing text was read ahead."}, "doors": {"type": "boolean", "description": "A scale step that searches door widths."}, "position": {"type": "integer", "description": "While the work waits in its lane: jobs ahead of it."}, "wait": {"type": "integer", "description": "While it waits: seconds until a worker is expected to take it."}}},
+          "error": {"type": ["string", "null"]},
+          "log": {"type": "array", "items": {"type": "string"}, "description": "The last 40 lines."},
+          "analysis": {"type": ["object", "null"], "description": "Per page (package): the regions of the sheet and its drawings with their kind, area and scale proposal."},
+          "confirm": {"type": "object", "additionalProperties": {"$ref": "#/components/schemas/Confirmation"}},
+          "results": {"type": ["object", "null"], "description": "Per drawing key: the output files, the summary (rooms, GF) and the timings."},
+          "times": {"type": "object"}
+        }
+      },
+      "Confirmation": {
+        "type": "object",
+        "properties": {
+          "extract": {"type": "boolean", "description": "Extract this drawing."},
+          "area_confirmed": {"type": "boolean"},
+          "polygon_px": {"type": ["array", "null"], "items": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2}, "description": "The building area in sheet pixels; null for the detected one."},
+          "scale_confirmed": {"type": "boolean"},
+          "px_per_m": {"type": ["number", "null"], "description": "The confirmed scale: sheet pixels per metre."},
+          "scale_source": {"type": ["string", "null"], "examples": ["proposal", "measured", "dpi changed"]},
+          "measured": {"type": ["object", "null"], "description": "A measured distance: px, distance, unit, p1, p2."},
+          "dpi": {"type": ["number", "null"]},
+          "storey": {"type": ["string", "null"]},
+          "proposal_px_per_m": {"type": ["number", "null"], "readOnly": true},
+          "scale_pending": {"type": "boolean", "readOnly": true, "description": "The scale cues are being read (again)."},
+          "scale_area": {"type": ["array", "null"], "readOnly": true, "description": "The area the scale cues were read in; null for the detected one."}
+        }
+      },
+      "Results": {
+        "type": "object",
+        "properties": {
+          "key": {"type": "string"}, "title": {"type": ["string", "null"]}, "storey": {"type": ["string", "null"]},
+          "px_per_m": {"type": "number"}, "extent": {"type": "array", "items": {"type": "number"}},
+          "rooms": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": ["string", "null"]}, "number": {"type": ["string", "null"]}, "area_net": {"type": "number"}, "area_net_simple": {"type": ["number", "null"], "description": "Net area of the simplified polygon (the wall-graph face minus the wall bands)."}, "area_gross": {"type": "number"}, "gross_basis": {"enum": ["wall axes", "pixels"], "description": "Where the gross polygon comes from: a closed face of the wall graph, or the pixel partition when the graph is not closed there."}, "face_flags": {"type": "array", "items": {"type": "string"}}, "area_stamp": {"type": ["number", "null"]}, "confidence": {"enum": ["high", "medium", "low"]}, "geometry": {"type": "object", "description": "GeoJSON polygon in plan metres (the exact outline at the wall faces)."}, "geometry_simple": {"type": ["object", "null"], "description": "The simplified net polygon (few vertices), when the wall graph closes around the room."}, "geometry_gross": {"type": ["object", "null"], "description": "The gross polygon to the wall axes."}}}},
+          "walls": {"type": "array", "description": "The regularised wall polygons."}, "walls_raw": {"type": "array", "description": "The wall outline as segmented (pixels)."},
+          "wall_segments": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "centre_line": {"type": "object", "description": "GeoJSON line string in plan metres: the wall axis, snapped into the wall graph."}, "thickness": {"type": "number"}, "length": {"type": "number"}, "kind": {"enum": ["exterior", "interior", "unknown"]}, "rooms": {"type": "array", "items": {"type": ["string", "null"]}, "description": "The room on each side of the axis (\"outside\" for the facade, null when none)."}, "construction": {"type": ["string", "null"]}, "notes": {"type": "array", "items": {"type": "string"}, "description": "snapped, extended, open end."}, "openings": {"type": "array"}}}},
+          "openings": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "kind": {"type": "string"}, "width": {"type": ["number", "null"]}, "host": {"type": ["string", "null"], "description": "The wall segment that holds the opening."}, "connects": {"type": "array", "items": {"type": ["string", "null"]}}, "flag": {"type": ["string", "null"]}, "geometry": {"type": "object"}}}},
+          "stairs": {"type": "array"}, "voids": {"type": "array"},
+          "floor": {"type": "object", "properties": {"gf_area": {"type": "number"}, "sum_net": {"type": "number"}, "sum_net_simple": {"type": ["number", "null"]}, "sum_gross": {"type": ["number", "null"]}, "facade_half_wall": {"type": ["number", "null"], "description": "The outer half of the facade walls: GF = sum of the gross areas + this band (+ faces no room owns)."}}},
+          "connectivity": {"type": "array"}, "qa": {"type": "array"}, "files": {"type": "object"}
+        },
+        "additionalProperties": true
+      },
+      "Health": {
+        "type": "object",
+        "properties": {
+          "ok": {"type": "boolean"}, "public": {"type": "boolean"}, "keep_minutes": {"type": ["integer", "null"]},
+          "python": {"type": "string"}, "threads": {"type": "integer"}, "pipeline_dir": {"type": "string"},
+          "items": {"type": "object", "additionalProperties": {"type": "object", "properties": {"ok": {"type": "boolean"}, "detail": {"type": "string"}}}}
+        }
+      },
+      "BatchCreate": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string", "example": "Building 2051"},
+          "area": {"enum": ["detected"], "default": "detected", "description": "The building area of each floor plan: as detected."},
+          "min_confidence": {"enum": ["high", "medium", "low"], "default": "medium", "description": "The lowest confidence of a scale proposal that is taken without a person."},
+          "px_per_m": {"type": "number", "description": "The scale for sheets whose proposal is below `min_confidence`; without it they stop with `needs_scale`."},
+          "outputs": {"type": "array", "items": {"enum": ["json", "xlsx", "dxf", "ifc", "csv", "pdf"]}, "default": ["json", "xlsx"], "description": "The exports to write. `pdf`, a report with the plan, the figures and the room list, is planned and not written yet."},
+          "callback_url": {"type": "string", "format": "uri", "description": "Called with the batch (POST, JSON) when it is finished."}
+        }
+      },
+      "Batch": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"}, "name": {"type": "string"}, "created": {"type": "string", "format": "date-time"},
+          "status": {"enum": ["open", "queued", "running", "done", "error"]},
+          "counts": {"type": "object", "properties": {"sheets": {"type": "integer"}, "done": {"type": "integer"}, "needs_scale": {"type": "integer"}, "error": {"type": "integer"}}},
+          "sheets": {"type": "array", "items": {"$ref": "#/components/schemas/BatchSheet"}}
+        }
+      },
+      "BatchSheet": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"}, "name": {"type": "string"},
+          "status": {"enum": ["waiting", "analysing", "extracting", "done", "needs_scale", "error"]},
+          "error": {"type": ["string", "null"]},
+          "drawings": {"type": "array", "items": {"$ref": "#/components/schemas/BatchDrawing"}}
+        }
+      },
+      "BatchDrawing": {
+        "type": "object",
+        "properties": {
+          "key": {"type": "string", "example": "p1/d1"}, "title": {"type": ["string", "null"]}, "storey": {"type": ["string", "null"]},
+          "scale": {"type": "object", "properties": {"px_per_m": {"type": "number"}, "source": {"enum": ["proposal", "batch"]}, "confidence": {"enum": ["high", "medium", "low"]}}},
+          "rooms": {"type": "integer"}, "gf_area_m2": {"type": "number"},
+          "outputs": {"type": "object", "additionalProperties": {"type": "string", "format": "uri"}}
+        }
+      }
+    }
+  }
+}

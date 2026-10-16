@@ -1,0 +1,2 @@
+# Deployment files run on Linux: LF everywhere, also in a Windows checkout (bash fails on CR)
+* text eol=lf

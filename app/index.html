@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="app.title">Floor plan extraction</title>
+<!-- the copy GitHub Pages publishes cannot reach the pipeline: forward it to the hosted app (app/deploy) -->
+<script>if (location.hostname.endsWith('github.io')) location.replace('https://plan-extract.ch/' + location.search + location.hash);</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%232f6ea6%27/%3E%3Ctext x=%2716%27 y=%2721%27 font-family=%27IBM Plex Sans,system-ui,sans-serif%27 font-size=%2713%27 font-weight=%27700%27 fill=%27white%27 text-anchor=%27middle%27%3Efpx%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/banner.css">
+<link rel="stylesheet" href="css/styles.css">
+<script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js" } }</script>
+</head>
+<body>
+<noscript>This app needs JavaScript.</noscript>
+
+<div id="offline" class="offline" hidden>
+  <div class="offline-card">
+    <div class="brand"><span class="brand-name" data-i18n="app.title">Floor plan extraction</span></div>
+    <h2 data-i18n="offline.title">The app server is not reachable</h2>
+    <p data-i18n="offline.text">This page was opened from disk or from another web server, so it cannot reach the extraction pipeline. Start the app server from the repository root and open the address it prints:</p>
+    <pre>python app/server.py
+Floor plan workflow app: http://127.0.0.1:8765/</pre>
+    <p class="muted" data-i18n-html="offline.public">Or use the public instance: <a href="https://plan-extract.ch/">plan-extract.ch</a>.</p>
+  </div>
+</div>
+
+<div id="app" class="app" hidden>
+  <aside class="prototype-banner" role="note"><span class="prototype-banner-label" data-i18n="banner.label">Prototype</span><span data-i18n="banner.text">For demonstration purposes only, not for productive use.</span></aside>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-name" data-i18n="app.title">Floor plan extraction</span>
+      <span id="crumb" class="crumb" hidden><span class="crumb-sep">/</span><span id="crumb-text"></span></span>
+    </div>
+    <div class="topbar-right">
+      <button id="btn-start-over" class="btn" hidden data-i18n="top.startOver">Start over</button>
+      <div id="download-menu" class="menu" hidden>
+        <button class="btn btn-primary" aria-haspopup="menu" aria-expanded="false"><span data-i18n="top.download">Download</span> <span class="caret" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="6 9 12 15 18 9"/></svg></span></button>
+        <div class="menu-list" role="menu" hidden></div>
+      </div>
+      <button id="btn-help" class="btn" data-i18n="top.help">Help</button>
+      <select id="lang-select" class="select" aria-label="Sprache · Langue · Lingua · Language">
+        <option value="de" lang="de">DE</option>
+        <option value="fr" lang="fr">FR</option>
+        <option value="it" lang="it">IT</option>
+        <option value="en" lang="en">EN</option>
+      </select>
+      <button id="btn-login" class="btn" data-i18n="top.login">Log in</button>
+    </div>
+  </header>
+  <div id="screen" class="screen"></div>
+  <footer class="footer">
+    <span class="footer-version">v0.1.0</span>
+    <span class="footer-links">
+      <a class="footer-link" href="/api/docs" target="_blank" rel="noopener" data-i18n="footer.api">API</a>
+      <a class="footer-link" href="https://github.com/bbl-dres/plan-extract" target="_blank" rel="noopener" data-i18n="footer.source">Source code</a>
+    </span>
+  </footer>
+</div>
+
+<div id="help" class="modal" role="dialog" aria-modal="true" aria-labelledby="help-title" hidden>
+  <div class="modal-card">
+    <div class="modal-head"><h2 id="help-title" data-i18n="help.title">How this works</h2><button class="btn btn-icon" id="help-close" aria-label="Close" data-i18n-aria-label="common.close"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <ol>
+      <li data-i18n-html="help.upload"><b>Upload</b>: one sheet per floor plan (PDF, JPG, PNG, TIFF, DXF), or the demo sheet. Drawing, title block and scale are read.</li>
+      <li data-i18n-html="help.area"><b>Building area</b>: confirm the detected outline. The whole building inside, title block and legend outside.</li>
+      <li data-i18n-html="help.scale"><b>Scale</b>: check the scale that was read. If it is missing or wrong, measure a known distance.</li>
+      <li data-i18n-html="help.results"><b>Results</b>: walls, openings and rooms appear as they are found (about a minute). Review the rooms, then download JSON, Excel, DXF, IFC or CSV.</li>
+    </ol>
+    <p class="muted" id="help-storage" data-i18n-html="help.storageLocal">Everything runs locally in <code>app/data/</code> (gitignored). Nothing is uploaded anywhere.</p>
+  </div>
+</div>
+
+<div id="login" class="modal" role="dialog" aria-modal="true" aria-labelledby="login-title" hidden>
+  <div class="modal-card">
+    <div class="modal-head"><h2 id="login-title" data-i18n="login.title">Log in</h2><button class="btn btn-icon" id="login-close" aria-label="Close" data-i18n-aria-label="common.close"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <p data-i18n="login.text">Logging in is not available yet. With an account you will get an API token for batch processing: many sheets at once, without the steps of this page.</p>
+    <p><a href="/api/docs" target="_blank" rel="noopener" data-i18n="login.docs">The batch API in the API documentation</a></p>
+  </div>
+</div>
+
+<div id="fatal" class="error-box fatal" hidden></div>
+<script>
+  // a script error must never leave a silent blank page: show it, with the file and line
+  (function () {
+    function show(msg) { var el = document.getElementById('fatal'); if (!el) return; el.hidden = false; el.innerHTML = '<div><b>Script error:</b> ' + String(msg).replace(/[<>&]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]; }) + '</div><div><button type="button" class="btn btn-sm" onclick="this.closest(\'.fatal\').hidden = true">Close</button></div>'; }
+    window.addEventListener('error', function (e) { show((e.message || e.error) + (e.filename ? ' (' + e.filename.split('/').pop() + ':' + e.lineno + ')' : '')); });
+    window.addEventListener('unhandledrejection', function (e) { show(e.reason && e.reason.stack ? e.reason.stack.split('\n').slice(0, 3).join(' ') : e.reason); });
+  })();
+</script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

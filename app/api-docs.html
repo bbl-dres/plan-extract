@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API · Floor plan extraction</title>
+<!-- The API documentation, served at /api/docs: Swagger UI (vendored) over openapi.json, in the app's own frame
+     (banner, top bar with Help, language and Log in, footer). The frame speaks the page's language, the description
+     is English. Absolute paths: the page lives under /api/. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%232f6ea6%27/%3E%3Ctext x=%2716%27 y=%2721%27 font-family=%27IBM Plex Sans,system-ui,sans-serif%27 font-size=%2713%27 font-weight=%27700%27 fill=%27white%27 text-anchor=%27middle%27%3Efpx%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/banner.css">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/js/vendor/swagger-ui/swagger-ui.css">
+<link rel="stylesheet" href="/css/api-docs.css">
+</head>
+<body>
+<div class="app">
+  <aside class="prototype-banner" role="note"><span class="prototype-banner-label" data-i18n="banner.label">Prototype</span><span data-i18n="banner.text">For demonstration purposes only, not for productive use.</span></aside>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-name" data-i18n="app.title">Floor plan extraction</span>
+      <span class="crumb"><span class="crumb-sep">/</span><span>API</span></span>
+    </div>
+    <div class="topbar-right">
+      <a class="btn" href="/" data-i18n="top.back">Back</a>
+      <button id="btn-help" class="btn" data-i18n="top.help">Help</button>
+      <select id="lang-select" class="select" aria-label="Sprache · Langue · Lingua · Language">
+        <option value="de" lang="de">DE</option>
+        <option value="fr" lang="fr">FR</option>
+        <option value="it" lang="it">IT</option>
+        <option value="en" lang="en">EN</option>
+      </select>
+      <button id="btn-login" class="btn" data-i18n="top.login">Log in</button>
+    </div>
+  </header>
+  <main id="swagger" class="docs-main"></main>
+  <footer class="footer">
+    <span class="footer-version">v0.1.0</span>
+    <span class="footer-links">
+      <a class="footer-link" href="/api/openapi.json">openapi.json</a>
+      <a class="footer-link" href="https://github.com/bbl-dres/plan-extract" target="_blank" rel="noopener">Source code</a>
+    </span>
+  </footer>
+</div>
+<div id="help" class="modal" role="dialog" aria-modal="true" aria-labelledby="help-title" hidden>
+  <div class="modal-card">
+    <div class="modal-head"><h2 id="help-title" data-i18n="help.title">How this works</h2><button class="btn btn-icon" id="help-close" aria-label="Close" data-i18n-aria-label="common.close"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <ol>
+      <li data-i18n-html="help.upload"><b>Upload</b>: one sheet per floor plan (PDF, JPG, PNG, TIFF, DXF), or the demo sheet. Drawing, title block and scale are read.</li>
+      <li data-i18n-html="help.area"><b>Building area</b>: confirm the detected outline. The whole building inside, title block and legend outside.</li>
+      <li data-i18n-html="help.scale"><b>Scale</b>: check the scale that was read. If it is missing or wrong, measure a known distance.</li>
+      <li data-i18n-html="help.results"><b>Results</b>: walls, openings and rooms appear as they are found (about a minute). Review the rooms, then download JSON, Excel, DXF, IFC or CSV.</li>
+    </ol>
+  </div>
+</div>
+
+<div id="login" class="modal" role="dialog" aria-modal="true" aria-labelledby="login-title" hidden>
+  <div class="modal-card">
+    <div class="modal-head"><h2 id="login-title" data-i18n="login.title">Log in</h2><button class="btn btn-icon" id="login-close" aria-label="Close" data-i18n-aria-label="common.close"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <p data-i18n="login.text">Logging in is not available yet. With an account you will get an API token for batch processing: many sheets at once, without the steps of this page.</p>
+    <p><a href="/api/docs" target="_blank" rel="noopener" data-i18n="login.docs">The batch API in the API documentation</a></p>
+  </div>
+</div>
+
+<noscript>This page needs JavaScript. The API description itself is at <a href="/api/openapi.json">/api/openapi.json</a>.</noscript>
+<script src="/js/vendor/swagger-ui/swagger-ui-bundle.js"></script>
+<script type="module" src="/js/api-docs.js"></script>
+</body>
+</html>

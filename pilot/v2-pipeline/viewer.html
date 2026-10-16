@@ -1,0 +1,1865 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pilot v2 Viewer</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f5f6f7; --panel: #ffffff; --text: #1a1d21; --muted: #646b74; --border: #dfe2e6; --line: #f0f1f3;
+    --grid: #e3e6ea; --track: #eef0f2; --hover: #f5f6f7; --disabled: #9aa1ab;
+    --accent: #007daa; --accent-ink: #00567d; --accent-soft: #e2f1fa; --on-accent: #ffffff;
+    --high: #2e9e5b; --highc: #8a93a3; --medium: #d99a1e; --low: #d0433b; --ref: #8e3fc7;
+    --wall2d: #2b3a55; --wall3d: #d6d9df; --void: #1f78b4; --door: #d0433b; --window: #2f8fd8;
+    --passage: #f08a24; --stair: #c23fbf; --gf: #111827; --graph: #0f766e; --frag: #c9cdd3; --column: #4b5563;
+    --ok-bg: #e6f4ec; --ok-ink: #1f7a45; --warn-bg: #fdf6e3; --warn-border: #e8c777; --warn-ink: #5c3d00;
+    --halo: #ffffff;
+    --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #14171c; --panel: #1d2128; --text: #e6e9ef; --muted: #9aa3b2; --border: #323844; --line: #272c35;
+      --grid: #1f242c; --track: #2c323c; --hover: #262b34; --disabled: #6c7380;
+      --accent: #2b9fd0; --accent-ink: #8fd0f0; --accent-soft: #16313e; --wall3d: #c9ced8; --highc: #7d8696; --frag: #596170;
+      --ok-bg: #173325; --ok-ink: #7ad3a0; --warn-bg: #362c12; --warn-border: #7a6224; --warn-ink: #f3d68a; --halo: #0b0d10;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #14171c; --panel: #1d2128; --text: #e6e9ef; --muted: #9aa3b2; --border: #323844; --line: #272c35;
+    --grid: #1f242c; --track: #2c323c; --hover: #262b34; --disabled: #6c7380;
+    --accent: #2b9fd0; --accent-ink: #8fd0f0; --accent-soft: #16313e; --wall3d: #c9ced8; --highc: #7d8696; --frag: #596170;
+    --ok-bg: #173325; --ok-ink: #7ad3a0; --warn-bg: #362c12; --warn-border: #7a6224; --warn-ink: #f3d68a; --halo: #0b0d10;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 13px/1.45 var(--font); }
+  button, input, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+  code { background: var(--hover); padding: 0 4px; border-radius: 4px; font-size: 12px; }
+  a { color: var(--accent-ink); }
+  .muted { color: var(--muted); }
+  .small { font-size: 12px; }
+  .id { color: var(--muted); font-weight: 400; font-size: 12px; }
+  .help { cursor: help; }
+  .warn { color: var(--low); }
+  .n { margin-left: auto; color: var(--muted); font-size: 12px; white-space: nowrap; }
+  .hrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .cap { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .sw { width: 12px; height: 12px; border-radius: 3px; flex: none; display: inline-block; }
+  .link { border: 0; background: none; padding: 0; color: var(--text); white-space: nowrap; }
+  .link:hover { color: var(--accent-ink); }
+  .link.on { color: var(--accent-ink); font-weight: 600; }
+  .link2 { border: 0; background: none; padding: 0; font-size: 12px; color: var(--accent-ink); white-space: nowrap; }
+  .link2:hover { text-decoration: underline; }
+  .btn { height: 30px; padding: 0 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); white-space: nowrap; }
+  .btn:disabled { background: var(--hover); color: var(--disabled); }
+  .btn:not(:disabled):hover, .collapse:hover, .snav:hover, .sbtn:not(:disabled):hover, .pbtn:not(:disabled):hover { background: var(--hover); }
+
+  /* ---------- frame: header, three columns, collapsible side panels ---------- */
+  #app { display: grid; grid-template-rows: 48px minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); height: 100%; }
+  #top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 16px; background: var(--panel);
+    border-bottom: 1px solid var(--border); min-width: 0; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; white-space: nowrap; }
+  .logo { width: 22px; height: 22px; border-radius: 5px; background: var(--accent); color: #fff; display: grid; place-items: center;
+    font-size: 11px; font-weight: 600; flex: none; }
+  .picker { display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 0; }
+  .pick { height: 30px; padding: 0 10px 0 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--panel);
+    display: flex; align-items: center; gap: 8px; min-width: 0; white-space: nowrap; }
+  .pick:hover { background: var(--hover); }
+  .pick.on { background: var(--accent-soft); border-color: var(--accent); }
+  .pick b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; max-width: 380px; }
+  .pick .sub { color: var(--muted); }
+  .pick .caret { font-size: 9px; color: var(--muted); }
+  .ver { display: flex; gap: 2px; }
+  .ver.single { display: none; }
+  .vbtn { padding: 0 8px; }
+  .vbtn:disabled { opacity: 0.4; }
+  .vt { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .vt th, .vt td { text-align: left; padding: 3px 8px 3px 0; border-bottom: 1px solid var(--border); font-weight: 400; vertical-align: top; }
+  .vt th { color: var(--muted); font-size: 11px; }
+  .vt tr.cur td { font-weight: 600; }
+  .pick.narrow .sub { color: var(--accent-ink); font-weight: 600; }
+  .actions { display: flex; justify-content: flex-end; gap: 8px; min-width: 0; }
+  #grid { display: grid; grid-template-columns: 260px minmax(0, 1fr) 300px; min-height: 0; }
+  #grid.lc { grid-template-columns: 36px minmax(0, 1fr) 300px; }
+  #grid.rc { grid-template-columns: 260px minmax(0, 1fr) 36px; }
+  #grid.lc.rc { grid-template-columns: 36px minmax(0, 1fr) 36px; }
+  .panel { background: var(--panel); display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  #left { border-right: 1px solid var(--border); }
+  #right { border-left: 1px solid var(--border); }
+  .phead { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--border); flex: none; min-height: 49px; }
+  .ptitle { font-weight: 600; }
+  #right .ptitle { margin-left: auto; }
+  .plinks { margin-left: auto; margin-right: 8px; display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .plinks .dot { color: var(--border); }
+  .collapse { width: 24px; height: 24px; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); color: var(--muted);
+    display: grid; place-items: center; padding: 0; font-size: 12px; line-height: 1; flex: none; }
+  .pbody { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; }
+  .rail { display: none; flex-direction: column; align-items: center; gap: 12px; padding: 12px 0; cursor: pointer; flex: 1; }
+  .rail:hover { background: var(--hover); }
+  .vlabel { writing-mode: vertical-rl; font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+  .vlabel .cnt { font-weight: 400; }
+  .panel.closed > .phead, .panel.closed > .pbody { display: none; }
+  .panel.closed > .rail { display: flex; }
+
+  /* ---------- left panel: colour mode, legend, layers ---------- */
+  #leftbody { padding: 12px 16px; gap: 2px; }
+  .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+    background: var(--panel); margin-top: 6px; }
+  .seg button { border: 0; border-left: 1px solid var(--border); padding: 6px 0; background: none; font-size: 12px; }
+  .seg button:first-child { border-left: 0; }
+  .seg button.on { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+  .seg button:disabled { color: var(--disabled); }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); padding: 8px 0 10px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+  .legend:empty { padding: 4px 0 0; border: 0; }
+  .lrow { display: flex; align-items: center; gap: 6px; }
+  .lrow .sw { width: 10px; height: 10px; border-radius: 2px; }
+  .lrow .cnt { color: var(--muted); opacity: .8; }
+  #layers { display: flex; flex-direction: column; gap: 2px; }
+  .ghead { display: flex; align-items: center; gap: 8px; padding: 8px 0 2px; font-weight: 600; background: none; border: 0; text-align: left; color: var(--text); }
+  .ghead .tri { color: var(--muted); font-size: 10px; width: 8px; }
+  .layer { display: flex; align-items: center; gap: 8px; padding: 4px 0 4px 16px; cursor: pointer; }
+  .layer input { margin: 0; accent-color: var(--accent); }
+  .layer.dis { color: var(--disabled); cursor: default; }
+  .lname { min-width: 0; }
+  .note { margin-top: auto; padding-top: 14px; font-size: 11px; color: var(--muted); }
+
+  /* ---------- stage: canvas, sheet arrows, pinned popup, toolbar ---------- */
+  #stage { position: relative; overflow: hidden; min-height: 320px; background-color: var(--bg);
+    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 24px 24px; }
+  #plan { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
+  .snav { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border);
+    background: var(--panel); box-shadow: 0 4px 14px rgba(0, 0, 0, .08); font-size: 18px; line-height: 1; color: var(--text);
+    display: grid; place-items: center; padding: 0; z-index: 3; }
+  .snav.l { left: 16px; }
+  .snav.r { right: 16px; }
+  .popup { position: absolute; z-index: 4; width: 250px; max-width: calc(100% - 16px); background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, .14); font-size: 12px; line-height: 1.4; display: flex; flex-direction: column; }
+  .popup .arrow { position: absolute; left: 50%; bottom: -7px; width: 12px; height: 12px; background: var(--panel); border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border); transform: translateX(-50%) rotate(45deg); }
+  .popup.below .arrow { bottom: auto; top: -7px; transform: translateX(-50%) rotate(225deg); }
+  .popup.noarrow .arrow { display: none; }
+  .phd { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; border-bottom: 1px solid var(--border); flex: none; }
+  .phd .t { font-weight: 600; font-size: 13px; overflow-wrap: anywhere; }
+  .x { width: 20px; height: 20px; border: 0; border-radius: 4px; background: var(--hover); color: var(--muted); flex: none; display: grid; place-items: center; padding: 0; }
+  .pscroll { overflow: auto; min-height: 0; }
+  table.kv { width: 100%; border-collapse: collapse; font-size: 12px; margin: 6px 0; }
+  table.kv td { padding: 2px 10px; vertical-align: top; overflow-wrap: anywhere; }
+  table.kv td:first-child { color: var(--muted); white-space: nowrap; width: 1%; padding-right: 10px; }
+  table.kv td:last-child { text-align: right; }
+  table.kv.lft td:last-child { text-align: left; }
+  table.kv.lft td { padding: 3px 0; }
+  .pmore { padding: 0 10px 8px; }
+  .pmore .kv { margin: 0; }
+  .pmore .kv td { padding: 2px 0; text-align: left; }
+  .pact { display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 10px 8px; border-top: 1px solid var(--line); }
+  .pbtn { height: 24px; padding: 0 8px; font-size: 11px; border: 1px solid var(--border); border-radius: 5px; background: var(--panel); white-space: nowrap; }
+  .pbtn.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
+  .pbtn:disabled { color: var(--disabled); }
+  .pbtn.ghost { border-color: transparent; color: var(--accent-ink); padding: 0 4px; }
+  .preview { padding: 6px 10px 2px; border-top: 1px solid var(--line); font-size: 11px; color: var(--warn-ink); background: var(--warn-bg); }
+  .sev { display: inline-block; padding: 0 5px; border-radius: 999px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .sev.error { background: var(--low); color: #fff; }
+  .sev.warning { background: var(--medium); color: #fff; }
+  .sev.info { background: var(--track); color: var(--muted); }
+  .toolbar { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; align-items: center; gap: 14px;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
+    font-size: 13px; white-space: nowrap; z-index: 3; max-width: calc(100% - 16px); }
+  .toolbar .seg { margin: 0; }
+  .toolbar .seg button { padding: 4px 12px; font-size: 13px; }
+  .toolbar input[type="range"] { width: 100px; margin: 0; accent-color: var(--accent); }
+  .opv { display: flex; align-items: center; gap: 8px; }
+  .empty { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--muted); }
+
+  /* ---------- right panel: KPIs, tabs, room list, review, details ---------- */
+  .kpis { display: grid; grid-template-columns: 1fr auto; row-gap: 5px; column-gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); flex: none; }
+  .kpis > :nth-child(odd) { color: var(--muted); }
+  .kpis > :nth-child(even) { text-align: right; white-space: nowrap; }
+  .kpis .sub { font-size: 11px; opacity: .85; }
+  .kbtn { border: 0; background: none; padding: 0; font: inherit; font-weight: 600; color: var(--low); }
+  .kbtn:hover { text-decoration: underline; }
+  .bar { width: 60px; height: 6px; border-radius: 3px; background: var(--track); overflow: hidden; display: inline-block; vertical-align: middle; }
+  .bar > span { display: block; height: 100%; }
+  .barcell { display: inline-flex; align-items: center; gap: 8px; }
+  .rtabs { display: flex; gap: 16px; padding: 10px 16px 0; border-bottom: 1px solid var(--border); flex: none; }
+  .rtab { border: 0; background: none; padding: 0 0 8px; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .rtab.on { color: var(--text); border-bottom-color: var(--accent); }
+  #pane { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; }
+  .lhead, .rrow { display: grid; grid-template-columns: minmax(0, 1fr) 64px 56px; align-items: center; gap: 10px; }
+  .conf .lhead, .conf .rrow { grid-template-columns: minmax(0, 1fr) 60px 72px; }
+  .lhead { padding: 12px 16px 6px; font-size: 12px; font-weight: 600; color: var(--muted); flex: none; }
+  .lhead button { border: 0; background: none; padding: 0; color: inherit; font: inherit; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lhead button:first-child { text-align: left; }
+  .lhead button.on { color: var(--text); }
+  .rlist { display: flex; flex-direction: column; }
+  .rrow { padding: 5px 16px; border: 0; border-top: 1px solid var(--line); background: none; text-align: left; font-size: 13px; width: 100%; }
+  .rrow:hover { background: var(--hover); }
+  .rrow.on { background: var(--accent-soft); font-weight: 600; }
+  .rn { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .rn .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rn .sw { width: 10px; height: 10px; }
+  .ra { text-align: right; color: var(--muted); }
+  .rm { text-align: right; font-weight: 600; }
+  .block { padding: 16px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
+  .block:first-child { border-top: 0; }
+  h3 { margin: 0; font-size: 14px; font-weight: 600; }
+  .flags { display: flex; flex-direction: column; gap: 6px; }
+  .flag { display: grid; grid-template-columns: 10px 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--border);
+    border-radius: 8px; background: var(--panel); text-align: left; width: 100%; }
+  .flag:hover { border-color: var(--accent); }
+  .flag.on { border-color: var(--accent); background: var(--accent-soft); }
+  .flag .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .flag .ft { display: block; font-weight: 600; overflow-wrap: anywhere; }
+  .flag .msg { display: block; color: var(--muted); font-size: 12px; }
+  .flag .chev { color: var(--muted); }
+  .flag.done .ft, .flag.done .msg { opacity: .55; }
+  .flag.done .chev { color: var(--high); font-weight: 600; }
+  .wide { height: 38px; border: 0; border-radius: 8px; background: var(--accent); color: var(--on-accent); font-weight: 600; }
+  .more { align-self: flex-start; color: var(--accent-ink); font-size: 12px; }
+  .exp { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 10px; }
+  .exp .btn { height: 30px; border-radius: 8px; }
+  .qa { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+  .qa div { display: flex; gap: 8px; align-items: baseline; }
+  .hint { font-size: 11px; color: var(--muted); }
+  .grid2 { display: grid; grid-template-columns: auto 1fr; row-gap: 6px; column-gap: 16px; font-size: 13px; }
+  .grid2 > :nth-child(odd) { color: var(--muted); }
+  .grid2 > :nth-child(even) { text-align: right; justify-self: end; }
+  .strip { display: flex; flex-wrap: wrap; gap: 2px 10px; font-size: 12px; color: var(--muted); }
+  .strip b { color: var(--text); font-weight: 600; }
+  .big { font-size: 20px; font-weight: 600; }
+  .warnbox { border: 1px solid var(--warn-border); background: var(--warn-bg); border-radius: 10px; padding: 10px 12px; font-size: 12px; color: var(--warn-ink); }
+  .pillbtn { height: 34px; border: 1px solid var(--border); border-radius: 999px; background: var(--panel); font-size: 13px; font-weight: 600; }
+  .pillbtn.on { border-color: var(--accent); color: var(--accent-ink); }
+  .step { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; background: var(--accent-soft); font-size: 12px; font-weight: 600; }
+  .step b { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; flex: none; }
+  .realin { width: 84px; height: 30px; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); padding: 0 8px; text-align: right; }
+  .accentbig { font-size: 17px; font-weight: 600; color: var(--accent-ink); }
+  .why { margin: 0; font-style: italic; color: var(--muted); font-size: 12px; }
+  .chips { display: flex; gap: 4px; flex-wrap: wrap; }
+  .chip { border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; font-size: 11px; background: var(--panel); color: var(--muted); line-height: 1.6; }
+  .chip.on { background: var(--text); border-color: var(--text); color: var(--panel); }
+  .sbtn { height: 28px; padding: 0 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); font-size: 12px; white-space: nowrap; }
+  .col { display: flex; flex-direction: column; gap: 6px; }
+
+  /* ---------- menus and help ---------- */
+  .pop { position: fixed; z-index: 20; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 30px rgba(0, 0, 0, .14); }
+  .menu { width: 440px; max-width: calc(100vw - 16px); max-height: 72vh; overflow: auto; padding: 8px; }
+  .mhead { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 8px 8px; border-bottom: 1px solid var(--border);
+    margin-bottom: 4px; font-size: 12px; color: var(--muted); }
+  .mempty { padding: 12px 8px; color: var(--muted); }
+  /* the sheet filter: groups of checkboxes flowing in columns */
+  .filterpop { width: 820px; max-width: calc(100vw - 16px); max-height: 82vh; overflow: auto; padding: 12px 16px; }
+  .fhead { display: flex; align-items: center; gap: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .fhead .n { font-size: 12px; }
+  .fhead .link2:disabled { color: var(--disabled); text-decoration: none; cursor: default; }
+  .fbody { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 20px; padding-top: 2px; }
+  .fcol { min-width: 0; }
+  .fgroup { padding-bottom: 6px; }
+  .fgroup.fspan { grid-column: 1 / -1; }
+  .fgroup.fspan .fopts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 20px; }
+  .fcap { display: flex; align-items: baseline; gap: 5px; padding: 8px 0 3px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--muted); }
+  .fcap > span:first-child { flex: 1; min-width: 0; }
+  .fcap .link2 { font-size: 11px; font-weight: 400; letter-spacing: 0; text-transform: none; }
+  .fcap .dot { color: var(--border); }
+  .fsub { font-size: 11px; font-weight: 600; color: var(--text); padding: 5px 0 1px; }
+  .fopt { display: flex; align-items: baseline; gap: 6px; padding: 2px 0; cursor: pointer; font-size: 12px; line-height: 1.35; }
+  .fopt input { margin: 0; accent-color: var(--accent); flex: none; position: relative; top: 2px; }
+  .fopt .t { flex: 1; min-width: 0; }
+  .fopt .fd { color: var(--muted); font-size: 11px; }
+  .fopt .n { margin-left: 0; font-size: 11px; }
+  .fopt.zero, .fopt.zero .fd { color: var(--disabled); }
+  .fhint { padding-top: 8px; border-top: 1px solid var(--border); margin-top: 4px; font-size: 11px; color: var(--muted); }
+  .mgroup { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 10px 8px 4px; }
+  .mitem { display: flex; flex-direction: column; width: 100%; border: 0; background: none; text-align: left; padding: 6px 8px; border-radius: 6px; }
+  .mitem:hover { background: var(--hover); }
+  .mitem.on { background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
+  .mitem .mm { font-size: 11px; color: var(--muted); font-weight: 400; }
+  .helppop { width: 380px; max-width: calc(100vw - 16px); padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+  .helppop p { margin: 0; color: var(--muted); font-size: 12px; }
+
+  @media (max-width: 1180px) {
+    #grid { grid-template-columns: 240px minmax(0, 1fr) 300px; }
+    #grid.lc { grid-template-columns: 36px minmax(0, 1fr) 300px; }
+    #grid.rc { grid-template-columns: 240px minmax(0, 1fr) 36px; }
+    .pick b { max-width: 220px; }
+    .filterpop { width: 700px; }
+  }
+  @media (max-width: 860px) {
+    html, body { height: auto; }
+    #app { grid-template-rows: auto auto; height: auto; }
+    #top { grid-template-columns: minmax(0, 1fr) auto; padding: 8px 12px; row-gap: 8px; }
+    .picker { grid-column: 1 / -1; grid-row: 2; justify-content: flex-start; overflow-x: auto; contain: inline-size; }
+    .pick b { max-width: 48vw; }
+    .long { display: none; }
+    #grid, #grid.lc, #grid.rc, #grid.lc.rc { grid-template-columns: minmax(0, 1fr); }
+    #stage { order: 1; height: 62vh; }
+    #right { order: 2; }
+    #left { order: 3; }
+    #left, #right { border: 0; border-top: 1px solid var(--border); overflow: visible; }
+    .pbody, #pane { overflow: visible; }
+    .panel.closed > .phead { display: flex; }
+    .panel.closed > .rail { display: none; }
+    .toolbar { flex-wrap: wrap; justify-content: center; row-gap: 6px; gap: 10px; padding: 6px 10px; width: calc(100% - 16px); bottom: 8px; }
+    .snav { width: 34px; height: 34px; }
+    .snav.l { left: 8px; }
+    .snav.r { right: 8px; }
+    .fbody, .fgroup.fspan .fopts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div class="brand"><span class="logo">fpx</span><span>Pilot v2 viewer</span></div>
+    <div class="picker">
+      <button type="button" class="pick" id="pick" aria-haspopup="true" aria-expanded="false" title="Choose a plan"><b id="pickname">Sheet</b><span class="sub" id="picksub"></span><span class="caret">▼</span></button>
+      <button type="button" class="pick" id="pickall" aria-haspopup="true" aria-expanded="false" title="Narrow the plan list by collection and tags"><b>Filter</b><span class="sub" id="filtsub"></span><span class="caret">▼</span></button>
+      <div class="ver" id="ver"><button type="button" class="pick vbtn" id="verprev" title="Earlier version (Shift+H)" aria-label="Earlier version">‹</button><button type="button" class="pick" id="verpick" aria-haspopup="true" aria-expanded="false" title="Pipeline version of this plan"><b id="vername">v3</b><span class="sub" id="versub"></span><span class="caret">▼</span></button><button type="button" class="pick vbtn" id="vernext" title="Later version (H)" aria-label="Later version">›</button></div>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn" id="copylink">Copy link<span class="long"> to view</span></button>
+      <button type="button" class="btn" id="helpbtn" aria-expanded="false">Help</button>
+    </div>
+  </header>
+  <div id="grid">
+    <aside id="left" class="panel">
+      <div class="phead">
+        <span class="ptitle">Layers</span>
+        <span class="plinks"><button type="button" class="link2" id="showall">Show all</button><span class="dot">·</span><button type="button" class="link2" id="hideall">Hide all</button></span>
+        <button type="button" class="collapse" id="collapseL" title="Collapse panel" aria-expanded="true" aria-controls="leftbody">‹</button>
+      </div>
+      <div class="pbody" id="leftbody">
+        <div class="cap">Colour rooms by</div>
+        <div class="seg" id="colour" role="group" aria-label="Colour rooms by">
+          <button type="button" data-colour="room">Room</button><button type="button" data-colour="confidence">Confidence</button><button type="button" data-colour="accuracy">Accuracy</button>
+        </div>
+        <div class="legend" id="legend"></div>
+        <div id="layers"></div>
+        <div class="note">3D heights are for display only. The public export (<code>viewer-data/</code>) holds only plans that may be shown
+          publicly: the curated core set with their licences and the Landgut Lohn sheets; benchmark-only plans appear in the local export alone
+          (<code>#data=local</code>).</div>
+      </div>
+      <div class="rail" data-side="left" title="Expand the layers panel"><button type="button" class="collapse" aria-label="Expand panel">›</button><span class="vlabel">Layers</span></div>
+    </aside>
+    <main id="stage">
+      <canvas id="plan" aria-label="Plan with extracted rooms, walls and openings"></canvas>
+      <div id="popup" class="popup" hidden></div>
+      <button type="button" class="snav l" id="prev" title="Previous plan (←)" aria-label="Previous plan">‹</button>
+      <button type="button" class="snav r" id="next" title="Next plan (→)" aria-label="Next plan">›</button>
+      <div class="toolbar" id="toolbar">
+        <div class="seg" id="view" role="group" aria-label="View"><button type="button" data-view="2d">2D</button><button type="button" data-view="3d" title="3D heights are for display only">3D</button></div>
+        <label class="opv"><span class="muted">Plan</span><input type="range" id="opacity" min="0" max="1" step="0.05" value="1" title="Plan opacity"></label>
+        <button type="button" class="link" id="fitrooms" title="Fit to rooms (F)">Fit</button>
+        <button type="button" class="link" id="fitsheet" title="Fit to the whole sheet">Whole sheet</button>
+        <button type="button" class="link" id="measure" title="Measure a distance on the plan">Measure</button>
+      </div>
+    </main>
+    <aside id="right" class="panel">
+      <div class="phead">
+        <button type="button" class="collapse" id="collapseR" title="Collapse panel" aria-expanded="true" aria-controls="rightbody">›</button>
+        <span class="ptitle">Sheet</span>
+      </div>
+      <div class="pbody" id="rightbody">
+        <div class="kpis" id="kpis"></div>
+        <div class="rtabs" role="tablist">
+          <button type="button" class="rtab" data-tab="rooms" role="tab">Rooms</button>
+          <button type="button" class="rtab" data-tab="review" role="tab">Review</button>
+          <button type="button" class="rtab" data-tab="details" role="tab">Details</button>
+        </div>
+        <div id="pane"></div>
+      </div>
+      <div class="rail" data-side="right" title="Expand the sheet panel"><button type="button" class="collapse" aria-label="Expand panel">‹</button><span class="vlabel" id="railR">Sheet</span></div>
+    </aside>
+  </div>
+</div>
+<div id="menu" class="pop menu" role="menu" hidden></div>
+<div id="vermenu" class="pop menu" role="menu" hidden></div>
+<div id="filter" class="pop filterpop" role="group" aria-label="Sheet filter" hidden></div>
+<div id="help" class="pop helppop" hidden>
+  <h3>Using the viewer</h3>
+  <table class="kv lft">
+    <tr><td>Drag</td><td>Pan (2D) or rotate (3D; right-drag or Shift-drag pans)</td></tr>
+    <tr><td>Wheel</td><td>Zoom at the cursor</td></tr>
+    <tr><td>Hover</td><td>Outlines a room, opening, void or the walls</td></tr>
+    <tr><td>Click</td><td>Pins it: the popup stays until × or Esc, a click elsewhere replaces it</td></tr>
+    <tr><td>1–9, 0</td><td>Toggle the first ten layers in list order</td></tr>
+    <tr><td>← → or [ ]</td><td>Previous and next plan of the filtered list</td></tr>
+    <tr><td>H / Shift+H</td><td>Later and earlier version of the plan (v1, v2, v3, benchmark models); the History block under Details compares them</td></tr>
+    <tr><td>F</td><td>Fit to rooms</td></tr>
+  </table>
+  <p>Everything shown is read from <code>viewer-data/</code> (written by <code>export_viewer.py</code>; <code>#data=local</code> reads the local export under
+    <code>data/out/</code>); nothing is uploaded. Review checks, the panel state and the sheet filter are kept in this browser only. Upload, the confirmation steps before a run, editing and the
+    downloads of the workflow study need the app and are not part of this viewer.</p>
+</div>
+
+<script>
+  // the data folder: viewer-data/ (tracked: the public export) or, with data=local in the link, data/out/viewer-data/
+  (function () { const local = /(^|[#&])data=local(&|$)/.test(location.hash); window.VIEWER_BASE = local ? "data/out/viewer-data/" : "viewer-data/";
+    document.write('<script src="' + window.VIEWER_BASE + 'index.js"><\/script>'); })();
+</script>
+<script>
+"use strict";
+const D = window.VIEWER_INDEX || window.VIEWER_DATA;      // the index (light records) or the embedded data of earlier exports
+const BASE = window.VIEWER_BASE || "";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const num = (v, d = 1) => (v == null || Number.isNaN(+v) ? "–" : (+v).toFixed(d));
+const cap1 = (t) => (t ? t[0].toUpperCase() + t.slice(1) : "");
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const plural = (k, w) => `${k} ${w}${k === 1 ? "" : "s"}`;
+const store = {     // per-viewer review checks and panel state; storage can be blocked (private window, file:// policies)
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* not kept */ } },
+};
+// first present field of several spellings: export_viewer.py writes camelCase, the pipeline JSON snake_case
+const F = (o, ...keys) => { if (!o) return null; for (const k of keys) if (o[k] != null) return o[k]; return null; };
+
+const PALETTE = ["#4e79a7", "#f28e2b", "#59a14f", "#e15759", "#76b7b2", "#edc948", "#b07aa1", "#ff9da7", "#9c755f", "#86bcb6"];
+const WALL_H = 3.0, RAD = Math.PI / 180;
+const LABEL = { bg: "rgba(255, 255, 255, 0.88)", text: "#1d2330", muted: "#5b6475" };     // labels sit on the (white) sheet
+// tag axes of the curated set (data/curated/plans.json), in the order the filter and the details pane list them
+const AXES = { category: "Category", drawing_type: "Drawing type", challenges: "Challenges", building_type: "Building type",
+               wall_style: "Wall style", input: "Input", era: "Era", content: "Content", language: "Language", use: "Use",
+               source: "Source" };
+const DATASETS = { cubicasa: "CubiCasa5K", cvcfp: "CVC-FP", waffle: "WAFFLE", commons: "Commons" };
+// the sheet filter in the header: collections, runs and these tag axes of the curated set narrow the sheet list
+const TAG_FILTER = ["drawing_type", "input", "wall_style", "era", "building_type", "challenges"];
+const FILTER_AXES = ["coll", ...TAG_FILTER];
+const FILTER_NAMES = { coll: "Collection", ...AXES };
+const FILTER_LAYOUT = [["coll"], ["wall_style", "drawing_type"], ["input", "era"], ["building_type"]];   // the panel's columns; challenges spans the width below
+const FILTER_KEY = "fpx-viewer:filter";
+// board 1i order: rooms, structure, analysis; keys 1-9, 0 toggle the first ten
+const LAYERS = [
+  ["rooms", "Room fill", "Rooms", true], ["labels", "Room labels", "Rooms", true], ["graph", "Room graph", "Rooms", true],
+  ["fragments", "Fragments (not rooms)", "Rooms", false],
+  ["walls", "Walls", "Structure", true], ["doors", "Doors", "Structure", true], ["windows", "Windows", "Structure", true],
+  ["passages", "Passages, interior openings", "Structure", true], ["stairs", "Stairs", "Structure", true],
+  ["voids", "Voids (not floor area)", "Structure", true], ["columns", "Columns", "Structure", true],
+  ["gf", "GF outline", "Analysis", false], ["ref", "Reference", "Analysis", false],
+].map(([key, name, group, on]) => ({ key, name, group, on }));
+const OLD_KEYS = { openings: ["doors", "windows", "passages"], stairs: ["stairs", "voids"] };     // hash keys of the earlier viewer
+const KIND_COLOUR = { doors: "door", windows: "window", passages: "passage", columns: "column" };
+const CONF_TIP = { high: "Stamp area within 5 % and exactly one stamp", medium: "No contradiction found, e.g. no stamp to check against",
+                   low: "Area more than 15 % off the stamp, several stamps, or under 2 m²" };
+const PANELS_KEY = "fpx-viewer:panels";
+const NARROW = window.matchMedia("(max-width: 860px)");
+
+const state = { i: 0, ver: {}, view: "2d", colour: "room", opacity: 1, off: {}, tab: "rooms", L: {}, pin: null, hover: null, sort: null,
+                focus: false, compare: false, menu: null, help: false, measure: null, allFlags: false, allQa: false, more: false,
+                closed: {}, panels: { left: false, right: false } };
+LAYERS.forEach((l) => (state.L[l.key] = l.on));
+{ const p = store.get(PANELS_KEY); if (p && typeof p === "object") for (const k of ["left", "right"]) state.panels[k] = p[k] === true; }
+
+const S = () => D.sheets[state.i];
+const isBench = (s) => !!(s.summary && s.summary.kind === "bench");
+// several runs of one sheet (e.g. model v1 and v2) are separate entries; label them by run or model, else by position
+const runOf = (s) => { if (s.run || s.model) return String(s.run || s.model);
+  const twins = D.sheets.filter((x) => x.id === s.id); return twins.length > 1 ? `run ${twins.indexOf(s) + 1}` : ""; };
+const refOf = (s) => s.reference || (isBench(s) || !D.reference ? { rooms: [], walls: [] }
+  : { rooms: D.reference.rooms.flatMap((r) => r.polygons), walls: D.reference.walls, named: D.reference.rooms });
+const hasRef = (s) => refOf(s).rooms.length + refOf(s).walls.length > 0;
+const hasRoomRef = (s) => refOf(s).rooms.length > 0;
+const refName = (s) => (isBench(s) ? "Reference" : "2005 reference");
+const kindOf = (o) => (o.kind === "window" ? "windows" : o.kind.includes("door") ? "doors" : "passages");
+const slug = (t) => String(t ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const planKey = (s) => (s.curated ? `plan:${s.curated.id}` : `sheet:${s.id}`);        // the same plan in several runs shares a key
+// versions of a plan: the run folders exported for it (v1, v2, v3, a benchmark model); the latest pipeline version is the default
+const verOf = (s) => s.version || { label: runLabel(runOf(s) || "(none)"), rank: runRank(runOf(s) || "(none)"), kind: "pipeline", date: "" };
+const planId = (s) => s.plan || (s.curated ? s.curated.id : s.id);
+let PLANS = [], PLAN_OF = [];         // PLANS[k] = { key, items: [sheet indices by version], def }; PLAN_OF[i] = k
+function buildPlans() {
+  const by = new Map();
+  PLANS = []; PLAN_OF = [];
+  D.sheets.forEach((s, i) => {
+    const key = `plan:${planId(s)}`;
+    if (!by.has(key)) { by.set(key, { key, items: [] }); PLANS.push(by.get(key)); }
+    by.get(key).items.push(i);
+    PLAN_OF[i] = PLANS.indexOf(by.get(key));
+  });
+  for (const p of PLANS) {
+    p.items.sort((a, b) => verOf(D.sheets[a]).rank - verOf(D.sheets[b]).rank || a - b);
+    const pipe = p.items.filter((i) => verOf(D.sheets[i]).kind === "pipeline"), pool = pipe.length ? pipe : p.items;
+    p.def = pool[pool.length - 1];
+  }
+}
+const planAt = (i) => PLANS[PLAN_OF[i]];
+const shownOf = (p) => (state.ver[p.key] != null && p.items.includes(state.ver[p.key]) ? state.ver[p.key] : p.def);
+const versions = (i) => planAt(i).items;
+// sheet data is fetched per version (viewer-data/sheets/*.json); the index holds only what the lists and filters need
+async function ensure(i) {
+  const s = D.sheets[i];
+  if (!s.file || s.rooms) return s;
+  const r = await fetch(BASE + s.file);
+  if (!r.ok) throw new Error(`${r.status} ${s.file}`);
+  Object.assign(s, await r.json());
+  return s;
+}
+const loadError = (err) => { console.error(err);
+  stage.insertAdjacentHTML("beforeend", `<div class="empty"><div>Could not load ${esc(String(err.message || err))}.<br>Serve this folder over HTTP (<code>python -m http.server</code>): file:// blocks fetch.</div></div>`); };
+const datasetOf = (s) => { const g = (s.group || "").toLowerCase();                   // public benchmark sheets: the dataset from the group name
+  return g.includes("cubicasa") ? "cubicasa" : g.includes("cvc") ? "cvcfp" : g.includes("waffle") ? "waffle" : g.includes("commons") ? "commons" : slug(s.group || "benchmark"); };
+// run folders as readable names: out → v1 run, out-v2b → v2 run, curated-v2 → curated v2 run, bench → benchmark run
+function runLabel(run) {
+  let m;
+  if ((m = /^out(?:-v(\d+)\w*)?$/.exec(run))) return `v${m[1] || 1} run`;
+  if ((m = /^curated-v(\d+)\w*$/.exec(run))) return `curated v${m[1]} run`;
+  if (run === "curated-test") return "curated test run";
+  if (run === "bench") return "benchmark run";
+  return run === "(none)" ? "no run folder" : run;
+}
+const runRank = (run) => { if (run === "out") return 1; const m = /^(?:out|curated)-v(\d+)/.exec(run); return m ? +m[1] : run === "bench" ? 50 : 99; };
+const same = (a, b) => !!a && !!b && a.type === b.type && a.id === b.id && a.idx === b.idx;
+const roomById = (s, id) => s.rooms.find((r) => r.id === id);
+// fields the pipeline exports now (fpx.export.to_json); absent in older viewer data, so every reader tolerates null
+const netOf = (r) => F(r, "areaNet", "area_net") ?? r.area;
+const grossOf = (r) => F(r, "areaGross", "area_gross");                // the room's share of its walls, to the centre lines
+const polyAreaOf = (r) => F(r, "areaPolygon", "area_polygon");
+const basisOf = (r) => F(r, "areaBasis", "area_basis");
+const devOf = (r) => F(r, "deviationPct", "areaDeviationPct", "area_deviation_pct");
+const numberOf = (r) => F(r, "number");
+const flightsOf = (r) => { const f = F(r, "stairFlights", "stair_flights"); return Array.isArray(f) ? f.length : typeof f === "number" ? f : 0; };
+const grossGeom = (r) => F(r, "geometryGross", "geometry_gross");      // rings like r.polygons
+const qaOf = (s) => (Array.isArray(s.qa) ? s.qa.filter((q) => q && q.severity) : []);
+const qaFor = (s, id) => qaOf(s).filter((q) => q.element === id || q.room === id);
+const columnsOf = (s) => (Array.isArray(s.structure) ? s.structure : []).flatMap((c) => (Array.isArray(c) ? [c] : c.polygons || (c.geometry ? [c.geometry] : [])))
+  .filter((p) => Array.isArray(p) && p.length);
+const bridgesOf = (s) => { const b = F(s, "wallBridges", "wall_bridges"); return (Array.isArray(b) ? b : [])
+  .map((x) => ({ line: Array.isArray(x) ? x : x.line || x.centreLine || x.centre_line || [], t: (x && x.thickness) || 0.15 })).filter((x) => x.line.length > 1); };
+const sum = (xs, f) => xs.reduce((a, x) => a + (+f(x) || 0), 0);
+
+let C = {};
+function readColours() {
+  for (const k of ["high", "highc", "medium", "low", "ref", "wall2d", "wall3d", "void", "door", "window", "passage", "stair", "gf", "graph", "frag",
+                   "column", "accent", "halo"]) C[k] = css(`--${k}`);
+  C.font = css("--font");
+}
+const level = (r, mode) => (mode === "confidence" ? r.conf : r.iou >= 0.8 ? "high" : r.iou >= 0.5 ? "medium" : "low");
+const confVar = (c) => (c === "high" ? "--highc" : `--${c}`);          // board 1i: high confidence is neutral grey so that problems stand out
+const colourMode = () => (state.colour === "accuracy" && !hasRoomRef(S()) ? "confidence" : state.colour);
+const roomColour = (r, i) => { const m = colourMode();
+  return m === "room" ? PALETTE[i % PALETTE.length] : m === "confidence" ? (r.conf === "high" ? C.highc : C[r.conf]) : C[level(r, "accuracy")]; };
+
+// ---------- geometry ----------
+const geoCache = new Map();
+function prep(polys) {
+  const path = new Path2D(), box = [Infinity, Infinity, -Infinity, -Infinity];
+  for (const poly of polys) for (const ring of poly) {
+    ring.forEach(([x, y], k) => {
+      if (k) path.lineTo(x, y); else path.moveTo(x, y);
+      box[0] = Math.min(box[0], x); box[1] = Math.min(box[1], y); box[2] = Math.max(box[2], x); box[3] = Math.max(box[3], y);
+    });
+    path.closePath();
+  }
+  return { polys, path, box };
+}
+const union = (boxes) => boxes.filter((b) => b[0] <= b[2]).reduce((u, b) =>
+  [Math.min(u[0], b[0]), Math.min(u[1], b[1]), Math.max(u[2], b[2]), Math.max(u[3], b[3])], [Infinity, Infinity, -Infinity, -Infinity]);
+const signedArea = (ring) => ring.reduce((a, [x, y], k) => { const [u, v] = ring[(k + 1) % ring.length]; return a + x * v - u * y; }, 0) / 2;
+const centroid = (ring) => ring.reduce((c, [x, y]) => [c[0] + x / ring.length, c[1] + y / ring.length], [0, 0]);
+
+function geo(s) {
+  let g = geoCache.get(s);
+  if (g) return g;
+  const ref = refOf(s);
+  g = { rooms: s.rooms.map((r) => prep(r.polygons)), openings: s.openings.map((o) => prep(o.polygons)), voids: s.voids.map((v) => prep(v.polygons)),
+        walls: prep(s.walls.polygons), stairs: prep(s.stairs), gf: prep(s.gf.polygons), frags: prep(s.fragments), columns: prep(columnsOf(s)),
+        bridges: bridgesOf(s), refRooms: prep(ref.rooms), refWalls: prep(ref.walls),
+        named: (ref.named || []).map((n) => ({ name: n.name, ...prep(n.polygons) })), gross: new Map(), img: null, solids: null };
+  const rb = union(g.rooms.map((p) => p.box));
+  g.roomBox = rb[0] <= rb[2] ? rb : s.extent.slice();
+  geoCache.set(s, g);
+  return g;
+}
+function grossPath(s, r) {           // the gross polygon of a room (to the wall centre lines), prepared once
+  const g = geo(s);
+  if (!g.gross.has(r.id)) { const gg = grossGeom(r); g.gross.set(r.id, gg && gg.length ? prep(gg) : null); }
+  return g.gross.get(r.id);
+}
+function image(s) {
+  const g = geo(s);
+  if (!g.img) { g.img = new Image(); g.img.onload = () => { if (S() === s) paintNow(); }; g.img.src = /^data:/.test(s.image) ? s.image : BASE + s.image; }
+  return g.img;
+}
+
+// walls, columns and openings as prisms for 3D: outer rings counter-clockwise, holes clockwise, so the solid is left of every edge
+function solids(s) {
+  const g = geo(s);
+  if (g.solids) return g.solids;
+  const orient = (ring, ccw) => ((signedArea(ring) > 0) === ccw ? ring : ring.slice().reverse());
+  const out = [];
+  for (const poly of s.walls.polygons) poly.forEach((ring, k) => out.push({ ring: orient(ring, k === 0), z0: 0, z1: WALL_H, layer: "walls" }));
+  for (const poly of columnsOf(s)) poly.forEach((ring, k) => out.push({ ring: orient(ring, k === 0), z0: 0, z1: WALL_H, layer: "columns" }));
+  for (const o of s.openings) {
+    const [z0, z1] = o.kind === "window" ? [0.9, 2.2] : [0, 2.1];
+    for (const poly of o.polygons) out.push({ ring: orient(poly[0], true), z0, z1, layer: kindOf(o) });
+  }
+  return (g.solids = out);
+}
+
+function inside(polys, x, y) {
+  let c = false;
+  for (const poly of polys) for (const ring of poly) {
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const [xi, yi] = ring[i], [xj, yj] = ring[j];
+      if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) c = !c;
+    }
+  }
+  return c;
+}
+const inBox = (b, x, y) => x >= b[0] && x <= b[2] && y >= b[1] && y <= b[3];
+
+// ---------- camera: orthographic, plan metres; 2D is the top view (elevation 90°) ----------
+const stage = $("stage"), canvas = $("plan"), ctx = canvas.getContext("2d");
+const cam = { cx: 0, cy: 0, s: 10, az: 0, el: 90 };
+let W = 1, H = 1, dpr = 1, raf = 0;
+
+function basis(z = 0) {         // affine plan (x, y) at height z -> screen px: [a, b, c, d, e, f] as in setTransform
+  const t = cam.az * RAD, p = cam.el * RAD, s = cam.s;
+  const a = s * Math.cos(t), c = -s * Math.sin(t), b = -s * Math.sin(p) * Math.sin(t), d = -s * Math.sin(p) * Math.cos(t);
+  return [a, b, c, d, W / 2 - a * cam.cx - c * cam.cy, H / 2 - b * cam.cx - d * cam.cy - s * Math.cos(p) * z];
+}
+const project = (M, x, y) => [M[0] * x + M[2] * y + M[4], M[1] * x + M[3] * y + M[5]];
+function unproject(X, Y) {
+  const [a, b, c, d, e, f] = basis(0), det = a * d - b * c, u = X - e, v = Y - f;
+  return [(d * u - c * v) / det, (-b * u + a * v) / det];
+}
+function pan(dX, dY) {
+  const [a, b, c, d] = basis(0), det = a * d - b * c;
+  cam.cx -= (d * dX - c * dY) / det;
+  cam.cy -= (-b * dX + a * dY) / det;
+}
+function zoomAt(X, Y, f) {
+  const [x, y] = unproject(X, Y);
+  cam.s = clamp(cam.s * f, 0.2, 4000);
+  const [x2, y2] = unproject(X, Y);
+  cam.cx += x - x2; cam.cy += y - y2;
+}
+function fit(box, margin = 0) {
+  const [x0, y0, x1, y1] = [box[0] - margin, box[1] - margin, box[2] + margin, box[3] + margin];
+  Object.assign(cam, { cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, s: 1 });
+  const zt = state.view === "3d" ? WALL_H : 0, xs = [], ys = [];
+  for (const z of [0, zt]) { const M = basis(z); for (const x of [x0, x1]) for (const y of [y0, y1]) { const [X, Y] = project(M, x, y); xs.push(X); ys.push(Y); } }
+  const w = Math.max(...xs) - Math.min(...xs) || 1, h = Math.max(...ys) - Math.min(...ys) || 1;
+  const mx = (Math.max(...xs) + Math.min(...xs)) / 2, my = (Math.max(...ys) + Math.min(...ys)) / 2;
+  cam.s = Math.max(0.2, Math.min((W - 130) / w, (H - 120) / h));                // room for the sheet arrows and the toolbar
+  pan(-(mx - W / 2) * cam.s, H / 2 - 20 - (H / 2 + (my - H / 2) * cam.s));
+  draw();
+}
+const fitRooms = () => fit(geo(S()).roomBox, 1);
+const zoomTo = (b, k = 0.4) => b && fit(b, Math.max(3, k * Math.max(b[2] - b[0], b[3] - b[1])));
+const fitSheet = () => fit(S().extent);
+function reveal(box) {
+  const [X, Y] = project(basis(0), (box[0] + box[2]) / 2, (box[1] + box[3]) / 2);
+  if (X < 60 || X > W - 60 || Y < 40 || Y > H - 90) { pan(W / 2 - X, H / 2 - 20 - Y); draw(); }
+}
+function setView(v) {
+  state.view = v;
+  Object.assign(cam, v === "3d" ? { az: 20, el: 37 } : { az: 0, el: 90 });
+  renderToolbar(); writeHash(); fitRooms();
+}
+
+function resize() {
+  const r = stage.getBoundingClientRect();
+  W = Math.max(1, r.width); H = Math.max(1, r.height); dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);     // clears the canvas, so paint at once
+  paintNow();
+}
+
+// ---------- drawing ----------
+const draw = () => { if (!raf) raf = requestAnimationFrame(paintNow); };
+function paintNow() { if (raf) cancelAnimationFrame(raf); raf = 0; paint(); placePopup(); }
+const LIGHT = [-0.45, -0.89];
+const shades = {};
+function shade(hex, f) {
+  const k = `${hex}|${Math.round(f * 40)}`;
+  if (!shades[k]) {
+    const n = parseInt(hex.replace("#", ""), 16), q = Math.round(f * 40) / 40;
+    shades[k] = `rgb(${Math.round(((n >> 16) & 255) * q)},${Math.round(((n >> 8) & 255) * q)},${Math.round((n & 255) * q)})`;
+  }
+  return shades[k];
+}
+const T = (m) => ctx.setTransform(m[0] * dpr, m[1] * dpr, m[2] * dpr, m[3] * dpr, m[4] * dpr, m[5] * dpr);
+
+function paint() {
+  const s = D && D.sheets && S();
+  if (!s) return;
+  const g = geo(s), L = state.L, is3d = state.view === "3d", u = 1 / cam.s, M = basis(0);
+  const fill = (path, colour, alpha) => { ctx.globalAlpha = alpha; ctx.fillStyle = colour; ctx.fill(path, "evenodd"); };
+  const stroke = (path, colour, px, dash, alpha = 1) => {
+    ctx.globalAlpha = alpha; ctx.strokeStyle = colour; ctx.lineWidth = px * u;
+    ctx.setLineDash(dash ? dash.map((v) => v * u) : []); ctx.stroke(path);
+  };
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.lineJoin = "round";
+  T(M);
+  const [x0, y0, x1, y1] = s.extent;
+  ctx.save();
+  ctx.shadowColor = "rgba(0, 0, 0, 0.10)"; ctx.shadowBlur = 12 * dpr; ctx.shadowOffsetY = 2 * dpr;
+  ctx.fillStyle = "#ffffff"; ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+  ctx.restore();
+  const img = image(s);
+  if (img.complete && img.naturalWidth && state.opacity > 0) {
+    ctx.save();
+    ctx.globalAlpha = state.opacity; ctx.imageSmoothingQuality = "high";
+    ctx.translate(x0, y1); ctx.scale((x1 - x0) / img.naturalWidth, -(y1 - y0) / img.naturalHeight);
+    ctx.drawImage(img, 0, 0);
+    ctx.restore();
+  }
+
+  const pinRoom = state.pin && state.pin.type === "room" ? state.pin.id : null;
+  s.rooms.forEach((r, i) => {
+    const col = roomColour(r, i), on = r.id === pinRoom;
+    if (L.rooms) { fill(g.rooms[i].path, col, on ? 0.55 : 0.4); stroke(g.rooms[i].path, col, 1.5); }
+  });
+  if (L.stairs) fill(g.stairs.path, C.stair, 0.35);
+  if (L.voids) s.voids.forEach((v, i) => fill(g.voids[i].path, C.void, 0.45));
+  if (L.fragments) { fill(g.frags.path, C.frag, 0.6); stroke(g.frags.path, C.low, 1.5, [4, 3]); }
+  if (L.ref && hasRef(s)) {
+    stroke(g.refRooms.path, C.ref, 1.5); stroke(g.refWalls.path, C.ref, 1);
+    const r = pinRoom && state.compare ? roomById(s, pinRoom) : null;
+    if (r) for (const p of compareTargets(s, g, r)) { fill(p.path, C.ref, 0.15); stroke(p.path, C.ref, 3); }
+  }
+
+  if (!is3d) {
+    if (L.walls) {
+      fill(g.walls.path, C.wall2d, 0.7);
+      for (const b of g.bridges) {                      // gaps bridged by the pipeline: dashed centre lines in the wall colour
+        ctx.globalAlpha = 0.6; ctx.strokeStyle = C.wall2d; ctx.lineWidth = b.t; ctx.setLineDash([0.3, 0.2]);
+        ctx.beginPath(); b.line.forEach(([x, y], q) => (q ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.stroke();
+      }
+    }
+    if (L.columns) fill(g.columns.path, C.column, 0.85);
+    s.openings.forEach((o, i) => {
+      const k = kindOf(o), on = state.pin && state.pin.type === "opening" && state.pin.idx === i;
+      if (L[k] || on) fill(g.openings[i].path, C[KIND_COLOUR[k]], 0.85);
+    });
+  } else {
+    paintSolids(s, M, cam.s * Math.cos(cam.el * RAD));
+    T(basis(WALL_H));
+    if (L.walls) fill(g.walls.path, C.wall2d, 0.95);
+    if (L.columns) fill(g.columns.path, C.column, 0.95);
+  }
+  if (L.graph) paintGraph(s, is3d ? WALL_H + 0.2 : 0, pinRoom);
+  if (L.gf) { T(basis(is3d ? WALL_H : 0)); stroke(g.gf.path, C.gf, 1.5, [6, 4]); }
+  if (L.labels) paintLabels(s, g, M, pinRoom);
+  paintSelection(s, g, is3d, u);
+  paintMeasure(M);
+  ctx.globalAlpha = 1;
+}
+
+function paintSolids(s, M, k) {
+  const t = cam.az * RAD, st = Math.sin(t), ct = Math.cos(t), ce = Math.cos(cam.el * RAD), se = Math.sin(cam.el * RAD);
+  const depth = (x, y, z) => ((x - cam.cx) * st + (y - cam.cy) * ct) * ce - z * se;            // larger is farther away
+  const P = (x, y, z) => [M[0] * x + M[2] * y + M[4], M[1] * x + M[3] * y + M[5] - k * z];
+  const faces = [];
+  for (const sd of solids(s)) {
+    if (!state.L[sd.layer]) continue;
+    const r = sd.ring, n = r.length;
+    for (let j = 0; j < n; j++) {
+      const [px, py] = r[j], [qx, qy] = r[(j + 1) % n], len = Math.hypot(qx - px, qy - py);
+      if (!len) continue;
+      const nx = (qy - py) / len, ny = (px - qx) / len;
+      if (nx * st + ny * ct >= 0) continue;                                                   // faces away from the viewer
+      faces.push({ d: depth((px + qx) / 2, (py + qy) / 2, (sd.z0 + sd.z1) / 2), sd, f: 0.72 + 0.28 * Math.max(0, nx * LIGHT[0] + ny * LIGHT[1]),
+                   pts: [P(px, py, sd.z0), P(qx, qy, sd.z0), P(qx, qy, sd.z1), P(px, py, sd.z1)] });
+    }
+    if (sd.layer !== "walls" && sd.layer !== "columns") { const [cx, cy] = centroid(r); faces.push({ d: depth(cx, cy, sd.z1), sd, f: 1, pts: r.map(([x, y]) => P(x, y, sd.z1)) }); }
+  }
+  faces.sort((a, b) => b.d - a.d);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.setLineDash([]);
+  for (const fc of faces) {
+    const solid = fc.sd.layer === "walls" || fc.sd.layer === "columns", col = shade(solid ? C.wall3d : C[KIND_COLOUR[fc.sd.layer]], fc.f);
+    ctx.globalAlpha = solid ? 1 : fc.sd.layer === "windows" ? 0.55 : 0.4;
+    ctx.beginPath();
+    fc.pts.forEach(([x, y], q) => (q ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+    ctx.closePath();
+    ctx.fillStyle = col; ctx.fill();
+    if (solid) { ctx.strokeStyle = col; ctx.lineWidth = 0.6; ctx.stroke(); }
+  }
+}
+
+function paintGraph(s, z, pinRoom) {
+  const M = basis(z), r = pinRoom && state.focus ? roomById(s, pinRoom) : null;
+  const at = (p) => r && p[0] === r.label[0] && p[1] === r.label[1];
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.setLineDash([]);
+  for (const path of s.graph) {
+    const hit = r && (at(path[0]) || at(path[path.length - 1]));
+    ctx.globalAlpha = r && !hit ? 0.25 : 1;
+    ctx.strokeStyle = C.graph; ctx.lineWidth = hit ? 3 : 1.5;
+    ctx.beginPath();
+    path.forEach((p, q) => { const [X, Y] = project(M, p[0], p[1]); if (q) ctx.lineTo(X, Y); else ctx.moveTo(X, Y); });
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1; ctx.fillStyle = C.graph;
+  for (const room of s.rooms) {
+    if (room.smallRegion) continue;
+    const [X, Y] = project(M, room.label[0], room.label[1]);
+    ctx.beginPath(); ctx.arc(X, Y, 3, 0, 2 * Math.PI); ctx.fill();
+  }
+}
+
+function paintLabels(s, g, M, pinRoom) {
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.setLineDash([]); ctx.globalAlpha = 1; ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+  const hov = state.hover, placed = [], items = [];
+  s.rooms.forEach((r, i) => {
+    const special = r.id === pinRoom || (!!hov && hov.type === "room" && hov.id === r.id);
+    if (r.smallRegion && !state.L.fragments && !special) return;
+    const l2 = `${num(netOf(r))} m²${r.stamp != null ? ` · stamp ${num(r.stamp, 2)}` : ""}${r.review ? ` · a ${r.review.guess}?` : ""}`;
+    const n = numberOf(r);
+    items.push({ at: r.label, box: g.rooms[i].box, l1: n ? `${n} ${r.name}` : r.name, l2, pri: special ? Infinity : netOf(r), special });
+  });
+  if (state.L.voids) s.voids.forEach((v, i) => v.polygons.length && items.push({ at: centroid(v.polygons[0][0]), box: g.voids[i].box, l1: v.label, l2: `${num(v.area)} m² void`, pri: v.area }));
+  items.sort((a, b) => b.pri - a.pri);
+  const trunc = (t, n) => (t.length > n ? `${t.slice(0, n - 1)}…` : t);
+  for (const it of items) {
+    const [ax, ay] = project(M, it.box[0], it.box[1]), [bx, by] = project(M, it.box[2], it.box[3]);
+    if (!it.special && (Math.abs(bx - ax) < 44 || Math.abs(by - ay) < 22)) continue;
+    const [X, Y] = project(M, it.at[0], it.at[1]), l1 = trunc(it.l1, 26);
+    ctx.font = `500 11px ${C.font}`;
+    const w1 = ctx.measureText(l1).width;
+    ctx.font = `10px ${C.font}`;
+    const w = Math.max(w1, ctx.measureText(it.l2).width) + 10, h = 28, rx = X - w / 2, ry = Y - h / 2;
+    if (!it.special && placed.some((p) => rx < p[2] && rx + w > p[0] && ry < p[3] && ry + h > p[1])) continue;
+    placed.push([rx, ry, rx + w, ry + h]);
+    ctx.fillStyle = LABEL.bg;
+    ctx.beginPath(); ctx.roundRect(rx, ry, w, h, 3); ctx.fill();
+    ctx.fillStyle = LABEL.text; ctx.font = `500 11px ${C.font}`; ctx.fillText(l1, X, ry + 12);
+    ctx.fillStyle = LABEL.muted; ctx.font = `10px ${C.font}`; ctx.fillText(it.l2, X, ry + 24);
+  }
+}
+
+// board 1i: the pinned geometry gets a white 5 px halo under a 2.5 px accent outline above all layers; hover only a light outline
+function paintSelection(s, g, is3d, u) {
+  const zOf = (p) => (is3d && p.type === "wall" ? WALL_H : 0);
+  const hov = state.hover, pin = state.pin;
+  if (hov && !same(hov, pin)) {
+    const p = pathOf(hov);
+    if (p) { T(basis(zOf(hov))); ctx.setLineDash([]); ctx.globalAlpha = 0.85; ctx.strokeStyle = C.accent; ctx.lineWidth = 1.5 * u; ctx.stroke(p.path); }
+  }
+  if (!pin) return;
+  if (pin.type === "room" && state.L.rooms) {
+    const r = roomById(s, pin.id), gp = r && grossPath(s, r);
+    if (gp) { T(basis(0)); ctx.globalAlpha = 0.9; ctx.strokeStyle = C.accent; ctx.lineWidth = 1.2 * u; ctx.setLineDash([4 * u, 3 * u]); ctx.stroke(gp.path); }
+  }
+  const p = pathOf(pin);
+  if (!p) return;
+  T(basis(zOf(pin)));
+  ctx.setLineDash([]); ctx.globalAlpha = 1;
+  ctx.strokeStyle = C.halo; ctx.lineWidth = 5 * u; ctx.stroke(p.path);
+  ctx.strokeStyle = C.accent; ctx.lineWidth = 2.5 * u; ctx.stroke(p.path);
+}
+
+function paintMeasure(M) {
+  const m = state.measure;
+  if (!m || !m.a) return;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.setLineDash([]); ctx.globalAlpha = 1;
+  const A = project(M, m.a[0], m.a[1]), B = m.b ? project(M, m.b[0], m.b[1]) : null;
+  if (B) {
+    ctx.strokeStyle = C.accent; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(B[0], B[1]); ctx.stroke();
+    const t = `${num(Math.hypot(m.b[0] - m.a[0], m.b[1] - m.a[1]), 2)} m`;
+    ctx.font = `600 11px ${C.font}`;
+    const w = ctx.measureText(t).width + 16, X = (A[0] + B[0]) / 2, Y = Math.min(A[1], B[1]) - 18;
+    ctx.fillStyle = C.accent; ctx.beginPath(); ctx.roundRect(X - w / 2, Y - 10, w, 20, 4); ctx.fill();
+    ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.fillText(t, X, Y + 4);
+  }
+  for (const P of B ? [A, B] : [A]) {
+    ctx.beginPath(); ctx.arc(P[0], P[1], 6, 0, 2 * Math.PI);
+    ctx.fillStyle = C.accent; ctx.fill(); ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2; ctx.stroke();
+  }
+}
+
+// reference room(s) matching a room: by name for the 2005 reference, else the reference rooms under its label point
+function compareTargets(s, g, r) {
+  if (g.named.length) return g.named.filter((n) => n.name === r.ref);
+  return refOf(s).rooms.filter((p) => inside([p], r.label[0], r.label[1])).map((p) => prep([p]));
+}
+
+// ---------- picking, hover and pin ----------
+function pick(X, Y) {
+  const s = S(), g = geo(s), L = state.L, [x, y] = unproject(X, Y);
+  const hit = (p) => inBox(p.box, x, y) && inside(p.polys, x, y);
+  for (let i = 0; i < s.openings.length; i++) if (L[kindOf(s.openings[i])] && hit(g.openings[i])) return { type: "opening", idx: i };
+  if (L.voids) for (let i = 0; i < s.voids.length; i++) if (hit(g.voids[i])) return { type: "void", idx: i };
+  for (let i = 0; i < s.rooms.length; i++) if (hit(g.rooms[i])) return { type: "room", id: s.rooms[i].id };
+  if (L.walls && hit(g.walls)) return { type: "wall", at: [x, y] };
+  return null;
+}
+function pathOf(p) {
+  const s = S(), g = geo(s);
+  if (p.type === "room") { const i = s.rooms.findIndex((r) => r.id === p.id); return i < 0 ? null : g.rooms[i]; }
+  if (p.type === "void") return g.voids[p.idx] || null;
+  if (p.type === "opening") return g.openings[p.idx] || null;
+  if (p.type === "wall") return g.walls;
+  return null;
+}
+const boxOf = (p) => { const q = pathOf(p); return q ? q.box : null; };
+function anchorOf(p) {           // where the popup's arrow points: the room's label point, an opening's centre, a void's centroid, the click on a wall
+  const s = S();
+  if (p.type === "room") { const r = roomById(s, p.id); return r ? r.label : null; }
+  if (p.type === "opening") { const o = s.openings[p.idx]; return o ? o.c : null; }
+  if (p.type === "void") { const v = s.voids[p.idx]; return v && v.polygons.length ? centroid(v.polygons[0][0]) : null; }
+  if (p.type === "wall") { if (p.at) return p.at; const b = boxOf(p); return b ? [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2] : null; }
+  return null;
+}
+function hoverAt(X, Y) {
+  if (state.measure && state.measure.on) return;
+  const h = pick(X, Y);
+  canvas.style.cursor = h ? "pointer" : "";
+  if (!same(h, state.hover) && !(h === null && state.hover === null)) { state.hover = h; draw(); }
+}
+function setPin(p, zoom) {
+  state.pin = p;
+  state.focus = false; state.compare = false; state.more = false;
+  renderPopup(); renderRight(); writeHash();
+  const b = p && boxOf(p);
+  if (b) (zoom ? zoomTo(b) : reveal(b));
+  draw();
+}
+function clickAt(X, Y) {
+  const m = state.measure;
+  if (m && m.on) {
+    const p = unproject(X, Y);
+    if (!m.a || m.b) { m.a = p; m.b = null; m.real = null; } else m.b = p;
+    state.tab = "details";
+    renderRight(); draw();
+    return;
+  }
+  const h = pick(X, Y);
+  setPin(h && !same(h, state.pin) ? h : null);
+}
+
+let drag = null;
+const pointers = new Map();
+canvas.addEventListener("pointerdown", (e) => {
+  canvas.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, [e.offsetX, e.offsetY]);
+  if (pointers.size === 1) drag = { x: e.offsetX, y: e.offsetY, sx: e.offsetX, sy: e.offsetY, moved: false,
+                                    orbit: state.view === "3d" && e.button === 0 && !e.shiftKey };
+  else if (drag) { drag.moved = true; drag.pinch = null; }
+});
+canvas.addEventListener("pointermove", (e) => {
+  if (!pointers.has(e.pointerId) || !drag) { hoverAt(e.offsetX, e.offsetY); return; }
+  pointers.set(e.pointerId, [e.offsetX, e.offsetY]);
+  if (pointers.size === 2) {
+    const [[ax, ay], [bx, by]] = [...pointers.values()], mx = (ax + bx) / 2, my = (ay + by) / 2, dist = Math.hypot(ax - bx, ay - by);
+    if (drag.pinch) { zoomAt(mx, my, dist / drag.pinch.dist); pan(mx - drag.pinch.mx, my - drag.pinch.my); }
+    drag.pinch = { mx, my, dist };
+    draw();
+    return;
+  }
+  const dx = e.offsetX - drag.x, dy = e.offsetY - drag.y;
+  drag.x = e.offsetX; drag.y = e.offsetY;
+  if (Math.hypot(e.offsetX - drag.sx, e.offsetY - drag.sy) > 3) drag.moved = true;
+  if (!drag.moved) return;
+  if (drag.orbit) { cam.az = (cam.az + dx * 0.4) % 360; cam.el = clamp(cam.el + dy * 0.3, 12, 89); } else pan(dx, dy);
+  canvas.style.cursor = "grabbing";
+  draw();
+});
+function pointerUp(e) {
+  if (!pointers.has(e.pointerId)) return;
+  pointers.delete(e.pointerId);
+  if (pointers.size) return;
+  const click = drag && !drag.moved;
+  drag = null;
+  canvas.style.cursor = state.measure && state.measure.on ? "crosshair" : "";
+  if (click) clickAt(e.offsetX, e.offsetY);
+}
+canvas.addEventListener("pointerup", pointerUp);
+canvas.addEventListener("pointercancel", pointerUp);
+canvas.addEventListener("pointerleave", () => { if (!drag && state.hover) { state.hover = null; draw(); } });
+canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+canvas.addEventListener("wheel", (e) => { e.preventDefault(); zoomAt(e.offsetX, e.offsetY, Math.exp(-e.deltaY * 0.0015)); draw(); }, { passive: false });
+
+// ---------- review: flagged rooms and voids, checks kept per viewer ----------
+let checked = {};
+const reviewKey = (s) => `fpx-viewer:review:${s.id}${runOf(s) ? `:${runOf(s)}` : ""}`;
+const loadChecks = () => { checked = store.get(reviewKey(S())) || {}; };
+function flagged(s) {
+  const rank = (r) => (r.reasons.some((x) => x.includes("vs stamp")) ? 0 : r.reasons.some((x) => x.includes("stamps:")) ? 1 : r.review ? 3 : 2);
+  const rooms = s.rooms.filter((r) => r.conf === "low").map((r) => ({ type: "room", id: r.id, key: r.id, r, rank: rank(r) }))
+    .sort((a, b) => a.rank - b.rank || netOf(b.r) - netOf(a.r));
+  return [...rooms, ...s.voids.map((v, idx) => ({ type: "void", idx, key: `void:${idx}`, v }))];
+}
+const flagOf = (p) => p && flagged(S()).find((f) => (f.type === "room" ? p.type === "room" && p.id === f.id : p.type === "void" && p.idx === f.idx));
+const pinOfFlag = (f) => (f.type === "room" ? { type: "room", id: f.id } : { type: "void", idx: f.idx });
+function issue(r) {
+  const m = r.reasons.map((x) => /area ([\d.]+) m² vs stamp ([\d.]+) \(([+-]?\d+)%\)/.exec(x)).find(Boolean);
+  if (m) return `Area ${m[1]} m² is ${Math.abs(+m[3])} % ${+m[3] < 0 ? "below" : "above"} the stamp (${m[2]} m²)`;
+  if (r.review) return `Small unlabelled region of ${num(netOf(r), 2)} m²: a ${r.review.guess}?`;
+  const t = r.reasons.filter((x) => x !== "no contradiction found").join("; ");
+  return cap1(t) + (r.reasons.includes("very small") ? ` (${num(netOf(r))} m²)` : "");
+}
+const voidIssue = (v) => (v.deducted ? `${num(v.area)} m² deducted from GF (above the 5 m² rule)` : `${num(v.area)} m², not deducted from GF (5 m² rule)`);
+function toggleCheck(key) {
+  if (checked[key]) delete checked[key]; else checked[key] = new Date().toISOString();
+  store.set(reviewKey(S()), checked);
+  renderPopup(); renderRight();
+}
+function nextFlag(from) {
+  const fl = flagged(S());
+  if (!fl.length) return;
+  const k = from ? fl.findIndex((f) => f.key === from.key) : -1;
+  const order = fl.slice(k + 1).concat(fl.slice(0, k + 1));
+  setPin(pinOfFlag(order.find((f) => !checked[f.key]) || order[0]), true);
+}
+
+// ---------- header: sheet picker and menus ----------
+const kv = (rows, cls = "") => `<table class="kv${cls ? ` ${cls}` : ""}">${rows.filter(Boolean).map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}</table>`;
+const shortInput = (s) => { const c = ((s.triage || {})["Input class"] || "").toLowerCase();
+  return c.includes("vector") ? "vector PDF" : c.includes("scan") ? "scan" : c.includes("dwg") || c.includes("dxf") ? "DWG" : "raster"; };
+function scaleParts(s) {
+  const raw = ((s.triage || {}).Scale) || (s.summary && s.summary.scale) || "", cut = raw.indexOf(" – ");
+  let value = cut < 0 ? raw : raw.slice(0, cut), note = "";
+  const m = /^(.*?)\s*\((.*)\)$/.exec(value);
+  if (m) { value = m[1]; note = m[2]; }
+  const ppm = /([\d.]+)\s*px\/m/.exec(value), ratio = /^1\s*:\s*([\d.]+)/.exec(value);
+  return { value, note, method: cut < 0 ? "" : raw.slice(cut + 3), ppm: ppm ? +ppm[1] : null, n: ratio ? +ratio[1] : null,
+           tentative: /to be confirmed|proposed|estimated|unknown/i.test(raw) };
+}
+const scaleShort = (s) => { const p = scaleParts(s); return p.n ? `1:${p.n}` : p.ppm ? `${p.ppm} px/m` : ""; };
+const shortId = (s) => (s.id.length <= 3 ? s.id.toUpperCase() : "");
+const pickSub = (s) => { const inp = shortInput(s), dup = s.title.toLowerCase().includes(inp.toLowerCase());
+  return [shortId(s), dup ? "" : inp, scaleShort(s)].filter(Boolean).join(" · "); };
+
+let GROUPS = [];
+function sheetGroups() {      // Landgut Lohn (and other plain groups), the curated set, the public benchmarks: plans, not versions
+  const groups = [], byKey = new Map();
+  PLANS.forEach((p) => {
+    const s = D.sheets[p.def], key = s.curated ? "curated" : isBench(s) ? "bench" : `g:${s.group || "Sheets"}`;
+    if (!byKey.has(key)) { byKey.set(key, { key, items: [] }); groups.push(byKey.get(key)); }
+    byKey.get(key).items.push(p);
+  });
+  return groups;
+}
+const groupName = (g) => (g.key === "curated" ? "Curated set" : g.key === "bench" ? "Benchmarks" : g.key.slice(2));
+function renderHeader() {
+  const s = S(), n = navList().length, t = PLANS.length, nr = narrowed(), vs = versions(state.i), k = vs.indexOf(state.i), v = verOf(s);
+  $("pickname").textContent = s.title;
+  $("picksub").textContent = pickSub(s);
+  $("pick").title = `${nr ? `${n} of ${t}` : t} plan${t === 1 ? "" : "s"} in ${GROUPS.length} group${GROUPS.length === 1 ? "" : "s"}`;
+  $("filtsub").textContent = nr ? `${n} of ${t}` : `all ${t}`;
+  $("pickall").classList.toggle("narrow", nr);
+  $("pickall").title = nr ? `${n} of ${t} plans pass the filter` : "Narrow the plan list by collection and tags";
+  $("vername").textContent = v.label;
+  $("versub").textContent = [v.kind !== "pipeline" ? v.kind : "", v.date].filter(Boolean).join(" · ") || `${k + 1} of ${vs.length}`;
+  $("verpick").title = `${vs.length} version${vs.length === 1 ? "" : "s"} of this plan: ${vs.map((i) => verOf(D.sheets[i]).label).join(", ")}`;
+  $("verprev").disabled = k <= 0;
+  $("vernext").disabled = k >= vs.length - 1;
+  $("ver").classList.toggle("single", vs.length <= 1);
+  for (const [id, key] of [["pick", "sheet"], ["pickall", "filter"], ["verpick", "version"]]) {
+    $(id).classList.toggle("on", state.menu === key);
+    $(id).setAttribute("aria-expanded", state.menu === key);
+  }
+}
+function sheetMeta(s) {
+  if (s.curated) { const t = s.curated.tags; return [t.input[0], t.wall_style[0], s.curated.use].filter(Boolean).join(" · "); }
+  if (isBench(s)) { const sc = s.summary.scores || {};
+    return sc.wall_iou != null ? `walls IoU ${sc.wall_iou}${sc.rooms_ref != null ? ` · rooms ${sc.rooms_matched}/${sc.rooms_ref}` : ""}` : "no ground truth"; }
+  return pickSub(s);
+}
+
+// ---------- sheet filter: collections, runs and tags as checkboxes; state.off holds the unchecked keys per axis ----------
+let FACETS = {}, FV = [];       // FACETS[axis] = { name, values: [{ key, label, sub, section }], keys }; FV[i][axis] = the keys of sheet i
+function buildFacets() {
+  const vals = {};
+  FILTER_AXES.forEach((ax) => (vals[ax] = new Map()));
+  const add = (ax, key, label, sub, section, rank) => {
+    if (!vals[ax].has(key)) vals[ax].set(key, { key, label, sub, section, rank, n: 0 });
+    vals[ax].get(key).n++;
+  };
+  FV = D.sheets.map((s) => {
+    const fv = {};
+    if (s.curated) { const c = (s.curated.tags.category || [])[0] || "Curated"; fv.coll = [`curated:${slug(c)}`]; add("coll", fv.coll[0], c, "", "Curated set", 1); }
+    else if (isBench(s)) { const k = datasetOf(s); fv.coll = [`bench:${k}`]; add("coll", fv.coll[0], DATASETS[k] || s.group, "", "Benchmarks", 2); }
+    else { const g = s.group || "Sheets"; fv.coll = [`g:${slug(g)}`]; add("coll", fv.coll[0], g, "", "", 0); }
+    for (const ax of TAG_FILTER) {
+      const t = s.curated ? s.curated.tags[ax] : null;
+      fv[ax] = (Array.isArray(t) ? t : t ? [t] : []).map(String);
+      for (const v of fv[ax]) add(ax, v, v, "", "", 0);
+    }
+    return fv;
+  });
+  for (const ax of FILTER_AXES) {
+    const list = [...vals[ax].values()];
+    if (ax === "coll") list.sort((a, b) => a.rank - b.rank);                             // sections in order, data order within
+    else list.sort((a, b) => b.n - a.n || a.label.localeCompare(b.label));
+    FACETS[ax] = { name: FILTER_NAMES[ax], values: list, keys: new Set(list.map((v) => v.key)) };
+  }
+}
+// a sheet passes an axis when one of its keys is still checked; sheets without tags (BBL, benchmark-only) pass a tag axis only while it is not narrowed
+const passesAxis = (i, ax) => { const off = state.off[ax]; return !off || !off.size || FV[i][ax].some((k) => !off.has(k)); };
+const passes = (i) => FILTER_AXES.every((ax) => passesAxis(i, ax));
+const passesExcept = (i, skip) => FILTER_AXES.every((ax) => ax === skip || passesAxis(i, ax));
+const narrowed = () => FILTER_AXES.some((ax) => state.off[ax] && state.off[ax].size > 0);
+const isOnly = (ax, key) => { const off = state.off[ax]; return !!off && !off.has(key) && FACETS[ax].values.every((v) => v.key === key || off.has(v.key)); };
+function facetCounts(ax) {      // plans per value, given the other axes
+  const counts = {};
+  PLANS.forEach((p) => { const i = p.def; if (passesExcept(i, ax)) for (const k of FV[i][ax]) counts[k] = (counts[k] || 0) + 1; });
+  return counts;
+}
+// the filter in the hash (f.coll, f.run, f.era, ...) and in localStorage: per axis the checked keys, or "!" and the unchecked ones when
+// that is shorter; "" = none checked
+const SEP = ",";
+function filterEntries() {
+  const out = [];
+  for (const ax of FILTER_AXES) {
+    const off = state.off[ax];
+    if (!off || !off.size) continue;
+    const keys = FACETS[ax].values.map((v) => v.key), ex = keys.filter((k) => off.has(k)), on = keys.filter((k) => !off.has(k));
+    if (ex.length) out.push([ax, on.length <= ex.length ? on.join(SEP) : `!${ex.join(SEP)}`]);
+  }
+  return out;
+}
+function parseFilter(get, tag) {       // get(axis) → the stored string or null; tag: an "axis:value" link of the earlier viewer
+  const off = {};
+  for (const ax of FILTER_AXES) {
+    const raw = get(ax);
+    if (typeof raw !== "string") continue;
+    const keys = [...FACETS[ax].keys];
+    if (raw.startsWith("!")) off[ax] = new Set(raw.slice(1).split(SEP).filter((k) => FACETS[ax].keys.has(k)));
+    else { const on = new Set(raw === "" ? [] : raw.split(SEP)); off[ax] = new Set(keys.filter((k) => !on.has(k))); }
+  }
+  if (tag) {
+    const i = tag.indexOf(":"), k = tag.slice(0, i), v = tag.slice(i + 1), ax = k === "category" ? "coll" : k, key = k === "category" ? `curated:${slug(v)}` : v;
+    if (FACETS[ax] && !off[ax] && FACETS[ax].keys.has(key)) off[ax] = new Set([...FACETS[ax].keys].filter((x) => x !== key));
+  }
+  return off;
+}
+const saveFilter = () => { const o = {}; for (const [ax, v] of filterEntries()) o[ax] = v; store.set(FILTER_KEY, o); };
+function renderFilter() {
+  const f = $("filter");
+  if (state.menu !== "filter") { f.hidden = true; return; }
+  const top = f.hidden ? 0 : f.scrollTop, n = navList().length, t = PLANS.length;
+  const act = document.activeElement, keep = act && f.contains(act) && act.dataset.ax ? [act.dataset.ax, act.dataset.key] : null;
+  const cap = (ax) => `<div class="fcap"><span>${esc(FACETS[ax].name)}</span><button type="button" class="link2" data-all="${ax}">all</button><span class="dot">·</span><button type="button" class="link2" data-none="${ax}">none</button></div>`;
+  const opt = (ax, v, cnt) => `<label class="fopt${cnt ? "" : " zero"}"><input type="checkbox" data-ax="${ax}" data-key="${esc(v.key)}"${state.off[ax] && state.off[ax].has(v.key) ? "" : " checked"}><span class="t">${esc(v.label)}${v.sub ? ` <span class="fd">(${esc(v.sub)})</span>` : ""}</span><span class="n">${cnt}</span></label>`;
+  const group = (ax, cols) => {           // one group; a wide group lists its values in `cols` columns
+    const F = FACETS[ax], counts = facetCounts(ax), per = Math.ceil(F.values.length / cols), lists = [];
+    if (!F.values.length) return "";
+    for (let c = 0; c < cols; c++) {
+      let sec = null, h = "";
+      for (const v of F.values.slice(c * per, (c + 1) * per)) {
+        if (v.section !== sec) { sec = v.section; if (sec) h += `<div class="fsub">${esc(sec)}</div>`; }
+        h += opt(ax, v, counts[v.key] || 0);
+      }
+      lists.push(`<div>${h}</div>`);
+    }
+    return `<div class="fgroup${cols > 1 ? " fspan" : ""}">${cap(ax)}<div class="fopts">${lists.join("")}</div></div>`;
+  };
+  const placed = new Set(FILTER_LAYOUT.flat());
+  let html = `<div class="fhead"><b>Filter plans</b><span class="n">${n} of ${t} plan${t === 1 ? "" : "s"}</span><button type="button" class="link2" id="freset"${narrowed() ? "" : " disabled"}>Reset</button></div><div class="fbody">`;
+  for (const col of FILTER_LAYOUT) html += `<div class="fcol">${col.filter((ax) => FACETS[ax]).map((ax) => group(ax, 1)).join("")}</div>`;
+  for (const ax of FILTER_AXES) if (!placed.has(ax)) html += group(ax, 4);
+  html += `</div><div class="fhint">Tags belong to the curated plans: narrowing a tag group hides the plans without tags (Landgut Lohn). Counts are the plans left given the other groups.</div>`;
+  f.innerHTML = html;
+  f.hidden = false;
+  const r = $("pickall").getBoundingClientRect();
+  f.style.left = `${clamp(r.left + r.width / 2 - f.offsetWidth / 2, 8, window.innerWidth - f.offsetWidth - 8)}px`;
+  f.style.top = `${r.bottom + 6}px`;
+  f.scrollTop = top;
+  if (keep) { const el = f.querySelector(`input[data-ax="${keep[0]}"][data-key="${CSS.escape(keep[1])}"]`); if (el) el.focus({ preventScroll: true }); }
+}
+function renderMenu() {           // the plan dropdown: every group, only the plans that pass the filter; and the version dropdown
+  const m = $("menu");
+  renderFilter(); renderVersions();
+  if (state.menu !== "sheet") { m.hidden = true; return; }
+  const list = navList(), on = new Set(list), t = PLANS.length;
+  const item = (i) => { const s = D.sheets[i];
+    return `<button type="button" class="mitem${i === state.i ? " on" : ""}" role="menuitem" data-i="${i}"><span>${esc(s.title)}</span><span class="mm">${esc(sheetMeta(s))}</span></button>`; };
+  let html = `<div class="mhead"><span>${list.length} of ${t} plan${t === 1 ? "" : "s"}</span><button type="button" class="link2" id="mfilter">${narrowed() ? "Edit filter" : "Filter"}</button></div>`;
+  if (!on.has(state.i)) html += `<div class="mgroup">Current plan · outside the filter</div>${item(state.i)}`;
+  for (const g of GROUPS) {
+    let cap = null;
+    for (const p of g.items) {
+      const i = shownOf(p);
+      if (!on.has(i)) continue;
+      const s = D.sheets[i], sub = s.curated ? s.curated.tags.category[0] : isBench(s) ? s.group : "";
+      const c = `${groupName(g)}${sub ? ` · ${sub}` : ""}`;
+      if (c !== cap) { cap = c; html += `<div class="mgroup">${esc(c)}</div>`; }
+      html += item(i);
+    }
+  }
+  if (!list.length) html += '<div class="mempty">No plan passes the filter.</div>';
+  m.innerHTML = html;
+  m.hidden = false;
+  const r = $("pick").getBoundingClientRect();
+  m.style.left = `${clamp(r.left + r.width / 2 - m.offsetWidth / 2, 8, window.innerWidth - m.offsetWidth - 8)}px`;
+  m.style.top = `${r.bottom + 6}px`;
+}
+function renderVersions() {       // the version dropdown of the current plan
+  const m = $("vermenu");
+  if (state.menu !== "version") { m.hidden = true; return; }
+  const vs = versions(state.i);
+  m.innerHTML = `<div class="mhead"><span>${vs.length} version${vs.length === 1 ? "" : "s"} of this plan</span></div>` + vs.map((i) => {
+    const x = D.sheets[i], v = verOf(x), st = verStats(x);
+    return `<button type="button" class="mitem${i === state.i ? " on" : ""}" role="menuitem" data-i="${i}"><span>${esc(v.label)}${v.kind !== "pipeline" ? ` · ${esc(v.kind)}` : ""}${i === planAt(i).def ? " · default" : ""}</span><span class="mm">${esc([v.date, st.text].filter(Boolean).join(" · "))}</span></button>`;
+  }).join("");
+  m.hidden = false;
+  const r = $("verpick").getBoundingClientRect();
+  m.style.left = `${clamp(r.left + r.width / 2 - m.offsetWidth / 2, 8, window.innerWidth - m.offsetWidth - 8)}px`;
+  m.style.top = `${r.bottom + 6}px`;
+}
+// the figures a version is compared by, from the index (counts, summary), so that versions not loaded yet show them too
+function verStats(x) {
+  const e = x.summary || {}, sc = e.scores || {}, ro = e.rooms || {}, c = x.counts || {};
+  const rooms = c.rooms ?? (x.rooms ? x.rooms.length : null), qa = c.qa ?? (x.qa ? qaOf(x).length : null);
+  const matched = sc.rooms_ref != null ? `${sc.rooms_matched}/${sc.rooms_ref}` : ro.reference != null ? `${ro.matched_iou50}/${ro.reference}` : "";
+  const walls = sc.wall_iou ?? e.walls_iou;
+  const parts = [rooms != null ? plural(rooms, "room") : "", matched ? `${matched} matched` : "", walls ? `walls IoU ${num(walls, 2)}` : "", qa != null ? `${qa} QA` : ""];
+  return { rooms, matched, walls, qa, text: parts.filter(Boolean).join(" · ") };
+}
+function historyPane(s) {         // Details: the same plan through the versions
+  const vs = versions(state.i);
+  if (vs.length < 2) return "";
+  const rows = vs.map((i) => { const x = D.sheets[i], v = verOf(x), st = verStats(x);
+    return `<tr class="${i === state.i ? "cur" : ""}"><td><button type="button" class="link2" data-ver="${i}">${esc(v.label)}</button>${v.kind !== "pipeline" ? `<span class="muted"> ${esc(v.kind)}</span>` : ""}${i === planAt(i).def ? '<span class="muted"> · default</span>' : ""}</td><td>${esc(v.date || "")}</td><td>${st.rooms ?? "–"}</td><td>${esc(st.matched || "–")}</td><td>${st.walls ? num(st.walls, 2) : "–"}</td><td>${st.qa ?? "–"}</td></tr>`; }).join("");
+  return `<section class="block"><h3>History</h3><table class="vt"><tr><th>Version</th><th>Date</th><th>Rooms</th><th>Matched</th><th>Walls IoU</th><th>QA</th></tr>${rows}</table>
+    <div class="muted small">The same plan through the pipeline versions, and benchmark models where they were run. H and Shift+H step through them; the latest pipeline version is the default.</div></section>`;
+}
+function layerInfo(s, key) {
+  const n = (k) => s.openings.filter((o) => kindOf(o) === k).length;
+  switch (key) {
+    case "walls": return s.walls.iou ? `IoU ${num(s.walls.iou, 2)}` : F(s, "wallCount", "wall_count") ?? s.walls.polygons.length;
+    case "doors": case "windows": case "passages": return n(key);
+    case "stairs": return s.stairs.length;
+    case "voids": return s.voids.length;
+    case "columns": return columnsOf(s).length;
+    case "rooms": return s.rooms.length;
+    case "fragments": return s.fragments.length;
+    case "graph": return s.graph.length;
+    case "gf": return `${num(s.gf.area)} m²${s.gf.iou ? ` · IoU ${num(s.gf.iou, 2)}` : ""}`;
+    default: return "";
+  }
+}
+function swatchStyle(key, mode) {
+  if (key === "rooms") return mode === "room" ? "background:linear-gradient(135deg,#4e79a7,#f28e2b,#59a14f)"
+    : mode === "confidence" ? "background:var(--highc)" : "background:linear-gradient(135deg,var(--high),var(--medium),var(--low))";
+  if (key === "labels") return "border:1px solid var(--border);background:var(--panel)";
+  if (key === "gf") return "border:2px dashed var(--text);background:none";
+  if (key === "ref") return "border:2px solid var(--ref);background:none";
+  return `background:var(--${{ walls: "wall2d", doors: "door", windows: "window", passages: "passage", stairs: "stair", voids: "void", fragments: "frag", graph: "graph", columns: "column" }[key]})`;
+}
+const layerDisabled = (s, key) => (key === "ref" && !hasRef(s)) || (key === "columns" && !columnsOf(s).length);
+function renderLeft() {
+  const s = S(), mode = colourMode(), roomRef = hasRoomRef(s);
+  document.querySelectorAll("#colour button").forEach((b) => {
+    const on = b.dataset.colour === mode;
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-pressed", on);
+    if (b.dataset.colour === "accuracy") { b.disabled = !roomRef; b.title = roomRef ? `Room IoU against the ${refName(s).toLowerCase()}` : "No reference rooms for this sheet"; }
+    if (b.dataset.colour === "confidence") b.title = "QA confidence of each room, no reference needed";
+  });
+  let legend = "";
+  if (mode !== "room") {
+    const n = { high: 0, medium: 0, low: 0 }, conf = mode === "confidence";
+    s.rooms.forEach((r) => n[level(r, mode)]++);
+    const names = conf ? { high: "High", medium: "Medium", low: "Low" } : { high: "IoU ≥ 0.8", medium: "IoU 0.5 – 0.8", low: "IoU < 0.5" };
+    legend = ["high", "medium", "low"].map((k) => `<span class="lrow"><span class="sw" style="background:var(${conf ? confVar(k) : `--${k}`})"></span><span${conf ? ` class="help" title="${CONF_TIP[k]}"` : ""}>${names[k]}</span><span class="cnt">${n[k]}</span></span>`).join("");
+  }
+  $("legend").innerHTML = legend;
+  let html = "", group = null;
+  LAYERS.forEach((l, k) => {
+    if (l.group !== group) {
+      group = l.group;
+      html += `<button type="button" class="ghead" data-group="${group}" aria-expanded="${!state.closed[group]}"><span class="tri">${state.closed[group] ? "▸" : "▾"}</span>${group}</button>`;
+    }
+    if (state.closed[group]) return;
+    const dis = layerDisabled(s, l.key);
+    const title = dis ? (l.key === "ref" ? "No reference for this sheet" : "No columns in this output") : k < 10 ? `Key ${(k + 1) % 10}` : "";
+    html += `<label class="layer${dis ? " dis" : ""}"${title ? ` title="${title}"` : ""}><input type="checkbox" data-layer="${l.key}"${state.L[l.key] && !dis ? " checked" : ""}${dis ? " disabled" : ""}><span class="sw" style="${swatchStyle(l.key, mode)}"></span><span class="lname">${l.key === "ref" ? refName(s) : l.name}</span><span class="n">${dis ? "" : layerInfo(s, l.key)}</span></label>`;
+  });
+  $("layers").innerHTML = html;
+}
+
+// ---------- pinned popup on the plan (board 1i: stays until × or Esc; a click elsewhere replaces it) ----------
+function deviation(r) {
+  const d = devOf(r);
+  if (d != null) return Math.round(+d);
+  const m = r.reasons.map((x) => /vs stamp [\d.]+ \(([+-]?\d+)%\)/.exec(x)).find(Boolean);
+  if (m) return +m[1];
+  return r.stamp ? Math.round(((netOf(r) - r.stamp) / r.stamp) * 100) : null;
+}
+const devHtml = (dev) => { if (dev == null) return "";
+  const col = Math.abs(dev) > 15 ? "var(--low)" : Math.abs(dev) > 5 ? "var(--medium)" : "var(--muted)";
+  return ` <span style="color:${col}">(${dev > 0 ? "+" : dev < 0 ? "−" : "±"}${Math.abs(dev)} %)</span>`; };
+const sevBadge = (q) => `<span class="sev ${esc(q.severity)}">${esc(q.severity)}</span>`;
+function popupHtml(p, s) {
+  const name = (id) => { if (id === "outside") return "outside"; const r = roomById(s, id); return r ? `<a href="#" data-room="${esc(id)}">${esc(r.name)}</a>` : esc(id || "?"); };
+  const head = (title, id) => `<div class="phd"><span class="t">${title}${id ? ` <span class="id">${esc(id)}</span>` : ""}</span><button type="button" class="x" data-act="unpin" title="Close (Esc)" aria-label="Close">×</button></div>`;
+  let html = "", acts = "", review = "";
+  if (p.type === "room") {
+    const r = roomById(s, p.id);
+    if (!r) return null;
+    const net = netOf(r), gross = grossOf(r), poly = polyAreaOf(r), basis = basisOf(r), n = numberOf(r), aoid = F(r, "aoid"), fl = flightsOf(r);
+    const issues = qaFor(s, r.id), ref = hasRoomRef(s), g = geo(s);
+    html = head(esc(r.name), r.id) + kv([
+      ["Net area", `${num(net, 2)} m²`],
+      gross != null && Math.abs(gross - net) > 0.005 ? [`<span class="help" title="The room's share of its walls: to the centre lines; an exterior wall's outer half to nobody">Gross (wall centres)</span>`, `${num(gross, 2)} m²`] : null,
+      poly != null && Math.abs(poly - net) > 0.005 ? [`<span class="help" title="Area of the room polygon as drawn, before voids and stair eyes are taken out">Polygon</span>`, `${num(poly, 2)} m²`] : null,
+      ["Stamp", r.stamp != null ? `${num(r.stamp, 2)} m²${devHtml(deviation(r))}${basis && basis !== "net" ? ` <span class="muted">vs ${esc(basis)}</span>` : ""}` : '<span class="muted">not read</span>'],
+      ["Confidence", `<b style="color:var(${confVar(r.conf)})">${r.conf}</b>`],
+      ref ? [refName(s), r.ref ? `IoU ${num(r.iou, 2)}${g.named.length ? `<br><span class="muted">${esc(r.ref)}</span>` : ""}` : "–"] : null,
+      n ? ["Number", esc(n)] : null,
+      aoid ? ["AOID", esc(aoid)] : null,
+      fl ? ["Stairs", `${fl} flight${fl === 1 ? "" : "s"} in the room`] : null,
+      r.review ? ["Review", `<span class="warn">a ${esc(r.review.guess)}?</span>`] : null,
+      issues.length ? ["QA", issues.map((q) => `${sevBadge(q)} ${esc(q.message)}`).join("<br>")] : null,
+    ]);
+    const more = [
+      r.raw && r.raw !== r.name ? ["OCR read", `${esc(r.raw)} → ${esc(r.name)}`] : null,
+      ["Usage", esc(r.usage)],
+      ["Reasons", esc(r.reasons.join("; "))],
+      basis ? ["Checked against", `${esc(basis)} area`] : null,
+      r.review ? ["Why", esc(r.review.reason)] : null,
+      ["Connected to", r.neighbours.length ? r.neighbours.map(name).join(", ") : "–"],
+    ];
+    html += `<div class="pmore"><button type="button" class="pbtn ghost" data-act="more" aria-expanded="${state.more}">${state.more ? "▾ Less" : "▸ Details"}</button>${state.more ? kv(more, "lft") : ""}</div>`;
+    acts = `<button type="button" class="pbtn" data-act="zoom">Zoom</button>
+      <button type="button" class="pbtn${state.focus ? " on" : ""}" data-act="focus">Connections</button>
+      <button type="button" class="pbtn${state.compare ? " on" : ""}" data-act="compare"${hasRef(s) ? "" : ' disabled title="No reference for this sheet"'}>Compare</button>`;
+    if (r.conf === "low") review = `<div class="preview">${esc(issue(r))}</div>`;
+  } else if (p.type === "opening") {
+    const o = s.openings[p.idx];
+    html = head(esc(cap1(o.kind)), o.id) + kv([["Width", `${num(o.width, 2)} m`], ["Wall", o.exterior ? "exterior" : "interior"],
+      o.connects ? ["Connects", o.connects.map(name).join(" ↔ ")] : null, ...qaFor(s, o.id).map((q) => ["QA", `${sevBadge(q)} ${esc(q.message)}`])]);
+    acts = `<button type="button" class="pbtn" data-act="zoom">Zoom</button>`;
+  } else if (p.type === "void") {
+    const v = s.voids[p.idx], kind = F(v, "kind");
+    html = head(`Void ${esc(v.label)}`, F(v, "id") || "") + kv([kind ? ["Kind", esc(kind)] : null, ["Area", `${num(v.area, 2)} m²`],
+      ["GF deduction", v.deducted ? "yes (over 5 m²)" : "no (5 m² or less)"]]);
+    acts = `<button type="button" class="pbtn" data-act="zoom">Zoom</button>`;
+    review = `<div class="preview">${esc(voidIssue(v))}</div>`;
+  } else {
+    const br = geo(s).bridges.length;
+    html = head("Walls", "") + kv([s.walls.area ? ["Area", `${num(s.walls.area)} m²`] : null,
+      s.walls.refArea ? [refName(s), `${num(s.walls.refArea)} m²`] : null, ["IoU", s.walls.iou ? num(s.walls.iou, 2) : "–"],
+      ["Polygons", s.walls.polygons.length], br ? ["Gaps bridged", br] : null,
+      ...qaFor(s, "walls").map((q) => ["QA", `${sevBadge(q)} ${esc(q.message)}`])]);
+  }
+  const f = flagOf(p);
+  if (f) {
+    const fl = flagged(s), done = fl.filter((x) => checked[x.key]).length;
+    acts += `<button type="button" class="pbtn${checked[f.key] ? " on" : ""}" data-act="check">${checked[f.key] ? "✓ Checked" : "Mark checked"}</button>
+      <button type="button" class="pbtn" data-act="nextflag" title="${done} of ${fl.length} checked">Next flagged ›</button>`;
+  } else review = "";
+  return `${html}${review}${acts ? `<div class="pact">${acts}</div>` : ""}<div class="arrow"></div>`;
+}
+function renderPopup() {
+  const el = $("popup"), p = state.pin;
+  const html = p && popupHtml(p, S());
+  if (!html) { state.pin = null; el.hidden = true; el.innerHTML = ""; return; }
+  el.innerHTML = `<div class="pscroll">${html}</div>`;
+  el.appendChild(el.querySelector(".arrow"));            // the arrow sits outside the scrolling part
+  el.hidden = false;
+  placePopup();
+}
+function placePopup() {
+  const el = $("popup"), p = state.pin;
+  if (!p || el.hidden) return;
+  const a = anchorOf(p);
+  if (!a) return;
+  el.style.maxHeight = `${Math.max(120, H - 16)}px`;
+  const [X, Y] = project(basis(state.view === "3d" && p.type === "wall" ? WALL_H : 0), a[0], a[1]);
+  const w = el.offsetWidth, h = el.offsetHeight;
+  const cx = clamp(X, w / 2 + 8, Math.max(w / 2 + 8, W - w / 2 - 8));
+  let top, below = false, arrow = true;
+  if (Y - 18 - h >= 8) top = Y - 18 - h;
+  else if (Y + 18 + h <= H - 8) { top = Y + 18; below = true; }
+  else { top = 8; arrow = false; }
+  if (X < -20 || X > W + 20 || Y < -20 || Y > H + 20) arrow = false;
+  el.style.left = `${Math.round(cx - w / 2)}px`;
+  el.style.top = `${Math.round(top)}px`;
+  el.classList.toggle("below", below);
+  el.classList.toggle("noarrow", !arrow);
+  el.querySelector(".arrow").style.left = `${clamp(X - (cx - w / 2), 14, w - 14)}px`;
+}
+
+// ---------- right panel: KPIs, tabs, room list, review, details ----------
+function kpiRows(s) {
+  const rooms = s.rooms, net = sum(rooms, netOf), hasGross = rooms.some((r) => grossOf(r) != null), gross = hasGross ? sum(rooms, (r) => grossOf(r) ?? netOf(r)) : null;
+  const stamped = rooms.filter((r) => r.stamp != null), stamp = sum(stamped, (r) => r.stamp);
+  const high = sum(rooms.filter((r) => r.conf === "high"), netOf), share = net ? Math.round((high / net) * 100) : 0;
+  const small = rooms.filter((r) => r.smallRegion).length, fl = flagged(s), done = fl.filter((f) => checked[f.key]).length;
+  const nk = (k) => s.openings.filter((o) => kindOf(o) === k).length, qa = qaOf(s), p = scaleParts(s);
+  const nErr = qa.filter((q) => q.severity === "error").length, nWarn = qa.filter((q) => q.severity === "warning").length;
+  const agf = F(s, "agfArea", "agf_area") ?? F(s.gf, "agfArea", "agf_area");
+  const help = (t, tip) => `<span class="help" title="${esc(tip)}">${t}</span>`;
+  return [
+    ["Rooms", `${rooms.length}${small ? ` <span class="muted sub">(${small} small)</span>` : ""}`],
+    [help("Net room area", "Sum of the room areas inside the wall faces, voids and stair eyes excluded"), `${Math.round(net)} m²`],
+    hasGross ? [help("Gross room area<br><span class=\"sub\">share of the walls, to centre lines</span>", "Sum of the rooms' shares of the walls: each room to the centre lines of its walls, an exterior wall's outer half to nobody"), `${Math.round(gross)} m²`] : null,
+    stamped.length ? [help(`Stamp area <span class="sub">(${stamped.length} read)</span>`, `Sum of the stamp figures read on the sheet, ${stamped.length} of ${rooms.length} rooms`), `${Math.round(stamp)} m²`] : null,
+    [help("Gross floor area (GF)", "Floor outline of the storey; voids over 5 m² deducted"), `${Math.round(s.gf.area)} m²`],
+    agf ? [help("AGF", "Floor area counted after the deductions of the guideline"), `${Math.round(agf)} m²`] : null,
+    [help("Openings", `${plural(nk("doors"), "door")}, ${plural(nk("windows"), "window")}, ${plural(nk("passages"), "passage")}`), `${s.openings.length}`],
+    [help("Confidence", "Share of the net room area with high confidence"), `<span class="barcell"><span class="bar"><span style="width:${share}%;background:var(--high)"></span></span>${share} %</span>`],
+    ["Needs review", fl.length ? `<button type="button" class="kbtn" data-tab="review" title="${plural(fl.filter((f) => f.type === "room").length, "room")}, ${plural(fl.length - fl.filter((f) => f.type === "room").length, "void")}">${fl.length}</button>${done ? ` <span class="muted sub">${done} checked</span>` : ""}` : '<span class="muted">0</span>'],
+    qa.length ? [help("QA issues", "Checks of the pipeline on this output (fpx.qa)"), `${nErr ? `<span class="warn">${nErr} error${nErr === 1 ? "" : "s"}</span>` : "0 errors"} · ${nWarn} warning${nWarn === 1 ? "" : "s"}`] : null,
+    ["Scale", `${p.n ? `1 : ${p.n}` : p.ppm ? `${num(p.ppm)} px/m` : esc(p.value) || "–"}${p.tentative ? ' <span class="warn help" title="Proposed by the pipeline, not confirmed: check it under Details">⚠</span>' : ""}`],
+  ].filter(Boolean);
+}
+function roomsPane(s) {
+  const iou = hasRoomRef(s), metric = iou ? "iou" : "conf", sort = state.sort || { key: metric, dir: 1 }, order = { low: 0, medium: 1, high: 2 };
+  const val = (r) => (sort.key === "name" ? r.name.toLowerCase() : sort.key === "area" ? netOf(r) : sort.key === "iou" ? r.iou : order[r.conf]);
+  const idx = new Map(s.rooms.map((r, i) => [r, i]));
+  const rows = s.rooms.slice().sort((a, b) => { const x = val(a), y = val(b); return (x < y ? -1 : x > y ? 1 : 0) * sort.dir; });
+  const col = (key, name) => `<button type="button" class="${sort.key === key ? "on" : ""}" data-sort="${key}" title="Sort by ${name.toLowerCase()}">${name}${sort.key === key ? (sort.dir > 0 ? " ↑" : " ↓") : ""}</button>`;
+  const pin = state.pin && state.pin.type === "room" ? state.pin.id : null, mode = colourMode();
+  return `<div class="${iou ? "" : "conf"}"><div class="lhead">${col("name", `Rooms · ${s.rooms.length}`)}${col("area", "Area")}${col(metric, iou ? "IoU" : "Confidence")}</div>
+    <div class="rlist" id="rlist">${rows.map((r) => {
+      const m = iou ? `<span class="rm" style="color:var(--${level(r, "accuracy")})">${num(r.iou, 2)}</span>` : `<span class="rm" style="color:var(${confVar(r.conf)})">${r.conf}</span>`;
+      const sw = mode === "room" ? `<span class="sw" style="background:${roomColour(r, idx.get(r))}"></span>` : "", n = numberOf(r);
+      return `<button type="button" class="rrow${r.id === pin ? " on" : ""}" data-room="${esc(r.id)}" title="${esc(r.id)}${r.stamp != null ? ` · stamp ${num(r.stamp, 2)} m²` : ""}"><span class="rn">${sw}<span class="t">${esc(r.name)}</span>${n ? `<span class="id">${esc(n)}</span>` : ""}</span><span class="ra">${num(netOf(r))} m²</span>${m}</button>`;
+    }).join("")}</div></div>`;
+}
+function flagRow(f) {
+  const on = !!state.pin && (f.type === "room" ? state.pin.type === "room" && state.pin.id === f.id : state.pin.type === "void" && state.pin.idx === f.idx);
+  const title = f.type === "room" ? `${esc(f.r.name)} <span class="id">${f.r.id}</span>` : `${esc(f.v.label)} <span class="id">void</span>`;
+  return `<button type="button" class="flag${on ? " on" : ""}${checked[f.key] ? " done" : ""}" data-flag="${esc(f.key)}">
+    <span class="dot" style="background:var(${f.type === "room" ? "--low" : "--void"})"></span>
+    <span><span class="ft">${title}</span><span class="msg">${esc(f.type === "room" ? issue(f.r) : voidIssue(f.v))}</span></span>
+    <span class="chev">${checked[f.key] ? "✓" : "›"}</span></button>`;
+}
+function reviewPane(s) {
+  const fl = flagged(s), nr = fl.filter((f) => f.type === "room").length, nv = fl.length - nr, done = fl.filter((f) => checked[f.key]).length;
+  const shown = state.allFlags ? fl : fl.slice(0, 8);
+  const qa = qaOf(s).filter((q) => !(q.element && roomById(s, q.element))), qs = state.allQa ? qa : qa.slice(0, 6);
+  const exp = (fmt, what, act) => `<div class="exp"><b${act ? "" : ' class="muted"'}>${fmt}</b><span class="muted">${what}</span>${act ? `<button type="button" class="btn" data-act="${act}">Download</button>` : '<button type="button" class="btn" disabled>Soon</button>'}</div>`;
+  return `<section class="block">
+      <div class="hrow"><h3>Needs review</h3><span class="n">${fl.length ? `${plural(nr, "room")}, ${plural(nv, "void")}${done ? ` · ${done} checked` : ""}` : ""}</span></div>
+      ${fl.length ? `<div class="flags">${shown.map(flagRow).join("")}</div>
+        ${fl.length > shown.length ? `<button type="button" class="link more" data-act="allflags">Show all ${fl.length}</button>` : ""}
+        <button type="button" class="wide" data-act="review">${done && done < fl.length ? "Continue review" : "Review flagged rooms"}</button>
+        <div class="hint">Click a row to pin it on the plan; checks are kept in this browser only. Editing rooms comes with the app.</div>`
+      : '<div class="muted">Nothing flagged on this sheet.</div>'}
+    </section>
+    ${qa.length ? `<section class="block"><div class="hrow"><h3>QA checks</h3><span class="n">${qa.length} not tied to a room</span></div>
+      <div class="qa">${qs.map((q) => `<div>${sevBadge(q)}<span>${esc(q.message)}${q.element ? ` <span class="id">${esc(q.element)}</span>` : ""}</span></div>`).join("")}</div>
+      ${qa.length > qs.length ? `<button type="button" class="link more" data-act="allqa">Show all ${qa.length}</button>` : ""}</section>` : ""}
+    <section class="block">
+      <h3>Export</h3>
+      ${exp("CSV", "Room list of this sheet", "csv")}${exp("JSON", "Pipeline output")}${exp("DWG", "Custom layers")}${exp("PDF", "Plan with overlay")}${exp("IFC", "Not yet available")}
+      <div class="hint">The pilot writes JSON and DXF next to each run in <code>data/</code>; downloading them from the viewer comes with the app.</div>
+    </section>`;
+}
+function scoreStrip(s) {
+  if (isBench(s)) {
+    const sc = s.summary.scores || {};
+    if (!Object.keys(sc).length) return '<div class="strip"><b>No ground truth</b><span>for this sheet</span></div>';
+    return `<div class="strip"><b>Sheet vs reference</b><span>Walls ${sc.wall_iou}</span><span>Doors ${sc.door_iou}</span><span>Windows ${sc.window_iou}</span>${sc.rooms_ref != null ? `<span>Rooms ${sc.rooms_matched}/${sc.rooms_ref}</span>` : ""}</div>`;
+  }
+  const e = s.summary || {}, ro = e.rooms || {}, cn = e.connectivity || {};
+  return `<div class="strip"><b>Sheet vs 2005</b><span>Rooms ${ro.matched_iou50}/${ro.reference}</span><span>Walls ${num(e.walls_iou, 2)}</span><span>GF ${num(e.gf_iou, 2)}</span><span>Links ${cn.correct}/${cn.reference_edges}</span>${ro.median_abs_area_error_pct != null ? `<span>Area err ${ro.median_abs_area_error_pct} %</span>` : ""}</div>`;
+}
+function measureOut(s) {
+  const m = state.measure;
+  if (!m || (!m.on && !m.b)) return "";
+  if (!m.b) return `<div class="step"><b>${m.a ? 2 : 1}</b>${m.a ? "Click the other end of the distance." : "Click one end of a distance you know, e.g. a dimension chain."}</div>`;
+  const d = Math.hypot(m.b[0] - m.a[0], m.b[1] - m.a[1]);
+  return `<div class="step"><b>3</b>Enter the real distance.</div>
+    <div class="grid2"><span>Measured at this scale</span><span><b>${num(d, 2)} m</b></span>
+      <span>Real distance</span><span><input class="realin" id="realdist" type="number" min="0" step="0.01" value="${m.real || ""}" aria-label="Real distance in metres"> m</span></div>
+    <div id="measureres">${measureRes(s)}</div>`;
+}
+function measureRes(s) {
+  const m = state.measure, d = Math.hypot(m.b[0] - m.a[0], m.b[1] - m.a[1]);
+  if (!(m.real > 0) || !d) return "";
+  const f = m.real / d, p = scaleParts(s);
+  return `<div class="grid2"><span>Calculated scale</span><span class="accentbig">${p.n ? `1 : ${Math.round(p.n * f)}` : p.ppm ? `${num(p.ppm / f)} px/m` : `× ${num(f, 3)}`}</span>
+      <span>Lengths · areas</span><span>× ${num(f, 3)} · × ${num(f * f, 3)}</span></div>
+    <div class="hint">Not saved: the pilot does not rerun a sheet from the viewer.</div>`;
+}
+// a tag chip narrows the filter to that value (and back); axes the filter does not carry are plain chips
+function chipHtml(k, v) {
+  const ax = k === "category" ? "coll" : k, key = k === "category" ? `curated:${slug(v)}` : String(v);
+  if (!FACETS[ax] || !FACETS[ax].keys.has(key)) return `<span class="chip">${esc(v)}</span>`;
+  const only = isOnly(ax, key);
+  return `<button type="button" class="chip${only ? " on" : ""}" data-fax="${ax}" data-fkey="${esc(key)}" title="${only ? "Show every sheet again" : `Show only the sheets tagged ${esc(v)}`}">${esc(v)}</button>`;
+}
+function planInfo(c) {
+  const a = c.attribution || {}, credit = [a.author, a.date].filter(Boolean).map(esc).join(", ");
+  const page = a.page ? `<a href="${esc(a.page)}" target="_blank" rel="noopener noreferrer">source page</a>` : "";
+  const restricted = c.use === "benchmark only" || c.use === "BBL internal";
+  const chips = Object.entries(AXES).filter(([k]) => (c.tags[k] || []).length).map(([k, name]) => [name, `<span class="chips">${c.tags[k].map((v) => chipHtml(k, v)).join("")}</span>`]);
+  return `<h3>Plan <span class="id">${esc(c.id)}</span></h3><p class="why">${esc(c.why)}</p>${kv([
+    ["Source", esc(c.source)], ["Licence", `${esc(c.licence)} – <span class="${restricted ? "warn" : ""}">${esc(c.use)}</span>`],
+    credit || page ? ["Attribution", [credit, page].filter(Boolean).join(" · ")] : null,
+    ["Scale (manifest)", c.scale.px_per_m ? `${c.scale.px_per_m} px/m – ${esc(c.scale.method)}` : esc(c.scale.method)],
+    ["Reference", c.reference.content === "none" ? "none" : `${esc(c.reference.content)} <span class="muted">(${esc(c.reference.source)})</span>`], ...chips], "lft")}`;
+}
+function detailsPane(s) {
+  const tri = s.triage || {}, rename = { "Graphical style (detected)": "Drawing style" }, p = scaleParts(s), m = state.measure;
+  const e = s.summary || {}, ro = e.rooms || {}, op = e.openings || {}, cn = e.connectivity || {}, sc = e.scores || {}, secs = e.seconds;
+  const scores = isBench(s)
+    ? `<h3>Scores vs reference</h3>${Object.keys(sc).length ? kv([["Walls / doors / windows IoU", `${sc.wall_iou ?? "–"} / ${sc.door_iou ?? "–"} / ${sc.window_iou ?? "–"}`],
+        sc.rooms_ref != null ? ["Rooms matched (IoU ≥ 0.5)", `${sc.rooms_matched}/${sc.rooms_ref} (${sc.rooms_pred} found, mean IoU ${sc.rooms_mean_iou})`] : null], "lft")
+        : '<div class="muted">No ground truth for this sheet.</div>'}`
+    : `<h3>Scores vs 2005 reference</h3>${kv([["Rooms IoU ≥ 0.5", `${ro.matched_iou50}/${ro.reference} (mean IoU ${num(ro.mean_iou, 2)})`],
+        ro.median_abs_area_error_pct != null ? ["Median area error", `${ro.median_abs_area_error_pct} %`] : null,
+        ["Walls IoU", `${num(e.walls_iou, 2)}${e.walls_iou_regularised != null ? ` <span class="muted">· straight segments ${num(e.walls_iou_regularised, 2)}</span>` : ""}`],
+        ["GF IoU", `${num(e.gf_iou, 2)} (${e.gf_area_error_pct > 0 ? "+" : ""}${e.gf_area_error_pct} %)`],
+        ["Openings found", `exterior ${op.exterior_recall}, interior ${op.interior_recall}`],
+        ["Connections", `${cn.correct}/${cn.reference_edges} (F1 ${num(cn.f1, 2)})`], e.qa_issues != null ? ["QA issues", e.qa_issues] : null], "lft")}
+      ${s.id !== "s1" ? '<div class="muted small">This scan shows an earlier state of the building: changed rooms score low by design.</div>' : ""}`;
+  return `<section class="block"><h3>Detected on this sheet</h3>${kv([["Sheet", esc(s.title)], ["Group", esc(s.group)],
+      ...Object.entries(tri).filter(([k]) => k !== "Scale").map(([k, v]) => [rename[k] || k, esc(v)]), secs != null ? ["Processing time", `${secs} s`] : null], "lft")}</section>
+    <section class="block"><h3>Scale</h3>
+      ${p.n ? `<div class="hrow"><span class="muted">Scale</span><span class="big">1 : ${p.n}</span></div>` : ""}
+      ${p.ppm ? `<div class="hrow"><span class="muted">Pixel size</span><span>${num(p.ppm)} px per metre <span class="muted">· ${num(1000 / p.ppm)} mm per pixel</span></span></div>` : ""}
+      ${!p.n && !p.ppm ? `<div class="big">${esc(p.value) || "–"}</div>` : ""}
+      ${p.note ? `<div class="muted small">${esc(cap1(p.note))}</div>` : ""}
+      ${p.method ? `<div class="small">${esc(cap1(p.method))}</div>` : ""}
+      ${p.tentative ? '<div class="warnbox">Warning: this scale is a proposal of the pipeline and has not been confirmed. Check it before using the areas, e.g. by measuring a known distance.</div>' : ""}
+      <button type="button" class="pillbtn${m && m.on ? " on" : ""}" data-act="measure">${m && m.on ? "Stop measuring" : "Check by measuring"}</button>
+      <div id="measureout" class="col" style="gap:10px">${measureOut(s)}</div>
+    </section>
+    <section class="block">${scores}${hasRef(s) || isBench(s) ? scoreStrip(s) : ""}</section>
+    ${historyPane(s)}
+    ${s.curated ? `<section class="block">${planInfo(s.curated)}</section>` : ""}`;
+}
+function renderRight() {
+  const s = S(), fl = flagged(s).length;
+  $("kpis").innerHTML = kpiRows(s).map(([k, v]) => `<span>${k}</span><span>${v}</span>`).join("");
+  document.querySelectorAll(".rtab").forEach((b) => {
+    const on = b.dataset.tab === state.tab;
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-selected", on);
+    if (b.dataset.tab === "rooms") b.textContent = `Rooms · ${s.rooms.length}`;
+    if (b.dataset.tab === "review") b.textContent = fl ? `Review · ${fl}` : "Review";
+  });
+  $("railR").innerHTML = `Sheet <span class="cnt">· ${s.rooms.length} rooms</span>`;
+  $("pane").innerHTML = state.tab === "review" ? reviewPane(s) : state.tab === "details" ? detailsPane(s) : roomsPane(s);
+}
+function renderToolbar() {
+  document.querySelectorAll("#view button").forEach((b) => { const on = b.dataset.view === state.view; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
+  $("opacity").value = state.opacity;
+  $("opacity").title = `Plan opacity ${Math.round(state.opacity * 100)} %`;
+  const on = !!(state.measure && state.measure.on);
+  $("measure").classList.toggle("on", on);
+  canvas.style.cursor = on ? "crosshair" : "";
+}
+function renderPanels() {       // collapsed panels become a 36 px rail on wide screens; stacked (narrow) they keep their header and hide the body
+  const narrow = NARROW.matches;
+  for (const side of ["left", "right"]) {
+    const closed = !!state.panels[side], b = $(side === "left" ? "collapseL" : "collapseR");
+    $(side).classList.toggle("closed", closed);
+    b.setAttribute("aria-expanded", !closed);
+    b.textContent = narrow ? (closed ? "▸" : "▾") : side === "left" ? "‹" : "›";
+    b.title = closed ? "Expand panel" : "Collapse panel";
+  }
+  $("grid").classList.toggle("lc", !!state.panels.left);
+  $("grid").classList.toggle("rc", !!state.panels.right);
+}
+function renderAll() {
+  renderHeader(); renderPanels(); renderLeft(); renderRight(); renderPopup(); renderToolbar();
+  renderMenu();
+  writeHash(); draw();
+}
+
+// ---------- state changes ----------
+function select(i, keepMenu = false) {      // the version's data is fetched first (no-op when embedded or already loaded)
+  if (i == null || i < 0 || !D.sheets[i]) return;
+  const menu = keepMenu ? state.menu : null;
+  ensure(i).then(() => {
+    Object.assign(state, { i, pin: null, hover: null, focus: false, compare: false, measure: null, sort: null, allFlags: false, allQa: false, more: false, menu });
+    state.ver[planAt(i).key] = i;
+    loadChecks(); renderAll(); fitRooms();
+  }).catch(loadError);
+}
+const navList = () => PLANS.map((p) => shownOf(p)).filter((i) => passes(i));      // one sheet per plan (its shown version) that passes the filter
+function stepVersion(d) {
+  const vs = versions(state.i), k = vs.indexOf(state.i);
+  if (vs.length > 1) select(vs[(k + d + vs.length) % vs.length], state.menu === "filter");
+}
+function step(d) {
+  const l = navList(), k = l.indexOf(state.i);
+  if (l.length) select(k < 0 ? l[d > 0 ? 0 : l.length - 1] : l[(k + d + l.length) % l.length]);
+}
+// a changed filter keeps the current plan while it passes; otherwise the first plan that does is shown
+function setFilter(off) {
+  state.off = off;
+  saveFilter();
+  if (!passes(state.i)) { const l = navList(); if (l.length) { select(l[0], true); return; } }
+  renderAll();
+}
+function checkFilter(ax, key, on) {
+  const off = new Set(state.off[ax] || []);
+  if (on) off.delete(key); else off.add(key);
+  setFilter({ ...state.off, [ax]: off });
+}
+const checkAll = (ax, on) => setFilter({ ...state.off, [ax]: new Set(on ? [] : FACETS[ax].keys) });
+const checkOnly = (ax, key) => setFilter({ ...state.off, [ax]: isOnly(ax, key) ? new Set() : new Set([...FACETS[ax].keys].filter((k) => k !== key)) });
+function toggleLayer(key, on = !state.L[key]) {
+  state.L[key] = on;
+  if (!on && state.hover && ((state.hover.type === "opening" && kindOf(S().openings[state.hover.idx]) === key) || (state.hover.type === "void" && key === "voids"))) state.hover = null;
+  renderLeft(); writeHash(); draw();
+}
+function setAllLayers(on) {
+  for (const l of LAYERS) if (!layerDisabled(S(), l.key)) state.L[l.key] = on;
+  if (!on) state.hover = null;
+  renderLeft(); writeHash(); draw();
+}
+function toggleMeasure() {
+  state.measure = state.measure && state.measure.on ? null : { on: true, a: null, b: null, real: null };
+  if (state.measure) { state.tab = "details"; setPin(null); }
+  renderToolbar(); renderRight(); draw();
+}
+function togglePanel(side) {
+  state.panels[side] = !state.panels[side];
+  store.set(PANELS_KEY, state.panels);
+  renderPanels(); writeHash();
+  if (state.menu) renderMenu();
+}
+function setTab(tab) { state.tab = tab; renderRight(); writeHash(); }
+
+function writeHash() {
+  const s = S(), p = new URLSearchParams();
+  p.set("sheet", planId(s));
+  if (state.i !== planAt(state.i).def) p.set("v", verOf(s).label);
+  if (state.view !== "2d") p.set("view", state.view);
+  if (state.colour !== "room") p.set("colour", state.colour);
+  for (const l of LAYERS) if (state.L[l.key] !== l.on) p.set(l.key, state.L[l.key] ? "1" : "0");
+  if (state.opacity !== 1) p.set("opacity", state.opacity);
+  for (const [ax, v] of filterEntries()) p.set(`f.${ax}`, v);
+  if (state.tab !== "rooms") p.set("tab", state.tab);
+  if (state.pin && state.pin.type === "room") p.set("pin", state.pin.id);
+  if (state.panels.left) p.set("left", "0");
+  if (state.panels.right) p.set("right", "0");
+  try { history.replaceState(null, "", `#${p.toString()}`); } catch (e) { /* file:// may refuse; the link button still works */ }
+}
+// initial state from the URL hash, e.g. #sheet=s2&v=v2&view=3d&colour=confidence&graph=0&pin=r006&left=0, or #f.era=before+1850;
+// sheet takes a plan id (curated id, s1-s3) or a sheet id, v a version label; the layer and tab keys, run=N and tag=axis:value of the earlier viewers still work
+function readHash() {
+  const p = new URLSearchParams(location.hash.slice(1));
+  let named = false;
+  if (p.has("sheet")) {
+    const want = p.get("sheet"), all = D.sheets.map((s, i) => [s, i]).filter(([s]) => planId(s) === want || s.id === want || (s.curated && s.curated.id === want));
+    if (all.length) {
+      const pl = planAt(all[0][1]), byLabel = p.has("v") ? pl.items.find((i) => verOf(D.sheets[i]).label === p.get("v")) : null;
+      state.i = byLabel ?? (p.has("run") && all[+p.get("run")] ? all[+p.get("run")][1] : pl.def);     // run=N: links of the earlier viewer
+      state.ver[pl.key] = state.i; named = true;
+    }
+  }
+  if (p.get("view") === "3d") { state.view = "3d"; Object.assign(cam, { az: 20, el: 37 }); }
+  if (["room", "confidence", "accuracy"].includes(p.get("colour"))) state.colour = p.get("colour");
+  for (const [old, keys] of Object.entries(OLD_KEYS)) if (p.has(old)) keys.forEach((k) => (state.L[k] = p.get(old) === "1"));
+  for (const l of LAYERS) if (p.has(l.key) && !(l.key in OLD_KEYS)) state.L[l.key] = p.get(l.key) === "1";
+  if (p.has("opacity")) state.opacity = clamp(+p.get("opacity") || 0, 0, 1);
+  // the filter: from the link when it carries one; a link without one shows everything; a plain open (no hash) restores the filter
+  // last used in this browser. A sheet named in the link is kept even outside the filter; otherwise the first passing sheet is shown.
+  const inLink = FILTER_AXES.some((ax) => p.has(`f.${ax}`)) || p.has("tag");
+  const stored = !inLink && ![...p.keys()].length ? store.get(FILTER_KEY) : null;
+  state.off = inLink ? parseFilter((ax) => p.get(`f.${ax}`), p.get("tag")) : stored && typeof stored === "object" ? parseFilter((ax) => stored[ax]) : {};
+  if (!named && !passes(state.i)) { const l = navList(); if (l.length) state.i = l[0]; }
+  const tab = { results: "review", review: "review", sheet: "details", details: "details", rooms: "rooms" }[p.get("tab")];
+  if (tab) state.tab = tab;
+  for (const side of ["left", "right"]) if (p.has(side)) state.panels[side] = p.get(side) === "0";
+  if (["light", "dark"].includes(p.get("theme"))) document.documentElement.dataset.theme = p.get("theme");
+  return p;
+}
+
+// ---------- events ----------
+function openMenu(which) {
+  state.menu = state.menu === which ? null : which;
+  state.help = false; $("help").hidden = true;
+  renderHeader(); renderMenu();
+}
+$("pick").addEventListener("click", () => openMenu("sheet"));
+$("pickall").addEventListener("click", () => openMenu("filter"));
+$("prev").addEventListener("click", () => step(-1));
+$("next").addEventListener("click", () => step(1));
+$("menu").addEventListener("click", (e) => {
+  const it = e.target.closest(".mitem");
+  if (it) select(+it.dataset.i);
+  else if (e.target.id === "mfilter") openMenu("filter");
+});
+$("verpick").addEventListener("click", () => openMenu("version"));
+$("verprev").addEventListener("click", () => stepVersion(-1));
+$("vernext").addEventListener("click", () => stepVersion(1));
+$("vermenu").addEventListener("click", (e) => { const it = e.target.closest(".mitem"); if (it) select(+it.dataset.i); });
+$("filter").addEventListener("change", (e) => { const d = e.target.dataset; if (d.ax) checkFilter(d.ax, d.key, e.target.checked); });
+$("filter").addEventListener("click", (e) => {
+  const b = e.target.closest("button");
+  if (!b || b.disabled) return;
+  if (b.id === "freset") setFilter({});
+  else if (b.dataset.all) checkAll(b.dataset.all, true);
+  else if (b.dataset.none) checkAll(b.dataset.none, false);
+});
+const within = (e, sel) => e.target instanceof Element && !!e.target.closest(sel);
+document.addEventListener("pointerdown", (e) => {
+  if (state.menu && !within(e, "#menu, #filter, #vermenu, .pick")) { state.menu = null; renderHeader(); renderMenu(); }
+  if (state.help && !within(e, "#help, #helpbtn")) { state.help = false; $("help").hidden = true; $("helpbtn").setAttribute("aria-expanded", "false"); }
+});
+$("helpbtn").addEventListener("click", () => {
+  state.help = !state.help;
+  const h = $("help"), r = $("helpbtn").getBoundingClientRect();
+  h.hidden = !state.help;
+  $("helpbtn").setAttribute("aria-expanded", state.help);
+  h.style.top = `${r.bottom + 6}px`;
+  h.style.left = `${clamp(r.right - h.offsetWidth, 8, window.innerWidth - h.offsetWidth - 8)}px`;
+});
+const COPY_LABEL = $("copylink").innerHTML;
+$("copylink").addEventListener("click", async () => {
+  writeHash();
+  const b = $("copylink"), url = location.href;
+  let ok = false;
+  try { await navigator.clipboard.writeText(url); ok = true; } catch (e) {
+    const t = document.createElement("textarea");
+    t.value = url; document.body.appendChild(t); t.select();
+    try { ok = document.execCommand("copy"); } catch (e2) { ok = false; }
+    t.remove();
+  }
+  b.textContent = ok ? "Link copied" : "Copy failed";
+  setTimeout(() => (b.innerHTML = COPY_LABEL), 1600);
+});
+$("colour").addEventListener("click", (e) => {
+  const b = e.target.closest("button");
+  if (!b || b.disabled) return;
+  state.colour = b.dataset.colour;
+  renderLeft(); if (state.tab === "rooms") renderRight(); writeHash(); draw();
+});
+$("layers").addEventListener("change", (e) => { if (e.target.dataset.layer) toggleLayer(e.target.dataset.layer, e.target.checked); });
+$("layers").addEventListener("click", (e) => {
+  const g = e.target.closest(".ghead");
+  if (g) { state.closed[g.dataset.group] = !state.closed[g.dataset.group]; renderLeft(); }
+});
+$("showall").addEventListener("click", () => setAllLayers(true));
+$("hideall").addEventListener("click", () => setAllLayers(false));
+$("collapseL").addEventListener("click", () => togglePanel("left"));
+$("collapseR").addEventListener("click", () => togglePanel("right"));
+document.querySelectorAll(".rail").forEach((r) => r.addEventListener("click", () => togglePanel(r.dataset.side)));
+$("view").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b && b.dataset.view !== state.view) setView(b.dataset.view); });
+$("opacity").addEventListener("input", (e) => { state.opacity = +e.target.value; e.target.title = `Plan opacity ${Math.round(state.opacity * 100)} %`; draw(); });
+$("opacity").addEventListener("change", writeHash);
+$("fitrooms").addEventListener("click", fitRooms);
+$("fitsheet").addEventListener("click", fitSheet);
+$("measure").addEventListener("click", toggleMeasure);
+document.querySelector(".rtabs").addEventListener("click", (e) => { const b = e.target.closest(".rtab"); if (b) setTab(b.dataset.tab); });
+function action(act) {
+  const s = S();
+  switch (act) {
+    case "unpin": setPin(null); break;
+    case "zoom": zoomTo(boxOf(state.pin)); break;
+    case "more": state.more = !state.more; renderPopup(); break;
+    case "focus": state.focus = !state.focus; if (state.focus) state.L.graph = true; renderLeft(); renderPopup(); writeHash(); draw(); break;
+    case "compare":
+      state.compare = !state.compare;
+      if (state.compare) { state.L.ref = true; zoomTo(boxOf(state.pin), 0.8); }
+      renderLeft(); renderPopup(); writeHash(); draw(); break;
+    case "check": { const f = flagOf(state.pin); if (f) toggleCheck(f.key); break; }
+    case "nextflag": nextFlag(flagOf(state.pin)); break;
+    case "review": nextFlag(null); break;
+    case "allflags": state.allFlags = true; renderRight(); break;
+    case "allqa": state.allQa = true; renderRight(); break;
+    case "measure": toggleMeasure(); break;
+    case "csv": downloadCsv(s); break;
+  }
+}
+function panelClick(e) {
+  const el = e.target.closest("[data-act], [data-room], [data-flag], [data-sort], [data-fax], [data-tab], [data-ver]");
+  if (!el || el.disabled) return;
+  e.preventDefault();
+  const s = S(), d = el.dataset;
+  if (d.ver) { select(+d.ver); return; }
+  if (d.room) { setPin({ type: "room", id: d.room }); return; }
+  if (d.flag) { const f = flagged(s).find((x) => x.key === d.flag); if (f) setPin(pinOfFlag(f), true); return; }
+  if (d.sort) {
+    const cur = state.sort || { key: hasRoomRef(s) ? "iou" : "conf", dir: 1 };
+    state.sort = { key: d.sort, dir: cur.key === d.sort ? -cur.dir : 1 };
+    renderRight(); return;
+  }
+  if (d.fax) { checkOnly(d.fax, d.fkey); return; }
+  if (d.tab) { setTab(d.tab); return; }
+  action(d.act);
+}
+$("right").addEventListener("click", panelClick);
+$("popup").addEventListener("click", panelClick);
+$("right").addEventListener("input", (e) => {
+  if (e.target.id !== "realdist" || !state.measure) return;
+  state.measure.real = parseFloat(e.target.value);
+  $("measureres").innerHTML = measureRes(S());
+});
+$("right").addEventListener("mouseover", (e) => {
+  const r = e.target.closest(".rrow");
+  const h = r ? { type: "room", id: r.dataset.room } : null;
+  if (!same(h, state.hover) && (h || (state.hover && e.target.closest("#rlist")))) { state.hover = h; draw(); }
+});
+$("right").addEventListener("mouseleave", () => { if (state.hover) { state.hover = null; draw(); } });
+document.addEventListener("keydown", (e) => {
+  if (within(e, 'input:not([type="checkbox"]), select, textarea') || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key === "Escape") {
+    if (state.menu || state.help) { state.menu = null; state.help = false; $("help").hidden = true; renderHeader(); renderMenu(); }
+    else if (state.measure) toggleMeasure();
+    else if (state.pin) setPin(null);
+    return;
+  }
+  const k = "1234567890".indexOf(e.key);
+  if (k >= 0 && LAYERS[k] && !layerDisabled(S(), LAYERS[k].key)) toggleLayer(LAYERS[k].key);
+  else if (e.key === "[" || e.key === "ArrowLeft") step(-1);
+  else if (e.key === "]" || e.key === "ArrowRight") step(1);
+  else if (e.key === "f" || e.key === "F") fitRooms();
+  else if (e.key === "h") stepVersion(1);
+  else if (e.key === "H") stepVersion(-1);
+});
+NARROW.addEventListener("change", renderPanels);
+
+function downloadCsv(s) {
+  const q = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`, ref = hasRoomRef(s);
+  const head = ["sheet", "room", "number", "name", "ocr_read", "usage", "area_net_m2", "area_gross_m2", "area_polygon_m2", "stamp_m2", "deviation_pct",
+                "area_basis", "confidence", "reasons", "stair_flights", "neighbours", ...(ref ? ["reference", "iou"] : []), "review_checked"];
+  const rows = s.rooms.map((r) => [s.id, r.id, numberOf(r), r.name, r.raw, r.usage, netOf(r), grossOf(r), polyAreaOf(r), r.stamp, deviation(r), basisOf(r),
+                                   r.conf, r.reasons.join("; "), flightsOf(r), r.neighbours.join(" "), ...(ref ? [r.ref, r.iou] : []), checked[r.id] ? "yes" : ""]);
+  const blob = new Blob([`﻿${[head, ...rows].map((row) => row.map(q).join(",")).join("\r\n")}\r\n`], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `${s.id}${runOf(s) ? `-${runOf(s).replace(/\W+/g, "-")}` : ""}-rooms.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+// ---------- start ----------
+if (!D || !D.sheets || !D.sheets.length) {
+  stage.innerHTML = '<div class="empty"><div>No data found.<br>Run <code>python export_viewer.py</code>, then reload.</div></div>';
+  ["leftbody", "rightbody"].forEach((id) => ($(id).innerHTML = ""));
+  $("pickname").textContent = "No sheets";
+} else {
+  readColours();
+  buildPlans();
+  GROUPS = sheetGroups();
+  buildFacets();
+  state.i = PLANS.length ? PLANS[0].def : 0;
+  const params = readHash();
+  ensure(state.i).then(() => {
+    loadChecks();
+    renderPanels();
+    resize();
+    renderAll();
+    fitRooms();
+    if (params.has("pin") && roomById(S(), params.get("pin"))) setPin({ type: "room", id: params.get("pin") });
+    if (params.get("review") === "1") nextFlag(null);
+    if (["all", "filter", "sheet", "curated", "bench"].includes(params.get("menu"))) { state.menu = params.get("menu") === "sheet" ? "sheet" : "filter"; renderHeader(); renderMenu(); }
+    if (params.has("measure")) {
+      const v = params.get("measure").split(",").map(Number);
+      if (v.length >= 4 && v.every(Number.isFinite)) { state.measure = { on: false, a: v.slice(0, 2), b: v.slice(2, 4), real: v[4] || null }; state.tab = "details"; renderRight(); draw(); }
+    }
+    new ResizeObserver(resize).observe(stage);
+    window.addEventListener("resize", () => { if (state.menu) renderMenu(); });
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { readColours(); renderAll(); });
+  }).catch(loadError);
+}
+</script>
+</body>
+</html>

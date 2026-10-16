@@ -1,0 +1,154 @@
+/* Design tokens of the floor plan workflow app (after docs/wireframes/261007_Viewer and Workflow UX study.html).
+   Every colour, size, space, radius and shadow used by styles.css and by the canvas code (js/core.js reads the
+   --*-canvas values, the layer colours and the text colours) lives here. Semantic tokens (success, warning, danger, info) are the only ones the
+   components use for states; the plan-layer colours are shared by the legend and the canvas. */
+:root {
+  /* brand */
+  --swiss-red: #dc0018;                /* the prototype banner, as in the other bbl-dres apps */
+  --accent: oklch(0.55 0.12 230);
+  --accent-hover: oklch(0.5 0.12 230);
+  --accent-text: oklch(0.42 0.11 230);
+  --accent-light: oklch(0.95 0.02 230);
+  --accent-border: oklch(0.75 0.06 230);
+  --accent-disabled: #b9c4d6;
+  --accent-canvas: #2f6ea6;            /* the accent as hex: canvas strokes and alpha fills (hexA) need it */
+
+  /* neutrals */
+  --text: #1a1d21;
+  --muted: #646b74;
+  --text-disabled: #9aa1ab;
+  --icon-muted: #b4bac3;
+  --border: #dfe2e6;
+  --border-light: #f0f1f3;
+  --bg: #f5f6f7;
+  --bg-track: #eef0f2;
+  --surface: #fff;
+  --on-accent: #fff;
+
+  /* semantic */
+  --success: #2e9e5b;
+  --success-bg: #e6f4ec;
+  --success-text: #1f7a45;
+  --warning: #d99a1e;
+  --warning-bg: #fdf6e3;
+  --warning-border: #e8c777;
+  --warning-text: #5c3d00;
+  --warning-text-strong: #8a5a00;     /* labels of the amber cue boxes on the canvas */
+  --danger: #d0433b;
+  --danger-bg: #fbe9e7;
+  --danger-border: #efb3ad;
+  --danger-text: #8a2a24;
+  --info: #1f78b4;
+  --neutral-canvas: #8a8f99;           /* drawings not selected for extraction, the segmentation overlay swatch */
+
+  /* plan layers (legend and canvas) */
+  --walls: #2b3a55;
+  --doors: #d0433b;
+  --windows: #2f8fd8;
+  --passages: #f08a24;
+  --columns: #6b7280;
+  --stairs: #c23fbf;
+  --voids: #1f78b4;
+  --graph: #0f766e;
+  --gf: #111827;
+  --gross: #7c3aed;                    /* the gross room polygons, to the wall axes (dashed) */
+  --walls-3d: #d6d9df;                /* wall prisms of the 3D view (light, so the shading reads; as in the pilot viewer) */
+  --selection-canvas: var(--accent-canvas);   /* the selected element on the drawing and in 3D */
+  --halo-canvas: rgba(255, 255, 255, .9);     /* behind labels, axes and the selection on the drawing, so they read on dark ink */
+  --shadow-canvas: rgba(0, 0, 0, .12);        /* the sheet's shadow on the stage */
+  --surface-translucent: rgba(255, 255, 255, .9);   /* notes over the drawing */
+  /* the room palette (js/core.js PAL) and the region colours of the area step, in the order the scripts read them */
+  --pal-1: #4e79a7; --pal-2: #f28e2b; --pal-3: #59a14f; --pal-4: #e15759; --pal-5: #76b7b2;
+  --pal-6: #edc948; --pal-7: #b07aa1; --pal-8: #ff9da7; --pal-9: #9c755f; --pal-10: #86bcb6;
+  --region-title-block: #e67800; --region-legend: #00a0a0; --region-scale-bar: #c800c8; --region-scale-note: #c80078;
+  --region-north-arrow: #7800dc; --region-notes: #787800; --region-key-plan: #dc0000; --region-caption: #0078ff;
+  --region-other: #5a5a5a; --region-frame: #969696;
+
+  /* type */
+  --font: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --fs-2xs: 11px;                      /* uppercase labels, severity tags */
+  --fs-xs: 12px;                       /* secondary lines, code, notes */
+  --fs-sm: 13px;                       /* controls, cards, lists */
+  --fs-base: 14px;                     /* body */
+  --fs-md: 15px;                       /* section headings, emphasised values */
+  --fs-lg: 17px;                       /* results panel heading */
+  --fs-xl: 20px;                       /* step titles, big figures */
+  --fs-2xl: 22px;                      /* upload screen title */
+  --lh: 1.45;
+  --tracking-label: .06em;
+  --weight-semibold: 600;
+
+  /* space (4 px grid, with the half steps the dense rows need) */
+  --sp-1: 4px;
+  --sp-1h: 6px;
+  --sp-2: 8px;
+  --sp-2h: 10px;
+  --sp-3: 12px;
+  --sp-3h: 14px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+
+  /* radius: one per level. xs swatches and bars; sm rows and chips inside a list; ctl every control (buttons, inputs,
+     selects, segmented controls, close buttons); lg cards, boxes, menus, toasts; xl the drop zone and dialogs; pill
+     badges, status chips and round floating buttons */
+  --r-xs: 3px;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-ctl: var(--r-md);
+  --r-lg: 10px;
+  --r-xl: 12px;
+  --r-pill: 999px;
+
+  /* shadow */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, .06);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, .1);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, .2);
+  --scrim: rgba(26, 29, 33, .35);
+  --scrim-light: rgba(245, 246, 247, .55);   /* over the stage while it waits: the drawing stays visible */
+
+  /* control heights */
+  --ctl-sm: 28px;
+  --ctl-md: 32px;
+  --ctl-input: 36px;
+  --ctl-lg: 40px;
+  --ctl-xl: 44px;
+  --focus-ring: 2px solid var(--accent);    /* 4.7:1 on white: a focus ring needs 3:1 */
+
+  /* icons */
+  --icon-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");   /* chevron down (Feather); a closed group turns it */
+  --icon-sm: 14px;
+  --icon-md: 16px;
+  --icon-lg: 18px;
+
+  /* layers of the page, from the stage upwards */
+  --z-stage-ui: 2;
+  --z-popup: 3;
+  --z-drawer: 4;
+  --z-drawer-btn: 5;
+  --z-modal: 20;
+  --z-menu: 30;
+  --z-toast: 40;
+
+  /* motion */
+  --dur-fast: .15s;
+  --dur-slow: .4s;
+
+  /* widths of the pieces that have one */
+  --w-popup: 260px;
+  --w-menu: 280px;
+  --w-overlay: 360px;
+  --w-offline: 600px;
+  --w-drawer: 280px;
+
+  /* layout */
+  --topbar-h: 56px;
+  --panel-w: 400px;
+  --panel-w-narrow: 340px;
+  --side-w: 260px;
+  --side-w-narrow: 220px;
+  --upload-w: 640px;
+  --modal-w: 560px;
+}
