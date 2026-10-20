@@ -33,7 +33,7 @@ function mount(node, crumb, { wait = false } = {}) {
   waiting = wait;
   const fresh = navigated;
   navigated = false;
-  if (fresh) focusHeading();
+  if (fresh) { window.scrollTo(0, 0); focusHeading(); }   // the page scrolls: a new screen starts at its top
   return fresh;
 }
 /** The screen's first heading (or the first h2 of `root`) takes focus: a screen reader announces the new screen,

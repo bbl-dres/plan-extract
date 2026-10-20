@@ -154,7 +154,8 @@ input[type=range] { accent-color: var(--accent); margin: 0; }
 .progress-bars span.on { background: var(--accent); }
 
 /* ---------- app frame ---------- */
-.app { height: 100%; display: grid; grid-template-rows: auto var(--topbar-h) 1fr auto; }
+.app { min-height: 100%; display: grid; grid-template-rows: auto var(--topbar-h) 1fr auto; }   /* grows with its screen: the banner and the top bar scroll away with the page */
+.app:has(> .screen > .step, > .screen > .results) { height: 100%; }   /* the workspace: the plan fills the window, the panels scroll themselves */
 .footer { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-4); padding: var(--sp-1) var(--sp-6); background: var(--surface); border-top: 1px solid var(--border); color: var(--muted); font-size: var(--fs-xs); }
 .footer-links { display: flex; gap: var(--sp-4); }
 .footer-link { color: var(--muted); text-decoration: none; }
@@ -170,7 +171,7 @@ input[type=range] { accent-color: var(--accent); margin: 0; }
 .screen { min-height: 0; display: grid; }
 
 /* ---------- upload screen ---------- */
-.upload { display: grid; place-items: center; overflow: auto; padding: var(--sp-6); }
+.upload { display: grid; place-items: center; min-width: 0; padding: var(--sp-6); }
 .upload-inner { width: var(--upload-w); max-width: 100%; display: flex; flex-direction: column; gap: var(--sp-5); }
 .upload h2 { font-size: var(--fs-2xl); }
 .dropzone { border: 2px dashed var(--accent-border); border-radius: var(--r-xl); background: var(--surface); padding: 48px var(--sp-7); display: flex; flex-direction: column; align-items: center; gap: var(--sp-3); text-align: center; cursor: pointer; transition: background var(--dur-fast); }
@@ -354,14 +355,15 @@ h2:focus { outline: none; }
 
 /* ---------- phones and small tablets: the drawing on top, the panel below it, the layers as a drawer ---------- */
 @media (max-width: 760px) {
-  .app { grid-template-rows: auto auto 1fr auto; overflow-x: hidden; }
+  .app { grid-template-rows: auto auto 1fr auto; overflow-x: clip; }   /* clip, not hidden: the page scrolls, not the frame */
+  .app:has(> .screen > .step, > .screen > .results) { height: auto; }   /* the workspace too: the plan, then the panel, down the page */
   .topbar { padding: var(--sp-1h) var(--sp-3); flex-wrap: wrap; row-gap: var(--sp-1h); min-height: var(--topbar-h); }   /* the buttons wrap under the name */
   .topbar-right { flex-wrap: wrap; justify-content: flex-end; }
   .crumb, #btn-login { display: none; }
   .topbar-right { gap: var(--sp-1h); }
   .brand-name { font-size: var(--fs-sm); }
   .prototype-banner { font-size: var(--fs-2xs); padding: var(--sp-1h) var(--sp-3); }
-  .screen { overflow: auto; display: block; }
+  .screen { display: block; }
   .upload { padding: var(--sp-4); display: block; }
   .upload-inner { width: auto; }
   .dropzone { padding: var(--sp-6) var(--sp-4); }
@@ -378,7 +380,7 @@ h2:focus { outline: none; }
   .results > .stage { grid-column: 1; grid-row: 1; min-height: 55vh; }
   .results > .side.right { grid-column: 1; grid-row: 2; border-left: 0; border-top: 1px solid var(--border); padding: var(--sp-4); gap: var(--sp-4); min-width: 0; overflow-x: hidden; }
   .results > .stage, .step > .stage, .panel { min-width: 0; }
-  .screen { overflow-x: hidden; }
+  .screen { overflow-x: clip; }
   .edge-right { display: none; }
   .results:not(.no-left) .edge-left { left: calc(min(var(--w-drawer), 85vw) - var(--sp-5)); z-index: var(--z-drawer-btn); }   /* the open drawer must not cover its own button */
   .stage-bottom { gap: var(--sp-2); padding: var(--sp-1h) var(--sp-2h); bottom: var(--sp-3); max-width: calc(100% - var(--sp-4)); }
